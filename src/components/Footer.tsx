@@ -1,8 +1,6 @@
 /**
- * Komponen Footer modern dan elegan untuk website LPPM Unila.
- * Menampilkan logo, informasi kontak, social media icons modern, dan navigasi cepat ke berbagai bagian situs.
- * Data link dikelola dalam objek agar mudah diperbarui dengan design yang ditingkatkan.
- * @module Footer
+ * Komponen Footer Ultra-Modern untuk LPPM Unila.
+ * Design dengan glass morphism, animasi halus, gradient modern, dan layout yang responsif.
  */
 
 import { Link } from "react-router-dom";
@@ -12,281 +10,439 @@ import {
   FaWhatsapp,
   FaYoutube,
   FaExternalLinkAlt,
+  FaMapMarkerAlt,
+  FaPhone,
+  FaEnvelope,
+  FaClock,
+  FaBuilding,
+  FaGraduationCap,
+  FaGlobe,
+  FaArrowRight,
+  FaPaperPlane,
 } from "react-icons/fa";
 
 /**
- * Data link navigasi footer.
+ * Data link navigasi footer yang diperkaya dengan deskripsi.
  */
-const footerLinks = {
-  profil: [
-    { name: "Pimpinan", href: "/profil#pimpinan" },
-    { name: "Visi & Misi", href: "/profil#visi-misi" },
-    { name: "Tugas dan Fungsi", href: "/profil#tugas-fungsi" },
-    { name: "Struktur Organisasi", href: "/profil#struktur-organisasi" },
-  ],
-  administrasi: [{ name: "Bagian Umum", href: "/administrasi/bagian-umum" }],
-  pui: [
-    {
-      name: "Anggrek, Kopi, Lada, Kako",
-      href: "/pui/anggrek-kopi-lada-kako",
-    },
-  ],
-  puslit: [
-    { name: "Kuliah Kerja Nyata", href: "/puslit/kuliah-kerja-nyata" },
-    { name: "Lingkungan Hidup", href: "/puslit/lingkungan-hidup" },
-    { name: "Studi Kebijakan Publik", href: "/puslit/studi-kebijakan-publik" },
-    {
-      name: "Publikasi dan Kerjasama",
-      href: "/puslit/publikasi-dan-kerjasama",
-    },
-    { name: "Inkubator Bisnis", href: "/puslit/inkubator-bisnis" },
-    {
-      name: "Manajemen Sistem Informasi",
-      href: "/puslit/manajemen-sistem-informasi",
-    },
-    { name: "SDGs", href: "/puslit/sdgs" },
-    { name: "Kemandirian Energi", href: "/puslit/kemandirian-energi" },
-    { name: "Ekonomi Kreatif", href: "/puslit/ekonomi-kreatif" },
-  ],
-  layanan: [
-    {
-      name: "Silemlit 21",
-      href: "https://silemlit.unila.ac.id",
-      external: true,
-    },
-    {
-      name: "Repository",
-      href: "https://repository.lppm.unila.ac.id",
-      external: true,
-    },
-    {
-      name: "Journal",
-      href: "https://journal.lppm.unila.ac.id",
-      external: true,
-    },
-    {
-      name: "PPID",
-      href: "https://ppid.lppm.unila.ac.id",
-      external: true,
-    },
-  ],
+const footerSections = {
+  profil: {
+    title: "Profil",
+    icon: FaBuilding,
+    links: [
+      {
+        name: "Pimpinan",
+        href: "/profil#pimpinan",
+        description: "Struktur kepemimpinan",
+      },
+      {
+        name: "Visi & Misi",
+        href: "/profil#visi-misi",
+        description: "Tujuan LPPM",
+      },
+      {
+        name: "Tugas dan Fungsi",
+        href: "/profil#tugas-fungsi",
+        description: "Peran institusi",
+      },
+      {
+        name: "Struktur Organisasi",
+        href: "/profil#struktur-organisasi",
+        description: "Struktur lengkap",
+      },
+    ],
+  },
+  administrasi: {
+    title: "Administrasi",
+    icon: FaBuilding,
+    links: [
+      {
+        name: "Bagian Umum",
+        href: "/administrasi/bagian-umum",
+        description: "Layanan administrasi",
+      },
+    ],
+  },
+  pui: {
+    title: "PUI",
+    icon: FaGraduationCap,
+    links: [
+      {
+        name: "Pusat Unggulan Ipteks",
+        href: "/pui/pusat-unggulan-ipteks-anggrek-kopi-lada-kako-dan-pengembangan-komoditas-strategis-dan-agroindustri-lampung",
+        description: "Pertanian & agroindustri",
+      },
+    ],
+  },
+  puslit: {
+    title: "Pusat Penelitian",
+    icon: FaGraduationCap,
+    links: [
+      {
+        name: "Kuliah Kerja Nyata",
+        href: "/puslit/pusat-penelitian-kuliah-kerja-nyata-kkn",
+        description: "Program KKN",
+      },
+      {
+        name: "HAKI & Paten",
+        href: "/puslit/pusat-penelitian-hak-kekayaan-intelektual-hki-dan-paten",
+        description: "Proteksi intelektual",
+      },
+      {
+        name: "Lingkungan & SDA",
+        href: "/puslit/pusat-penelitian-bencana-lingkungan-hidup-dan-sumber-daya-alam",
+        description: "Penelitian lingkungan",
+      },
+      {
+        name: "Publikasi & Kerjasama",
+        href: "/puslit/pusat-penelitian-publikasi-dan-kerja-sama",
+        description: "Publikasi ilmiah",
+      },
+      {
+        name: "Inkubator Bisnis",
+        href: "/puslit/pusat-penelitian-inkubator-bisnis-hilirisasi-inovasi-ketahanan-pangan-dan-sertifikasi-halal",
+        description: "Inkubasi bisnis",
+      },
+    ],
+  },
+  layanan: {
+    title: "Layanan Digital",
+    icon: FaGlobe,
+    links: [
+      {
+        name: "Silemlit 21",
+        href: "https://silemlit.unila.ac.id",
+        external: true,
+        description: "Sistem penelitian",
+      },
+      {
+        name: "Repository",
+        href: "https://repository.lppm.unila.ac.id",
+        external: true,
+        description: "Koleksi digital",
+      },
+      {
+        name: "Journal",
+        href: "https://journal.lppm.unila.ac.id",
+        external: true,
+        description: "Jurnal ilmiah",
+      },
+      {
+        name: "PPID",
+        href: "https://ppid.lppm.unila.ac.id",
+        external: true,
+        description: "Informasi publik",
+      },
+    ],
+  },
 };
 
 /**
- * Data ikon sosial media modern pada footer dengan react-icons.
+ * Data ikon sosial media dengan efek hover yang ditingkatkan.
  */
-const socialIcons = [
+const socialMedia = [
   {
     name: "Facebook",
     href: "https://facebook.com/lppmunila",
     icon: FaFacebook,
-    color: "hover:bg-blue-600",
+    gradient: "from-blue-600 to-blue-700",
+    hover: "hover:shadow-blue-500/25",
   },
   {
     name: "Instagram",
     href: "https://instagram.com/lppmunila",
     icon: FaInstagram,
-    color:
-      "hover:bg-gradient-to-br hover:from-purple-600 hover:via-pink-600 hover:to-orange-600",
+    gradient: "from-pink-600 via-purple-600 to-orange-600",
+    hover: "hover:shadow-pink-500/25",
   },
   {
     name: "WhatsApp",
     href: "https://wa.me/6285380464628",
     icon: FaWhatsapp,
-    color: "hover:bg-green-600",
+    gradient: "from-green-600 to-green-700",
+    hover: "hover:shadow-green-500/25",
   },
   {
     name: "YouTube",
     href: "https://youtube.com/@lppmunila",
     icon: FaYoutube,
-    color: "hover:bg-red-600",
+    gradient: "from-red-600 to-red-700",
+    hover: "hover:shadow-red-500/25",
   },
 ];
 
 /**
- * Komponen utama Footer modern.
- * @returns {React.ReactElement} Footer multi-kolom modern dengan logo, kontak, sosial media modern, dan navigasi.
+ * Komponen utama Footer Ultra-Modern.
+ * @returns {React.ReactElement} Footer dengan glass morphism, gradient, dan animasi modern.
  */
-const Footer = () => (
-  <footer className="bg-gradient-to-br from-white via-gray-50/50 to-white border-t border-gray-100/80 relative overflow-hidden">
-    {/* Background Pattern */}
-    <div className="absolute inset-0 opacity-5">
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23105091' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-        }}
-      ></div>
-    </div>
+const Footer = () => {
+  return (
+    <footer className="relative bg-gradient-to-br from-[#105091] via-blue-900 to-indigo-900 text-white overflow-hidden">
+      {/* Animated Background Pattern */}
+      <div className="absolute inset-0">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full filter blur-3xl animate-pulse"></div>
+        <div
+          className="absolute top-1/2 right-0 w-96 h-96 bg-indigo-500/10 rounded-full filter blur-3xl animate-bounce"
+          style={{ animationDelay: "2s" }}
+        ></div>
+        <div
+          className="absolute bottom-0 left-1/3 w-96 h-96 bg-purple-500/10 rounded-full filter blur-3xl animate-pulse"
+          style={{ animationDelay: "4s" }}
+        ></div>
+      </div>
 
-    <div className="relative max-w-screen-2xl mx-auto px-6 sm:px-8 lg:px-12 py-16">
-      <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr_1fr_1fr] gap-12">
-        {/* Logo and Contact Section */}
-        <div className="space-y-6">
-          <div className="group">
-            <img
-              src="/logo-footer-lppm-unila.png"
-              alt="Logo LPPM Unila"
-              width={280}
-              height={64}
-              className="object-contain transition-transform duration-300 group-hover:scale-105 drop-shadow-sm"
-            />
-          </div>
+      {/* Grid Pattern Overlay */}
+      <div className="absolute inset-0 opacity-5">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}
+        ></div>
+      </div>
 
-          <div className="space-y-4">
-            <h3 className="font-display font-bold text-[24px] text-[#105091] leading-tight">
-              LPPM Universitas Lampung
-            </h3>
-
-            <div className="space-y-3 font-body text-[15px] text-gray-700 leading-relaxed">
-              <div className="flex items-start space-x-3">
-                <div className="w-5 h-5 mt-0.5 flex-shrink-0">
-                  <svg
-                    className="w-full h-full text-[#105091]"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                      clipRule="evenodd"
+      {/* Main Footer Content */}
+      <div className="relative z-10">
+        {/* Top Section with Contact Info */}
+        <div className="border-b border-white/10">
+          <div className="max-w-screen-2xl mx-auto px-6 sm:px-8 lg:px-12 py-12">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Brand Section */}
+              <div className="lg:col-span-1 space-y-6">
+                <div className="group">
+                  <div className="relative inline-block">
+                    <img
+                      src="/logo-footer-lppm-unila.png"
+                      alt="Logo LPPM Unila"
+                      width={260}
+                      height={60}
+                      className="object-contain transition-all duration-300 group-hover:scale-105 drop-shadow-lg"
                     />
-                  </svg>
+                    <div className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 to-blue-400 scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
+                  </div>
                 </div>
-                <span>
-                  Jl. Prof Dr. Sumantri Brojonegoro No. 1<br />
-                  Bandar Lampung, 35145, Lampung
-                </span>
+
+                <div className="space-y-4">
+                  <h3 className="font-display text-2xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+                    LPPM Universitas Lampung
+                  </h3>
+                  <p className="font-body text-blue-100 leading-relaxed text-sm max-w-xs">
+                    Mendukung pengembangan penelitian dan pengabdian masyarakat
+                    yang inovatif serta berkelanjutan.
+                  </p>
+                </div>
+
+                {/* Social Media */}
+                <div>
+                  <h4 className="font-display font-semibold text-sm text-blue-200 uppercase tracking-wider mb-4">
+                    Hubungi Kami
+                  </h4>
+                  <div className="flex gap-3">
+                    {socialMedia.map((social) => {
+                      const IconComponent = social.icon;
+                      return (
+                        <a
+                          key={social.name}
+                          href={social.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={social.name}
+                          className={`group relative flex items-center justify-center w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20 hover:border-white/30 transition-all duration-300 hover:scale-110 hover:bg-gradient-to-br ${social.gradient} ${social.hover} hover:shadow-xl`}
+                        >
+                          <IconComponent className="w-5 h-5 text-white group-hover:scale-110 transition-all duration-300" />
+                          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
 
-              <div className="flex items-center space-x-3">
-                <div className="w-5 h-5 flex-shrink-0">
-                  <svg
-                    className="w-full h-full text-[#105091]"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-                  </svg>
+              {/* Contact Info */}
+              <div className="lg:col-span-2">
+                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
+                  <h4 className="font-display text-xl font-bold text-white mb-6 flex items-center">
+                    <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-blue-400 rounded-lg flex items-center justify-center mr-3">
+                      <FaMapMarkerAlt className="w-4 h-4 text-white" />
+                    </div>
+                    Informasi Kontak
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <FaMapMarkerAlt className="w-5 h-5 text-emerald-300" />
+                        </div>
+                        <div>
+                          <h5 className="font-semibold text-white">Alamat</h5>
+                          <p className="text-blue-100 text-sm mt-1">
+                            Jl. Prof Dr. Sumantri Brojonegoro No. 1<br />
+                            Bandar Lampung, 35145, Lampung
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <FaPhone className="w-5 h-5 text-blue-300" />
+                        </div>
+                        <div>
+                          <h5 className="font-semibold text-white">Telepon</h5>
+                          <a
+                            href="tel:+6285380464628"
+                            className="text-blue-100 text-sm hover:text-white transition-colors duration-200 mt-1 block"
+                          >
+                            +62 853-8046-4628
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <FaEnvelope className="w-5 h-5 text-purple-300" />
+                        </div>
+                        <div>
+                          <h5 className="font-semibold text-white">Email</h5>
+                          <a
+                            href="mailto:lppm@unila.ac.id"
+                            className="text-blue-100 text-sm hover:text-white transition-colors duration-200 mt-1 block"
+                          >
+                            lppm@unila.ac.id
+                          </a>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <FaClock className="w-5 h-5 text-orange-300" />
+                        </div>
+                        <div>
+                          <h5 className="font-semibold text-white">
+                            Jam Operasional
+                          </h5>
+                          <p className="text-blue-100 text-sm mt-1">
+                            Senin - Jumat: 08:00 - 16:00
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <a
-                  href="tel:+6285380464628"
-                  className="hover:text-[#105091] transition-colors duration-200"
-                >
-                  +62 853-8046-4628
-                </a>
-              </div>
-
-              <div className="flex items-center space-x-3">
-                <div className="w-5 h-5 flex-shrink-0">
-                  <svg
-                    className="w-full h-full text-[#105091]"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                  </svg>
-                </div>
-                <a
-                  href="mailto:lppm@kpa.unila.ac.id"
-                  className="hover:text-[#105091] transition-colors duration-200"
-                >
-                  lppm@kpa.unila.ac.id
-                </a>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Modern Social Media Icons */}
-          <div className="pt-2">
-            <h4 className="font-display font-semibold text-sm text-gray-600 uppercase tracking-wider mb-4">
-              Follow Us
-            </h4>
-            <div className="flex gap-3">
-              {socialIcons.map((social) => {
-                const IconComponent = social.icon;
-                return (
-                  <a
-                    key={social.name}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.name}
-                    className={`group relative flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full transition-all duration-300 hover:scale-110 ${social.color} hover:shadow-lg`}
-                  >
-                    <IconComponent className="w-5 h-5 text-gray-600 group-hover:text-white transition-colors duration-300" />
-                  </a>
-                );
-              })}
-            </div>
+        {/* Navigation Links */}
+        <div className="max-w-screen-2xl mx-auto px-6 sm:px-8 lg:px-12 py-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+            {Object.entries(footerSections).map(([key, section]) => (
+              <FooterSection key={key} section={section} />
+            ))}
           </div>
         </div>
 
-        {/* Navigation Sections */}
-        <div className="flex flex-col gap-8">
-          <FooterLinkSection title="Profil" links={footerLinks.profil} />
-          <FooterLinkSection
-            title="Administrasi"
-            links={footerLinks.administrasi}
-          />
-        </div>
-
-        <div className="flex flex-col gap-8">
-          <FooterLinkSection title="PUI" links={footerLinks.pui} />
-          <FooterLinkSection title="Layanan" links={footerLinks.layanan} />
-        </div>
-
-        <div>
-          <FooterLinkSection title="PUSLIT" links={footerLinks.puslit} />
+        {/* Bottom Section */}
+        <div className="border-t border-white/10">
+          <div className="max-w-screen-2xl mx-auto px-6 sm:px-8 lg:px-12 py-8">
+            <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
+              <div className="text-center lg:text-left">
+                <p className="text-blue-100 text-sm">
+                  © {new Date().getFullYear()} LPPM Universitas Lampung. All
+                  rights reserved.
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-6 text-sm">
+                <div className="flex items-center space-x-1 text-blue-100">
+                  <span>Developed with</span>
+                  <span className="text-red-400">❤</span>
+                  <span>by</span>
+                  <span className="text-white font-semibold">LPPM Unila</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};
 
 interface FooterLink {
   name: string;
   href: string;
   external?: boolean;
+  description?: string;
+}
+
+interface FooterSectionType {
+  title: string;
+  icon: any;
+  links: FooterLink[];
 }
 
 /**
- * Komponen bagian link modern pada footer.
- * @param title Judul bagian link
- * @param links Daftar link yang akan ditampilkan
- * @returns {React.ReactElement} Daftar link navigasi footer modern
+ * Komponen bagian footer dengan design modern.
+ * @param section Data section footer
+ * @returns {React.ReactElement} Footer section dengan icon dan link modern
  */
-const FooterLinkSection = ({
-  title,
-  links,
-}: {
-  title: string;
-  links: FooterLink[];
-}) => (
-  <div>
-    <h3 className="font-display font-semibold text-lg text-gray-800 mb-5 relative">
-      <span className="relative z-10">{title}</span>
-      <div className="absolute -bottom-1 left-0 w-12 h-0.5 bg-gradient-to-r from-[#105091] to-blue-600 rounded-full"></div>
-    </h3>
-    <ul className="space-y-2">
-      {links.map((link) => (
-        <li key={link.name}>
-          <a
-            href={link.href}
-            target={link.external ? "_blank" : undefined}
-            rel={link.external ? "noopener noreferrer" : undefined}
-            className="font-body text-gray-600 hover:text-[#105091] transition-all duration-200 text-sm flex items-center group py-1 px-2 rounded-lg hover:bg-gray-50/50 -mx-2"
-          >
-            <span className="flex-1 font-medium">{link.name}</span>
-            {link.external && (
-              <FaExternalLinkAlt className="w-3 h-3 ml-2 text-gray-400 group-hover:text-[#105091] transition-colors duration-200 opacity-0 group-hover:opacity-100" />
+const FooterSection = ({ section }: { section: FooterSectionType }) => {
+  const IconComponent = section.icon;
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center space-x-2">
+        <div className="w-8 h-8 bg-gradient-to-br from-white/20 to-white/10 rounded-lg flex items-center justify-center">
+          <IconComponent className="w-4 h-4 text-white" />
+        </div>
+        <h3 className="font-display font-bold text-white">{section.title}</h3>
+      </div>
+      <ul className="space-y-3">
+        {section.links.map((link) => (
+          <li key={link.name}>
+            {link.external ? (
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-start space-x-2 text-blue-100 hover:text-white transition-all duration-200"
+              >
+                <span className="text-xs group-hover:translate-x-1 transition-transform duration-200 inline-block mt-1">
+                  <FaExternalLinkAlt className="w-3 h-3" />
+                </span>
+                <div>
+                  <div className="font-medium group-hover:text-white transition-colors duration-200">
+                    {link.name}
+                  </div>
+                  {link.description && (
+                    <div className="text-xs text-blue-200/70 group-hover:text-blue-100/70 transition-colors duration-200">
+                      {link.description}
+                    </div>
+                  )}
+                </div>
+              </a>
+            ) : (
+              <Link
+                to={link.href}
+                className="group flex items-start space-x-2 text-blue-100 hover:text-white transition-all duration-200"
+              >
+                <span className="text-xs group-hover:translate-x-1 transition-transform duration-200 inline-block mt-1">
+                  <FaArrowRight className="w-3 h-3" />
+                </span>
+                <div>
+                  <div className="font-medium group-hover:text-white transition-colors duration-200">
+                    {link.name}
+                  </div>
+                  {link.description && (
+                    <div className="text-xs text-blue-200/70 group-hover:text-blue-100/70 transition-colors duration-200">
+                      {link.description}
+                    </div>
+                  )}
+                </div>
+              </Link>
             )}
-          </a>
-        </li>
-      ))}
-    </ul>
-  </div>
-);
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 export default Footer;

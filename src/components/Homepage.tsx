@@ -17,6 +17,10 @@ import {
   FaProjectDiagram,
   FaTrophy,
   FaUniversity,
+  FaRocket,
+  FaLightbulb,
+  FaGlobe,
+  FaAward,
 } from "react-icons/fa";
 import { useState, useEffect } from "react";
 
@@ -35,11 +39,72 @@ interface NewsItem {
   tags?: string[];
 }
 
+// Types for Statistics Data
+interface StatisticsData {
+  metadata: {
+    last_updated: string;
+    data_source: string;
+    description: string;
+  };
+  yearly_data: {
+    year: number;
+    penelitian_blu: number;
+    pengabdian_blu: number;
+    paten: number;
+    haki: number;
+  }[];
+  total_summary: {
+    total_penelitian_blu: number;
+    total_pengabdian_blu: number;
+    total_paten: number;
+    total_haki: number;
+    growth_penelitian: number;
+    growth_pengabdian: number;
+    growth_paten: number;
+    growth_haki: number;
+  };
+  quarterly_data: {
+    quarter: string;
+    penelitian_blu: number;
+    pengabdian_blu: number;
+  }[];
+}
+
 const Homepage = () => {
   // State for news data
   const [newsData, setNewsData] = useState<NewsItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // State for statistics data
+  const [statsData, setStatsData] = useState<StatisticsData | null>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [statsError, setStatsError] = useState<string | null>(null);
+
+  // Fetch statistics data from JSON
+  useEffect(() => {
+    const fetchStatistics = async () => {
+      try {
+        setStatsLoading(true);
+        // Fetch from local JSON file
+        const response = await fetch("/data/statistics.json");
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch statistics data");
+        }
+
+        const data = await response.json();
+        setStatsData(data);
+      } catch (err) {
+        console.error("Error fetching statistics:", err);
+        setStatsError("Failed to load statistics data.");
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+
+    fetchStatistics();
+  }, []);
 
   // Fetch news from API
   useEffect(() => {
@@ -47,92 +112,98 @@ const Homepage = () => {
       try {
         setIsLoading(true);
         // Replace with your actual API endpoint
-        const response = await fetch('/api/news/latest?limit=6'); // Laravel API endpoint
+        const response = await fetch("/api/news/latest?limit=6"); // Laravel API endpoint
 
         if (!response.ok) {
-          throw new Error('Failed to fetch news');
+          throw new Error("Failed to fetch news");
         }
 
         const data = await response.json();
         setNewsData(data.data || []); // Adjust based on your API response structure
       } catch (err) {
-        console.error('Error fetching news:', err);
-        setError('Failed to load news. Using fallback data.');
+        console.error("Error fetching news:", err);
+        setError("Failed to load news. Using fallback data.");
 
         // Fallback mock data for development
         setNewsData([
           {
             id: 1,
             title: "Pengumuman Hibah Penelitian 2024",
-            excerpt: "LPPM Universitas Lampung membuka pendaftaran hibah penelitian untuk tahun akademik 2024/2025.",
+            excerpt:
+              "LPPM Universitas Lampung membuka pendaftaran hibah penelitian untuk tahun akademik 2024/2025.",
             content: "",
             category: "Pengumuman",
             author: "Admin LPPM",
             published_at: "2024-11-15T10:00:00Z",
             slug: "pengumuman-hibah-penelitian-2024",
             read_time: 5,
-            tags: ["Penelitian", "Hibah", "2024"]
+            tags: ["Penelitian", "Hibah", "2024"],
           },
           {
             id: 2,
             title: "Workshop Penulisan Proposal Pengabdian",
-            excerpt: "Ikuti workshop intensif penulisan proposal pengabdian kepada masyarakat yang akan diselenggarakan bulan depan.",
+            excerpt:
+              "Ikuti workshop intensif penulisan proposal pengabdian kepada masyarakat yang akan diselenggarakan bulan depan.",
             content: "",
             category: "Workshop",
             author: "Tim Pengabdian",
             published_at: "2024-11-14T14:30:00Z",
             slug: "workshop-penulisan-proposal-pengabdian",
             read_time: 3,
-            tags: ["Workshop", "Pengabdian", "Proposal"]
+            tags: ["Workshop", "Pengabdian", "Proposal"],
           },
           {
             id: 3,
             title: "Seminar Nasional Hasil Penelitian",
-            excerpt: "Pendaftaran seminar nasional hasil penelitian telah dibuka. Segera daftarkan penelitian terbaik Anda.",
+            excerpt:
+              "Pendaftaran seminar nasional hasil penelitian telah dibuka. Segera daftarkan penelitian terbaik Anda.",
             content: "",
             category: "Seminar",
             author: "Panitia Seminar",
             published_at: "2024-11-13T09:15:00Z",
             slug: "seminar-nasional-hasil-penelitian",
             read_time: 4,
-            tags: ["Seminar", "Penelitian", "Nasional"]
+            tags: ["Seminar", "Penelitian", "Nasional"],
           },
           {
             id: 4,
             title: "Kerjasama Internasional dengan University of Tokyo",
-            excerpt: "Universitas Lampung menjalin kerjasama penelitian dengan University of Tokyo untuk riset terbarukan.",
+            excerpt:
+              "Universitas Lampung menjalin kerjasama penelitian dengan University of Tokyo untuk riset terbarukan.",
             content: "",
             category: "Kerjasama",
             author: "Tim Kerjasama",
             published_at: "2024-11-12T16:45:00Z",
             slug: "kerjasama-internasional-university-tokyo",
             read_time: 6,
-            tags: ["Kerjasama", "Internasional", "Tokyo"]
+            tags: ["Kerjasama", "Internasional", "Tokyo"],
           },
           {
             id: 5,
             title: "Publikasi Scopus Q1 Dosen Unila",
-            excerpt: "Pencapaian gemilang dosen Unila dengan publikasi internasional di jurnal Q1 Scopus.",
+            excerpt:
+              "Pencapaian gemilang dosen Unila dengan publikasi internasional di jurnal Q1 Scopus.",
             content: "",
             category: "Prestasi",
             author: "Admin LPPM",
             published_at: "2024-11-11T11:20:00Z",
             slug: "publikasi-scopus-q1-dosen-unila",
             read_time: 4,
-            tags: ["Publikasi", "Scopus", "Prestasi"]
+            tags: ["Publikasi", "Scopus", "Prestasi"],
           },
           {
             id: 6,
             title: "Call for Paper Jurnal LPPM",
-            excerpt: "Jurnal LPPM Universitas Lampung membuka call for paper untuk edisi terbaru tahun 2024.",
+            excerpt:
+              "Jurnal LPPM Universitas Lampung membuka call for paper untuk edisi terbaru tahun 2024.",
             content: "",
             category: "Jurnal",
             author: "Editor Jurnal",
             published_at: "2024-11-10T13:00:00Z",
             slug: "call-for-paper-jurnal-lppm",
             read_time: 3,
-            tags: ["Jurnal", "Call for Paper", "Publikasi"]
-          }
+            tags: ["Jurnal", "Call for Paper", "Publikasi"],
+          },
         ]);
       } finally {
         setIsLoading(false);
@@ -145,10 +216,10 @@ const Homepage = () => {
   // Format date utility
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('id-ID', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
+    return date.toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
     });
   };
 
@@ -156,66 +227,220 @@ const Homepage = () => {
   const getReadingTime = (content: string, readTime?: number) => {
     if (readTime) return readTime;
     const wordsPerMinute = 200;
-    const words = content.split(' ').length;
+    const words = content.split(" ").length;
     return Math.ceil(words / wordsPerMinute);
   };
 
   // Category colors
   const getCategoryColor = (category: string) => {
     const colors: { [key: string]: string } = {
-      'Pengumuman': 'from-blue-500 to-blue-600',
-      'Workshop': 'from-purple-500 to-purple-600',
-      'Seminar': 'from-green-500 to-green-600',
-      'Kerjasama': 'from-orange-500 to-orange-600',
-      'Prestasi': 'from-yellow-500 to-yellow-600',
-      'Jurnal': 'from-red-500 to-red-600',
+      Pengumuman: "from-blue-500 to-blue-600",
+      Workshop: "from-purple-500 to-purple-600",
+      Seminar: "from-green-500 to-green-600",
+      Kerjasama: "from-orange-500 to-orange-600",
+      Prestasi: "from-yellow-500 to-yellow-600",
+      Jurnal: "from-red-500 to-red-600",
     };
-    return colors[category] || 'from-gray-500 to-gray-600';
+    return colors[category] || "from-gray-500 to-gray-600";
   };
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-[#105091] to-[#0a3b6d] text-white">
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 py-24 lg:py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h1 className="text-4xl lg:text-6xl font-bold mb-6 leading-tight">
-                LPPM Universitas Lampung
-              </h1>
-              <p className="text-xl lg:text-2xl mb-8 text-blue-100 leading-relaxed">
-                Lembaga Penelitian dan Pengabdian kepada Masyarakat
-              </p>
-              <p className="text-lg mb-8 text-blue-50 leading-relaxed">
-                Mendukung pengembangan penelitian dan pengabdian masyarakat yang
-                inovatif serta berkelanjutan untuk kemajuan bangsa.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  to="/penelitian"
-                  className="bg-white text-[#105091] px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
-                >
-                  Penelitian
-                </Link>
-                <Link
-                  to="/pengabdian"
-                  className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-[#105091] transition-all duration-300 transform hover:scale-105"
-                >
-                  Pengabdian
-                </Link>
+      {/* Enhanced Hero Section - Modern UI/UX with Hero Image */}
+      <section className="relative h-screen bg-gradient-to-br from-[#105091] via-blue-900 to-indigo-900 text-white overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full filter blur-3xl animate-pulse"></div>
+          <div
+            className="absolute top-1/2 right-0 w-96 h-96 bg-indigo-500/10 rounded-full filter blur-3xl animate-bounce"
+            style={{ animationDelay: "2s" }}
+          ></div>
+          <div
+            className="absolute bottom-0 left-1/3 w-96 h-96 bg-purple-500/10 rounded-full filter blur-3xl animate-pulse"
+            style={{ animationDelay: "4s" }}
+          ></div>
+
+          {/* Grid Pattern */}
+          <div className="absolute inset-0 opacity-5">
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+              }}
+            ></div>
+          </div>
+        </div>
+
+        {/* Floating Icons */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div
+            className="absolute top-20 left-10 text-blue-300/20 animate-bounce"
+            style={{ animationDelay: "0s", animationDuration: "6s" }}
+          >
+            <FaRocket className="w-8 h-8" />
+          </div>
+          <div
+            className="absolute top-40 right-20 text-indigo-300/20 animate-bounce"
+            style={{ animationDelay: "2s", animationDuration: "6s" }}
+          >
+            <FaLightbulb className="w-6 h-6" />
+          </div>
+          <div
+            className="absolute bottom-40 left-20 text-purple-300/20 animate-bounce"
+            style={{ animationDelay: "4s", animationDuration: "6s" }}
+          >
+            <FaGlobe className="w-10 h-10" />
+          </div>
+          <div
+            className="absolute bottom-20 right-1/3 text-blue-300/20 animate-bounce"
+            style={{ animationDelay: "1s", animationDuration: "6s" }}
+          >
+            <FaAward className="w-8 h-8" />
+          </div>
+        </div>
+
+        <div className="relative h-screen max-w-screen-2xl mx-auto px-4 sm:px-8 flex items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center w-full">
+            {/* Left Content */}
+            <div className="space-y-8">
+              {/* Logo/Icon */}
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-sm rounded-3xl border border-white/20 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-2xl"></div>
+              </div>
+
+              {/* Main Title */}
+              <div className="space-y-4">
+                <h1 className="font-display text-4xl lg:text-6xl font-bold leading-tight">
+                  <span className="bg-gradient-to-r from-white via-blue-100 to-indigo-100 bg-clip-text text-transparent">
+                    LPPM
+                  </span>
+                  <br />
+                  <span className="bg-gradient-to-r from-blue-100 to-white bg-clip-text text-transparent">
+                    Universitas Lampung
+                  </span>
+                </h1>
+              </div>
+
+              {/* Subtitle */}
+              <div className="space-y-2">
+                <p className="font-display text-xl lg:text-2xl font-light text-blue-100">
+                  Lembaga Penelitian dan Pengabdian kepada Masyarakat
+                </p>
+              </div>
+
+              {/* Description */}
+              <div className="space-y-4">
+                <p className="font-body text-base lg:text-lg text-blue-50/90 leading-relaxed max-w-2xl">
+                  Mendukung pengembangan penelitian dan pengabdian masyarakat
+                  yang inovatif serta berkelanjutan untuk kemajuan bangsa
+                  melalui riset berkualitas dan pemberdayaan komunitas.
+                </p>
+              </div>
+
+              {/* Key Features */}
+              <div className="space-y-4 pt-4">
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { icon: FaRocket, text: "Inovasi Riset", delay: 0 },
+                    {
+                      icon: FaHandsHelping,
+                      text: "Pengabdian Masyarakat",
+                      delay: 100,
+                    },
+                    { icon: FaGlobe, text: "Kerjasama Global", delay: 200 },
+                    { icon: FaAward, text: "Prestasi Unggul", delay: 300 },
+                  ].map((feature, index) => {
+                    const IconComponent = feature.icon;
+                    return (
+                      <div
+                        key={index}
+                        className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm px-3 py-2 rounded-full border border-white/20"
+                        style={{
+                          animationDelay: `${feature.delay}ms`,
+                          animation: "fadeInUp 0.6s ease-out forwards",
+                        }}
+                      >
+                        <IconComponent className="w-4 h-4 text-blue-200" />
+                        <span className="text-xs font-medium text-white/90">
+                          {feature.text}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
+
+            {/* Right Content - Hero Image */}
             <div className="relative">
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 transform hover:scale-105 transition-transform duration-300">
-                <img
-                  src="/hero-image.jpg"
-                  alt="LPPM Unila Activities"
-                  className="rounded-lg w-full h-96 object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src =
-                      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400' viewBox='0 0 800 400'%3E%3Crect fill='%23f0f9ff' width='800' height='400'/%3E%3Ctext fill='%23105091' font-family='Arial' font-size='24' text-anchor='middle' x='400' y='200'%3ELPPM Unila Hero Image%3C/text%3E%3C/svg%3E";
-                  }}
-                />
+              {/* Main Visual Card with Hero Image */}
+              <div className="relative group">
+                {/* Glow Effect */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-3xl blur-2xl group-hover:blur-3xl transition-all duration-500 transform group-hover:scale-105"></div>
+
+                {/* Glass Card Frame */}
+                <div className="relative bg-white/10 backdrop-blur-md rounded-3xl p-2 border border-white/20 transform transition-all duration-500 group-hover:scale-105 group-hover:-translate-y-2">
+                  <div className="relative overflow-hidden rounded-2xl">
+                    {/* Hero Image */}
+                    <img
+                      src="/hero-image.jpg"
+                      alt="LPPM Universitas Lampung"
+                      className="w-full h-80 lg:h-96 object-cover transition-transform duration-700 group-hover:scale-110"
+                      onError={(e) => {
+                        // Fallback to gradient background if image fails
+                        e.currentTarget.style.display = 'none';
+                        const parent = e.currentTarget.parentElement;
+                        if (parent) {
+                          parent.innerHTML = `
+                            <div class="h-80 lg:h-96 bg-gradient-to-br from-blue-600/20 to-indigo-600/20 flex items-center justify-center">
+                              <div class="text-center space-y-4">
+                                <div class="inline-flex items-center justify-center w-24 h-24 bg-white/20 backdrop-blur-sm rounded-3xl border border-white/30">
+                                  <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                                  </svg>
+                                </div>
+                                <div class="space-y-2">
+                                  <h3 class="font-display text-2xl font-bold text-white">
+                                    Menuju Inovasi
+                                  </h3>
+                                  <p class="text-blue-100 max-w-xs mx-auto px-4">
+                                    Wujudkan riset berkualitas dan pengabdian berdampak
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          `;
+                        }
+                      }}
+                    />
+
+                    {/* Overlay Gradient for better text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none"></div>
+
+                    {/* Floating Badge */}
+                    <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-xs font-bold px-3 py-2 rounded-full shadow-lg animate-pulse backdrop-blur-sm border border-white/20">
+                      2025
+                    </div>
+                  </div>
+
+                  {/* Stats Preview */}
+                  <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-white/10">
+                    {[
+                      { value: "825+", label: "Penelitian" },
+                      { value: "342+", label: "Pengabdian" },
+                      { value: "91", label: "HKI/Paten" },
+                    ].map((stat, index) => (
+                      <div key={index} className="text-center">
+                        <div className="text-lg font-bold text-white">
+                          {stat.value}
+                        </div>
+                        <div className="text-xs text-blue-200">
+                          {stat.label}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -226,16 +451,29 @@ const Homepage = () => {
       <section className="relative bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30 py-20 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23105091' fill-opacity='0.3'%3E%3Cpath d='M20 20c0 5.5-4.5 10-10 10s-10-4.5-10-10 4.5-10 10-10 10 4.5 10 10zm10 0c0 5.5-4.5 10-10 10s-10-4.5-10-10 4.5-10 10-10 10 4.5 10 10z'/%3E%3C/g%3E%3C/svg%3E")`,
-          }}></div>
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23105091' fill-opacity='0.3'%3E%3Cpath d='M20 20c0 5.5-4.5 10-10 10s-10-4.5-10-10 4.5-10 10-10 10 4.5 10 10zm10 0c0 5.5-4.5 10-10 10s-10-4.5-10-10 4.5-10 10-10 10 4.5 10 10z'/%3E%3C/g%3E%3C/svg%3E")`,
+            }}
+          ></div>
         </div>
 
         <div className="relative max-w-screen-2xl mx-auto px-4 sm:px-8">
           <div className="text-center mb-16">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#105091] to-blue-600 rounded-2xl mb-6">
-              <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+              <svg
+                className="w-8 h-8 text-white"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+                />
               </svg>
             </div>
             <h2 className="font-display text-4xl lg:text-5xl font-bold bg-gradient-to-r from-[#105091] to-blue-600 bg-clip-text text-transparent mb-6">
@@ -257,7 +495,7 @@ const Homepage = () => {
                 description: "Kelola dan ajukan proposal penelitian",
                 link: "/penelitian",
                 gradient: "from-blue-500/10 to-blue-600/10",
-                borderColor: "border-blue-200"
+                borderColor: "border-blue-200",
               },
               {
                 title: "Pengabdian",
@@ -266,7 +504,7 @@ const Homepage = () => {
                 description: "Program pengabdian kepada masyarakat",
                 link: "/pengabdian",
                 gradient: "from-emerald-500/10 to-emerald-600/10",
-                borderColor: "border-emerald-200"
+                borderColor: "border-emerald-200",
               },
               {
                 title: "Repository",
@@ -276,7 +514,7 @@ const Homepage = () => {
                 link: "https://repository.lppm.unila.ac.id",
                 external: true,
                 gradient: "from-purple-500/10 to-purple-600/10",
-                borderColor: "border-purple-200"
+                borderColor: "border-purple-200",
               },
               {
                 title: "Journal",
@@ -286,7 +524,7 @@ const Homepage = () => {
                 link: "https://journal.lppm.unila.ac.id",
                 external: true,
                 gradient: "from-orange-500/10 to-orange-600/10",
-                borderColor: "border-orange-200"
+                borderColor: "border-orange-200",
               },
               {
                 title: "PPID",
@@ -296,7 +534,7 @@ const Homepage = () => {
                 link: "https://ppid.lppm.unila.ac.id",
                 external: true,
                 gradient: "from-red-500/10 to-red-600/10",
-                borderColor: "border-red-200"
+                borderColor: "border-red-200",
               },
             ].map((portal, index) => (
               <div
@@ -312,7 +550,9 @@ const Homepage = () => {
                 <div className="relative p-8 text-center">
                   {/* Icon Container */}
                   <div className="relative mb-6">
-                    <div className={`mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br ${portal.color} p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3`}>
+                    <div
+                      className={`mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br ${portal.color} p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3`}
+                    >
                       <div className="w-full h-full bg-white rounded-xl flex items-center justify-center">
                         <img
                           src={portal.icon}
@@ -321,23 +561,29 @@ const Homepage = () => {
                           onError={(e) => {
                             // Fallback to emoji if image fails
                             const fallbackEmojis = {
-                              "Penelitian": "🔬",
-                              "Pengabdian": "🤝",
-                              "Repository": "📚",
-                              "Journal": "📖",
-                              "PPID": "📋"
+                              Penelitian: "🔬",
+                              Pengabdian: "🤝",
+                              Repository: "📚",
+                              Journal: "📖",
+                              PPID: "📋",
                             };
-                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.style.display = "none";
                             const parent = e.currentTarget.parentElement;
                             if (parent) {
-                              parent.innerHTML = `<span class="text-2xl">${fallbackEmojis[portal.title as keyof typeof fallbackEmojis] || '📁'}</span>`;
+                              parent.innerHTML = `<span class="text-2xl">${
+                                fallbackEmojis[
+                                  portal.title as keyof typeof fallbackEmojis
+                                ] || "📁"
+                              }</span>`;
                             }
                           }}
                         />
                       </div>
                     </div>
                     {/* Glow Effect */}
-                    <div className={`absolute inset-0 w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br ${portal.color} blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500`}></div>
+                    <div
+                      className={`absolute inset-0 w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br ${portal.color} blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500`}
+                    ></div>
                   </div>
 
                   {/* Content */}
@@ -357,8 +603,18 @@ const Homepage = () => {
                       className={`inline-flex items-center justify-center w-full py-3 px-4 rounded-xl bg-gradient-to-r ${portal.color} text-white font-semibold text-sm hover:shadow-lg transform transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-1`}
                     >
                       Akses Portal
-                      <svg className="w-4 h-4 ml-2 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      <svg
+                        className="w-4 h-4 ml-2 transform transition-transform duration-300 group-hover:translate-x-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                        />
                       </svg>
                     </a>
                   ) : (
@@ -367,8 +623,18 @@ const Homepage = () => {
                       className={`inline-flex items-center justify-center w-full py-3 px-4 rounded-xl bg-gradient-to-r ${portal.color} text-white font-semibold text-sm hover:shadow-lg transform transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-1`}
                     >
                       Akses Portal
-                      <svg className="w-4 h-4 ml-2 transform transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      <svg
+                        className="w-4 h-4 ml-2 transform transition-transform duration-300 group-hover:translate-x-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 7l5 5m0 0l-5 5m5-5H6"
+                        />
                       </svg>
                     </Link>
                   )}
@@ -384,15 +650,25 @@ const Homepage = () => {
               className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-[#105091] via-blue-600 to-blue-700 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:scale-105 hover:-translate-y-1 backdrop-blur-sm border border-white/20"
             >
               <span>Lihat Semua Layanan</span>
-              <svg className="w-6 h-6 ml-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              <svg
+                className="w-6 h-6 ml-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                />
               </svg>
             </Link>
           </div>
         </div>
       </section>
 
-        {/* Enhanced News Section - API Ready */}
+      {/* Enhanced News Section - API Ready */}
       <section className="relative bg-gradient-to-br from-gray-50 to-slate-100 py-20 overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 opacity-5">
@@ -410,8 +686,8 @@ const Homepage = () => {
               Berita & Pengumuman
             </h2>
             <p className="font-body text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Informasi terkini mengenai kegiatan penelitian dan pengabdian masyarakat
-              serta pengumuman penting dari LPPM Universitas Lampung.
+              Informasi terkini mengenai kegiatan penelitian dan pengabdian
+              masyarakat serta pengumuman penting dari LPPM Universitas Lampung.
             </p>
           </div>
 
@@ -419,7 +695,10 @@ const Homepage = () => {
           {isLoading && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[1, 2, 3, 4, 5, 6].map((item) => (
-                <div key={item} className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse">
+                <div
+                  key={item}
+                  className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse"
+                >
                   <div className="h-48 bg-gradient-to-br from-gray-200 to-gray-300"></div>
                   <div className="p-6">
                     <div className="h-4 bg-gray-200 rounded mb-3 w-1/3"></div>
@@ -459,18 +738,28 @@ const Homepage = () => {
                         alt={news.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         onError={(e) => {
-                          e.currentTarget.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect fill='%23105091' width='400' height='200'/%3E%3Ctext fill='white' font-family='Arial' font-size='18' text-anchor='middle' x='200' y='100'%3E${encodeURIComponent(news.title)}%3C/text%3E%3C/svg%3E`;
+                          e.currentTarget.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect fill='%23105091' width='400' height='200'/%3E%3Ctext fill='white' font-family='Arial' font-size='18' text-anchor='middle' x='200' y='100'%3E${encodeURIComponent(
+                            news.title
+                          )}%3C/text%3E%3C/svg%3E`;
                         }}
                       />
                     ) : (
-                      <div className={`h-full bg-gradient-to-br ${getCategoryColor(news.category)} flex items-center justify-center`}>
+                      <div
+                        className={`h-full bg-gradient-to-br ${getCategoryColor(
+                          news.category
+                        )} flex items-center justify-center`}
+                      >
                         <FaNewspaper className="w-16 h-16 text-white opacity-50" />
                       </div>
                     )}
 
                     {/* Category Badge */}
                     <div className="absolute top-4 left-4">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${getCategoryColor(news.category)} shadow-lg`}>
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${getCategoryColor(
+                          news.category
+                        )} shadow-lg`}
+                      >
                         <FaTag className="w-3 h-3 mr-1" />
                         {news.category}
                       </span>
@@ -543,8 +832,12 @@ const Homepage = () => {
               <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6">
                 <FaNewspaper className="w-10 h-10 text-gray-400" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">Belum Ada Berita</h3>
-              <p className="text-gray-500">Belum ada berita atau pengumuman yang tersedia saat ini.</p>
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                Belum Ada Berita
+              </h3>
+              <p className="text-gray-500">
+                Belum ada berita atau pengumuman yang tersedia saat ini.
+              </p>
             </div>
           )}
 
@@ -561,20 +854,32 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Infografis Statistik Data Section */}
+      {/* Enhanced Statistics Section - Charts with JSON Data */}
       <section className="relative bg-gradient-to-br from-[#105091] via-blue-900 to-indigo-900 py-24 overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }}></div>
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }}
+          ></div>
         </div>
 
         {/* Floating Elements Animation */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full animate-bounce" style={{ animationDelay: '0s', animationDuration: '3s' }}></div>
-          <div className="absolute top-40 right-20 w-24 h-24 bg-white/5 rounded-full animate-pulse" style={{ animationDelay: '1s', animationDuration: '2s' }}></div>
-          <div className="absolute bottom-20 left-20 w-40 h-40 bg-white/5 rounded-full animate-bounce" style={{ animationDelay: '2s', animationDuration: '4s' }}></div>
+          <div
+            className="absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full animate-bounce"
+            style={{ animationDelay: "0s", animationDuration: "3s" }}
+          ></div>
+          <div
+            className="absolute top-40 right-20 w-24 h-24 bg-white/5 rounded-full animate-pulse"
+            style={{ animationDelay: "1s", animationDuration: "2s" }}
+          ></div>
+          <div
+            className="absolute bottom-20 left-20 w-40 h-40 bg-white/5 rounded-full animate-bounce"
+            style={{ animationDelay: "2s", animationDuration: "4s" }}
+          ></div>
         </div>
 
         <div className="relative max-w-screen-2xl mx-auto px-4 sm:px-8">
@@ -587,194 +892,476 @@ const Homepage = () => {
               Infografis Statistik
             </h2>
             <p className="font-body text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
-              Data dan statistik terkini kegiatan penelitian, pengabdian masyarakat,
-              serta capaian LPPM Universitas Lampung.
+              Data dan statistik terkini kegiatan penelitian BLU, pengabdian
+              BLU, serta paten dan HKI LPPM Universitas Lampung dalam 5 tahun
+              terakhir.
             </p>
+            {statsData && (
+              <p className="text-blue-200 text-sm mt-4">
+                Terakhir diperbarui:{" "}
+                {new Date(statsData.metadata.last_updated).toLocaleDateString(
+                  "id-ID",
+                  {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }
+                )}
+              </p>
+            )}
           </div>
 
-          {/* Main Statistics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
-            {[
-              {
-                title: "Penelitian",
-                value: "1,247",
-                subtitle: "Total Penelitian",
-                icon: FaProjectDiagram,
-                color: "from-emerald-400 to-emerald-600",
-                trend: "+12.5%",
-                description: "dari tahun lalu"
-              },
-              {
-                title: "Pengabdian",
-                value: "892",
-                subtitle: "Program Pengabdian",
-                icon: FaHandsHelping,
-                color: "from-blue-400 to-blue-600",
-                trend: "+18.3%",
-                description: "dari tahun lalu"
-              },
-              {
-                title: "Peneliti",
-                value: "3,456",
-                subtitle: "Peneliti Aktif",
-                icon: FaUsers,
-                color: "from-purple-400 to-purple-600",
-                trend: "+8.7%",
-                description: "dari tahun lalu"
-              },
-              {
-                title: "Publikasi",
-                value: "567",
-                subtitle: "Publikasi Ilmiah",
-                icon: FaTrophy,
-                color: "from-orange-400 to-orange-600",
-                trend: "+24.1%",
-                description: "dari tahun lalu"
-              }
-            ].map((stat, index) => {
-              const IconComponent = stat.icon;
-              return (
-                <div
-                  key={index}
-                  className="group relative bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 hover:bg-white/15 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl"
-                >
-                  {/* Icon */}
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-white/20 to-white/10 rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300">
-                    <IconComponent className="w-8 h-8 text-white" />
-                  </div>
-
-                  {/* Value */}
-                  <div className="text-5xl font-bold text-white mb-2 font-display">
-                    {stat.value}
-                  </div>
-
-                  {/* Subtitle */}
-                  <div className="text-blue-100 font-medium mb-4">
-                    {stat.subtitle}
-                  </div>
-
-                  {/* Title */}
-                  <div className="text-white text-lg font-semibold mb-4">
-                    {stat.title}
-                  </div>
-
-                  {/* Trend */}
-                  <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center text-emerald-300 font-semibold">
-                      <FaChartLine className="w-4 h-4 mr-1" />
-                      {stat.trend}
-                    </span>
-                    <span className="text-blue-200 text-sm">
-                      {stat.description}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Additional Statistics Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Research Areas Chart */}
-            <div className="bg-white/10 backdrop-blur-md rounded-3xl p-10 border border-white/20">
-              <h3 className="font-display text-2xl font-bold text-white mb-8 flex items-center">
-                <FaUniversity className="w-8 h-8 mr-3" />
-                Bidang Penelitian
-              </h3>
-
-              <div className="space-y-6">
-                {[
-                  { area: "Sains & Teknologi", percentage: 85, color: "from-emerald-400 to-emerald-600" },
-                  { area: "Sosial & Humaniora", percentage: 72, color: "from-blue-400 to-blue-600" },
-                  { area: "Kesehatan", percentage: 68, color: "from-purple-400 to-purple-600" },
-                  { area: "Pertanian", percentage: 61, color: "from-orange-400 to-orange-600" },
-                  { area: "Ekonomi & Bisnis", percentage: 54, color: "from-pink-400 to-pink-600" }
-                ].map((item, index) => (
-                  <div key={index} className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-white font-medium">{item.area}</span>
-                      <span className="text-blue-200 font-semibold">{item.percentage}%</span>
-                    </div>
-                    <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden">
-                      <div
-                        className={`h-full bg-gradient-to-r ${item.color} rounded-full transition-all duration-1000 ease-out`}
-                        style={{
-                          width: `${item.percentage}%`,
-                          animationDelay: `${index * 200}ms`,
-                          animation: 'slideInWidth 1s ease-out forwards'
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                ))}
+          {/* Loading State */}
+          {statsLoading && (
+            <div className="text-center py-20">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 mb-6">
+                <FaChartBar className="w-10 h-10 text-white animate-pulse" />
               </div>
+              <p className="text-white text-xl">Memuat data statistik...</p>
             </div>
+          )}
 
-            {/* Achievement Cards */}
-            <div className="space-y-6">
-              <h3 className="font-display text-2xl font-bold text-white mb-8 flex items-center">
-                <FaTrophy className="w-8 h-8 mr-3" />
-                Prestasi & Penghargaan
-              </h3>
+          {/* Error State */}
+          {statsError && !statsLoading && (
+            <div className="text-center py-20">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-red-500/20 backdrop-blur-sm rounded-2xl border border-red-500/30 mb-6">
+                <FaChartBar className="w-10 h-10 text-red-400" />
+              </div>
+              <p className="text-white text-xl mb-4">
+                Gagal memuat data statistik
+              </p>
+              <p className="text-blue-200">{statsError}</p>
+            </div>
+          )}
 
-              {[
-                {
-                  title: "Universitas Terbaik",
-                  description: "Peringkat 5 Nasional dalam Publikasi Ilmiah 2024",
-                  icon: "🏆",
-                  color: "from-yellow-400 to-yellow-600"
-                },
-                {
-                  title: "Inovasi Terbaik",
-                  description: "12 Paten berhasil didaftarkan tahun 2024",
-                  icon: "💡",
-                  color: "from-purple-400 to-purple-600"
-                },
-                {
-                  title: "Kerjasama Internasional",
-                  description: "25+ Mitra Universitas dari 15 Negara",
-                  icon: "🌍",
-                  color: "from-blue-400 to-blue-600"
-                },
-                {
-                  title: "Pengabdian Berdampak",
-                  description: "50+ Program Kemitraan dengan Industri",
-                  icon: "🤝",
-                  color: "from-emerald-400 to-emerald-600"
-                }
-              ].map((achievement, index) => (
-                <div
-                  key={index}
-                  className="group bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 transform hover:scale-105 hover:translate-x-2"
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className={`inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br ${achievement.color} rounded-2xl shadow-lg`}>
-                      <span className="text-2xl">{achievement.icon}</span>
+          {/* Statistics Content */}
+          {!statsLoading && !statsError && statsData && (
+            <>
+              {/* Summary Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+                {[
+                  {
+                    title: "Total Penelitian BLU",
+                    value:
+                      statsData.total_summary.total_penelitian_blu.toLocaleString(
+                        "id-ID"
+                      ),
+                    subtitle: "5 Tahun Terakhir",
+                    icon: FaProjectDiagram,
+                    color: "from-emerald-400 to-emerald-600",
+                    trend: `+${statsData.total_summary.growth_penelitian.toFixed(
+                      1
+                    )}%`,
+                  },
+                  {
+                    title: "Total Pengabdian BLU",
+                    value:
+                      statsData.total_summary.total_pengabdian_blu.toLocaleString(
+                        "id-ID"
+                      ),
+                    subtitle: "5 Tahun Terakhir",
+                    icon: FaHandsHelping,
+                    color: "from-blue-400 to-blue-600",
+                    trend: `+${statsData.total_summary.growth_pengabdian.toFixed(
+                      1
+                    )}%`,
+                  },
+                  {
+                    title: "Total Paten",
+                    value:
+                      statsData.total_summary.total_paten.toLocaleString(
+                        "id-ID"
+                      ),
+                    subtitle: "5 Tahun Terakhir",
+                    icon: FaTrophy,
+                    color: "from-purple-400 to-purple-600",
+                    trend: `+${statsData.total_summary.growth_paten.toFixed(
+                      1
+                    )}%`,
+                  },
+                  {
+                    title: "Total HKI",
+                    value:
+                      statsData.total_summary.total_haki.toLocaleString(
+                        "id-ID"
+                      ),
+                    subtitle: "5 Tahun Terakhir",
+                    icon: FaAward,
+                    color: "from-orange-400 to-orange-600",
+                    trend: `+${statsData.total_summary.growth_haki.toFixed(
+                      1
+                    )}%`,
+                  },
+                ].map((stat, index) => {
+                  const IconComponent = stat.icon;
+                  return (
+                    <div
+                      key={index}
+                      className="group relative bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl"
+                    >
+                      {/* Icon */}
+                      <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-white/20 to-white/10 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <IconComponent className="w-7 h-7 text-white" />
+                      </div>
+
+                      {/* Value */}
+                      <div className="text-4xl font-bold text-white mb-1 font-display">
+                        {stat.value}
+                      </div>
+
+                      {/* Subtitle */}
+                      <div className="text-blue-100 text-sm font-medium mb-3">
+                        {stat.subtitle}
+                      </div>
+
+                      {/* Title */}
+                      <div className="text-white text-base font-semibold mb-3">
+                        {stat.title}
+                      </div>
+
+                      {/* Trend */}
+                      <div className="flex items-center justify-between">
+                        <span className="inline-flex items-center text-emerald-300 font-semibold text-sm">
+                          <FaChartLine className="w-3 h-3 mr-1" />
+                          {stat.trend}
+                        </span>
+                        <span className="text-blue-200 text-xs">growth</span>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <h4 className="text-white font-bold text-lg mb-1 group-hover:text-yellow-300 transition-colors duration-300">
-                        {achievement.title}
-                      </h4>
-                      <p className="text-blue-200 text-sm leading-relaxed">
-                        {achievement.description}
-                      </p>
+                  );
+                })}
+              </div>
+
+              {/* Enhanced Statistics Charts - Modern Data Visualization */}
+              <div className="space-y-12 mb-20">
+                {/* Combined Line Chart for Trends */}
+                <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+                  <div className="flex items-center justify-center mb-8">
+                    <div className="text-center">
+                      <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-emerald-400/20 via-blue-400/20 to-purple-400/20 rounded-2xl border border-white/20 mb-4">
+                        <FaChartLine className="w-10 h-10 text-white" />
+                      </div>
+                      <h3 className="font-display text-2xl font-bold text-white">
+                        Tren Kinerja 5 Tahun
+                      </h3>
+                      <p className="text-blue-200 text-sm mt-2">Perkembangan Penelitian, Pengabdian, dan HKI</p>
+                    </div>
+                  </div>
+
+                  <div className="relative h-80 mb-8">
+                    {/* Grid Background */}
+                    <div className="absolute inset-0 bg-white/5 rounded-lg">
+                      {[0, 20, 40, 60, 80, 100].map((line, index) => (
+                        <div
+                          key={index}
+                          className="absolute w-full border-t border-white/10"
+                          style={{ bottom: `${line}%` }}
+                        >
+                          <span className="absolute -left-12 -top-2 text-xs text-blue-200 font-medium">
+                            {Math.round((825 * (100 - line)) / 100)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Chart Container */}
+                    <div className="relative h-full flex items-end justify-around px-4">
+                      {statsData.yearly_data.map((yearData, index) => {
+                        const maxValue = Math.max(
+                          ...statsData.yearly_data.map(d => Math.max(d.penelitian_blu, d.pengabdian_blu))
+                        );
+                        const penelitianHeight = (yearData.penelitian_blu / maxValue) * 240; // 240px is max height
+                        const pengabdianHeight = (yearData.pengabdian_blu / maxValue) * 240;
+
+                        return (
+                          <div key={yearData.year} className="flex flex-col items-center flex-1 max-w-[80px]">
+                            {/* Year Label */}
+                            <div className="text-xs text-blue-200 font-semibold mb-3">
+                              {yearData.year}
+                            </div>
+
+                            {/* Bars Container */}
+                            <div className="relative h-56 w-full flex justify-center items-end gap-1">
+                              {/* Penelitian Bar */}
+                              <div
+                                className="w-6 bg-gradient-to-t from-emerald-600 via-emerald-500 to-emerald-400 rounded-t-lg transition-all duration-1000 ease-out hover:from-emerald-500 hover:to-emerald-300 group relative cursor-pointer shadow-lg"
+                                style={{
+                                  height: `${penelitianHeight}px`,
+                                  transform: 'translateY(20px)',
+                                  opacity: 0,
+                                  minHeight: "4px",
+                                  animation: `fadeInUp 0.8s ease-out ${index * 100}ms forwards`
+                                }}
+                              >
+                                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-emerald-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-10 shadow-lg">
+                                  {yearData.penelitian_blu}
+                                </div>
+                              </div>
+
+                              {/* Pengabdian Bar */}
+                              <div
+                                className="w-6 bg-gradient-to-t from-blue-600 via-blue-500 to-blue-400 rounded-t-lg transition-all duration-1000 ease-out hover:from-blue-500 hover:to-blue-300 group relative cursor-pointer shadow-lg"
+                                style={{
+                                  height: `${pengabdianHeight}px`,
+                                  transform: 'translateY(20px)',
+                                  opacity: 0,
+                                  minHeight: "4px",
+                                  animation: `fadeInUp 0.8s ease-out ${index * 100 + 50}ms forwards`
+                                }}
+                              >
+                                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-10 shadow-lg">
+                                  {yearData.pengabdian_blu}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Values Display */}
+                            <div className="flex gap-2 mt-2 text-xs">
+                              <div className="text-emerald-300 font-medium">{yearData.penelitian_blu}</div>
+                              <div className="text-blue-300 font-medium">{yearData.pengabdian_blu}</div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Legend */}
+                  <div className="flex justify-center gap-8 mt-8">
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 bg-gradient-to-t from-emerald-500 to-emerald-400 rounded-lg"></div>
+                      <span className="text-white font-medium">Penelitian BLU</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 bg-gradient-to-t from-blue-500 to-blue-400 rounded-lg"></div>
+                      <span className="text-white font-medium">Pengabdian BLU</span>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Bottom CTA */}
-          <div className="text-center mt-20">
-            <Link
-              to="/statistik"
-              className="inline-flex items-center px-10 py-5 bg-white text-[#105091] font-bold text-xl rounded-3xl shadow-2xl hover:bg-blue-50 transform transition-all duration-300 hover:scale-105 hover:-translate-y-2 backdrop-blur-sm border border-white/30"
-            >
-              <span>Lihat Statistik Lengkap</span>
-              <FaArrowRight className="w-6 h-6 ml-3" />
-            </Link>
-          </div>
+                {/* Three Key Metrics Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {/* Total Research Output */}
+                  <div className="bg-gradient-to-br from-emerald-500/20 via-emerald-500/10 to-transparent rounded-3xl p-8 border border-emerald-400/30 hover:border-emerald-400/50 transition-all duration-300 hover:scale-105">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <FaProjectDiagram className="w-8 h-8 text-white" />
+                      </div>
+                      <div className="text-3xl font-bold text-emerald-300">
+                        {statsData.total_summary.total_penelitian_blu.toLocaleString("id-ID")}
+                      </div>
+                    </div>
+                    <h4 className="font-display text-xl font-bold text-white mb-2">Total Penelitian</h4>
+                    <p className="text-emerald-100 text-sm mb-4">5 tahun terakhir</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-emerald-200 text-xs">Growth</span>
+                      <div className="flex items-center space-x-1">
+                        <FaChartLine className="w-3 h-3 text-emerald-300" />
+                        <span className="text-emerald-300 font-bold text-sm">
+                          +{statsData.total_summary.growth_penelitian.toFixed(1)}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Community Service */}
+                  <div className="bg-gradient-to-br from-blue-500/20 via-blue-500/10 to-transparent rounded-3xl p-8 border border-blue-400/30 hover:border-blue-400/50 transition-all duration-300 hover:scale-105">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <FaHandsHelping className="w-8 h-8 text-white" />
+                      </div>
+                      <div className="text-3xl font-bold text-blue-300">
+                        {statsData.total_summary.total_pengabdian_blu.toLocaleString("id-ID")}
+                      </div>
+                    </div>
+                    <h4 className="font-display text-xl font-bold text-white mb-2">Total Pengabdian</h4>
+                    <p className="text-blue-100 text-sm mb-4">5 tahun terakhir</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-blue-200 text-xs">Growth</span>
+                      <div className="flex items-center space-x-1">
+                        <FaChartLine className="w-3 h-3 text-blue-300" />
+                        <span className="text-blue-300 font-bold text-sm">
+                          +{statsData.total_summary.growth_pengabdian.toFixed(1)}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Intellectual Property */}
+                  <div className="bg-gradient-to-br from-purple-500/20 via-purple-500/10 to-transparent rounded-3xl p-8 border border-purple-400/30 hover:border-purple-400/50 transition-all duration-300 hover:scale-105">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <FaTrophy className="w-8 h-8 text-white" />
+                      </div>
+                      <div className="text-3xl font-bold text-purple-300">
+                        {statsData.total_summary.total_paten + statsData.total_summary.total_haki}
+                      </div>
+                    </div>
+                    <h4 className="font-display text-xl font-bold text-white mb-2">Portfolio HKI</h4>
+                    <p className="text-purple-100 text-sm mb-4">Total Paten & HKI</p>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="bg-white/10 rounded-lg p-2 text-center">
+                        <div className="font-bold text-purple-300">{statsData.total_summary.total_paten}</div>
+                        <div className="text-purple-200">Paten</div>
+                      </div>
+                      <div className="bg-white/10 rounded-lg p-2 text-center">
+                        <div className="font-bold text-purple-300">{statsData.total_summary.total_haki}</div>
+                        <div className="text-purple-200">HKI</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quarterly Performance */}
+                <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+                  <div className="text-center mb-8">
+                    <h3 className="font-display text-2xl font-bold text-white mb-2">
+                      Kinerja Kuartalan 2024
+                    </h3>
+                    <p className="text-blue-200 text-sm">Tren penelitian dan pengabdian per kuartal</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Quarterly Research */}
+                    <div>
+                      <h4 className="font-semibold text-emerald-300 mb-4 text-center">Penelitian BLU</h4>
+                      <div className="space-y-4">
+                        {statsData.quarterly_data.map((quarter, index) => {
+                          const maxResearch = Math.max(...statsData.quarterly_data.map(q => q.penelitian_blu));
+                          const widthPercentage = (quarter.penelitian_blu / maxResearch) * 100;
+
+                          return (
+                            <div key={quarter.quarter} className="space-y-2">
+                              <div className="flex justify-between items-center">
+                                <span className="text-sm text-blue-200 font-medium">{quarter.quarter}</span>
+                                <span className="text-sm text-white font-bold">{quarter.penelitian_blu}</span>
+                              </div>
+                              <div className="h-6 bg-white/10 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-1000 ease-out hover:from-emerald-400 hover:to-emerald-300"
+                                  style={{
+                                    width: `${widthPercentage}%`,
+                                    animationDelay: `${index * 100}ms`,
+                                    animation: "slideInWidth 1s ease-out forwards",
+                                    opacity: 0
+                                  }}
+                                ></div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Quarterly Service */}
+                    <div>
+                      <h4 className="font-semibold text-blue-300 mb-4 text-center">Pengabdian BLU</h4>
+                      <div className="space-y-4">
+                        {statsData.quarterly_data.map((quarter, index) => {
+                          const maxService = Math.max(...statsData.quarterly_data.map(q => q.pengabdian_blu));
+                          const widthPercentage = (quarter.pengabdian_blu / maxService) * 100;
+
+                          return (
+                            <div key={quarter.quarter} className="space-y-2">
+                              <div className="flex justify-between items-center">
+                                <span className="text-sm text-blue-200 font-medium">{quarter.quarter}</span>
+                                <span className="text-sm text-white font-bold">{quarter.pengabdian_blu}</span>
+                              </div>
+                              <div className="h-6 bg-white/10 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full transition-all duration-1000 ease-out hover:from-blue-400 hover:to-blue-300"
+                                  style={{
+                                    width: `${widthPercentage}%`,
+                                    animationDelay: `${index * 100 + 200}ms`,
+                                    animation: "slideInWidth 1s ease-out forwards",
+                                    opacity: 0
+                                  }}
+                                ></div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Summary Stats Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+                {/* Average per Year */}
+                <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 text-center">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-yellow-400/20 to-orange-400/20 rounded-2xl mb-4 border border-yellow-400/30">
+                    <FaChartLine className="w-8 h-8 text-yellow-300" />
+                  </div>
+                  <h3 className="font-display text-lg font-bold text-white mb-2">
+                    Rata-rata per Tahun
+                  </h3>
+                  <div className="space-y-2">
+                    <div className="text-2xl font-bold text-emerald-300">
+                      {Math.round(
+                        statsData.total_summary.total_penelitian_blu / 5
+                      )}
+                    </div>
+                    <div className="text-sm text-blue-100">Penelitian BLU</div>
+                    <div className="text-2xl font-bold text-blue-300">
+                      {Math.round(
+                        statsData.total_summary.total_pengabdian_blu / 5
+                      )}
+                    </div>
+                    <div className="text-sm text-blue-100">Pengabdian BLU</div>
+                  </div>
+                </div>
+
+                {/* Best Year */}
+                {(() => {
+                  const bestYear = statsData.yearly_data.reduce(
+                    (best, current) =>
+                      current.penelitian_blu + current.pengabdian_blu >
+                      best.penelitian_blu + best.pengabdian_blu
+                        ? current
+                        : best
+                  );
+                  return (
+                    <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 text-center">
+                      <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-400/20 to-green-400/20 rounded-2xl mb-4 border border-emerald-400/30">
+                        <FaTrophy className="w-8 h-8 text-emerald-300" />
+                      </div>
+                      <h3 className="font-display text-lg font-bold text-white mb-2">
+                        Tahun Terbaik
+                      </h3>
+                      <div className="text-3xl font-bold text-emerald-300 mb-2">
+                        {bestYear.year}
+                      </div>
+                      <div className="text-sm text-blue-100">
+                        Total{" "}
+                        {bestYear.penelitian_blu + bestYear.pengabdian_blu}{" "}
+                        Proyek
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Total HKI Portfolio */}
+                <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 text-center">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-2xl mb-4 border border-purple-400/30">
+                    <FaAward className="w-8 h-8 text-purple-300" />
+                  </div>
+                  <h3 className="font-display text-lg font-bold text-white mb-2">
+                    Portfolio HKI
+                  </h3>
+                  <div className="text-3xl font-bold text-purple-300 mb-2">
+                    {statsData.total_summary.total_paten +
+                      statsData.total_summary.total_haki}
+                  </div>
+                  <div className="text-sm text-blue-100">
+                    {statsData.total_summary.total_paten} Paten +{" "}
+                    {statsData.total_summary.total_haki} HKI
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </section>
     </div>

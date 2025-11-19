@@ -1,0 +1,76 @@
+{
+  "metadata": {
+    "last_updated": "2024-11-20",
+    "data_source": "LPPM Unila Database",
+    "description": "Statistik penelitian, pengabdian, dan HKI/Paten LPPM Universitas Lampung 5 tahun terakhir"
+  },
+  "yearly_data": [
+    {
+      "year": 2020,
+      "penelitian_blu": 342,
+      "pengabdian_blu": 156,
+      "paten": 8,
+      "haki": 23
+    },
+    {
+      "year": 2021,
+      "penelitian_blu": 418,
+      "pengabdian_blu": 189,
+      "paten": 12,
+      "haki": 31
+    },
+    {
+      "year": 2022,
+      "penelitian_blu": 523,
+      "pengabdian_blu": 234,
+      "paten": 15,
+      "haki": 42
+    },
+    {
+      "year": 2023,
+      "penelitian_blu": 687,
+      "pengabdian_blu": 289,
+      "paten": 18,
+      "haki": 56
+    },
+    {
+      "year": 2024,
+      "penelitian_blu": 825,
+      "pengabdian_blu": 342,
+      "paten": 24,
+      "haki": 67
+    }
+  ],
+  "total_summary": {
+    "total_penelitian_blu": 2795,
+    "total_pengabdian_blu": 1210,
+    "total_paten": 77,
+    "total_haki": 219,
+    "growth_penelitian": 141.2,
+    "growth_pengabdian": 119.2,
+    "growth_paten": 200.0,
+    "growth_haki": 191.3
+  },
+  "quarterly_data": [
+    {
+      "quarter": "Q1 2024",
+      "penelitian_blu": 198,
+      "pengabdian_blu": 78
+    },
+    {
+      "quarter": "Q2 2024",
+      "penelitian_blu": 205,
+      "pengabdian_blu": 87
+    },
+    {
+      "quarter": "Q3 2024",
+      "penelitian_blu": 212,
+      "pengabdian_blu": 89
+    },
+    {
+      "quarter": "Q4 2024",
+      "penelitian_blu": 210,
+      "pengabdian_blu": 88
+    }
+  ]
+}
