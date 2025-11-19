@@ -28,13 +28,15 @@ import { useState, useEffect } from "react";
 interface NewsItem {
   id: number;
   title: string;
-  excerpt: string;
-  content: string;
-  image?: string;
-  category: string;
-  author: string;
-  published_at: string;
   slug: string;
+  date: string;
+  category: string;
+  thumbnail?: string;
+  excerpt: string;
+  content?: string;
+  image?: string;
+  author?: string;
+  published_at?: string;
   read_time?: number;
   tags?: string[];
 }
@@ -111,98 +113,80 @@ const Homepage = () => {
     const fetchNews = async () => {
       try {
         setIsLoading(true);
-        // Replace with your actual API endpoint
-        const response = await fetch("/api/news/latest?limit=6"); // Laravel API endpoint
+        // Using the Laravel API endpoint from integration docs
+        const response = await fetch("http://127.0.0.1:8000/api/posts?limit=6");
 
         if (!response.ok) {
           throw new Error("Failed to fetch news");
         }
 
         const data = await response.json();
-        setNewsData(data.data || []); // Adjust based on your API response structure
+        setNewsData(data.data || []); // API returns {status: "success", data: [...]}
       } catch (err) {
         console.error("Error fetching news:", err);
-        setError("Failed to load news. Using fallback data.");
+        setError("Gagal memuat berita. Menggunakan data fallback.");
 
         // Fallback mock data for development
         setNewsData([
           {
             id: 1,
             title: "Pengumuman Hibah Penelitian 2024",
+            slug: "pengumuman-hibah-penelitian-2024",
+            date: "15 Nov 2024",
+            category: "Pengumuman",
             excerpt:
               "LPPM Universitas Lampung membuka pendaftaran hibah penelitian untuk tahun akademik 2024/2025.",
-            content: "",
-            category: "Pengumuman",
-            author: "Admin LPPM",
-            published_at: "2024-11-15T10:00:00Z",
-            slug: "pengumuman-hibah-penelitian-2024",
-            read_time: 5,
-            tags: ["Penelitian", "Hibah", "2024"],
+            thumbnail: undefined,
           },
           {
             id: 2,
             title: "Workshop Penulisan Proposal Pengabdian",
+            slug: "workshop-penulisan-proposal-pengabdian",
+            date: "14 Nov 2024",
+            category: "Workshop",
             excerpt:
               "Ikuti workshop intensif penulisan proposal pengabdian kepada masyarakat yang akan diselenggarakan bulan depan.",
-            content: "",
-            category: "Workshop",
-            author: "Tim Pengabdian",
-            published_at: "2024-11-14T14:30:00Z",
-            slug: "workshop-penulisan-proposal-pengabdian",
-            read_time: 3,
-            tags: ["Workshop", "Pengabdian", "Proposal"],
+            thumbnail: undefined,
           },
           {
             id: 3,
             title: "Seminar Nasional Hasil Penelitian",
+            slug: "seminar-nasional-hasil-penelitian",
+            date: "13 Nov 2024",
+            category: "Seminar",
             excerpt:
               "Pendaftaran seminar nasional hasil penelitian telah dibuka. Segera daftarkan penelitian terbaik Anda.",
-            content: "",
-            category: "Seminar",
-            author: "Panitia Seminar",
-            published_at: "2024-11-13T09:15:00Z",
-            slug: "seminar-nasional-hasil-penelitian",
-            read_time: 4,
-            tags: ["Seminar", "Penelitian", "Nasional"],
+            thumbnail: undefined,
           },
           {
             id: 4,
             title: "Kerjasama Internasional dengan University of Tokyo",
+            slug: "kerjasama-internasional-university-tokyo",
+            date: "12 Nov 2024",
+            category: "Kerjasama",
             excerpt:
               "Universitas Lampung menjalin kerjasama penelitian dengan University of Tokyo untuk riset terbarukan.",
-            content: "",
-            category: "Kerjasama",
-            author: "Tim Kerjasama",
-            published_at: "2024-11-12T16:45:00Z",
-            slug: "kerjasama-internasional-university-tokyo",
-            read_time: 6,
-            tags: ["Kerjasama", "Internasional", "Tokyo"],
+            thumbnail: undefined,
           },
           {
             id: 5,
             title: "Publikasi Scopus Q1 Dosen Unila",
+            slug: "publikasi-scopus-q1-dosen-unila",
+            date: "11 Nov 2024",
+            category: "Prestasi",
             excerpt:
               "Pencapaian gemilang dosen Unila dengan publikasi internasional di jurnal Q1 Scopus.",
-            content: "",
-            category: "Prestasi",
-            author: "Admin LPPM",
-            published_at: "2024-11-11T11:20:00Z",
-            slug: "publikasi-scopus-q1-dosen-unila",
-            read_time: 4,
-            tags: ["Publikasi", "Scopus", "Prestasi"],
+            thumbnail: undefined,
           },
           {
             id: 6,
             title: "Call for Paper Jurnal LPPM",
+            slug: "call-for-paper-jurnal-lppm",
+            date: "10 Nov 2024",
+            category: "Jurnal",
             excerpt:
               "Jurnal LPPM Universitas Lampung membuka call for paper untuk edisi terbaru tahun 2024.",
-            content: "",
-            category: "Jurnal",
-            author: "Editor Jurnal",
-            published_at: "2024-11-10T13:00:00Z",
-            slug: "call-for-paper-jurnal-lppm",
-            read_time: 3,
-            tags: ["Jurnal", "Call for Paper", "Publikasi"],
+            thumbnail: undefined,
           },
         ]);
       } finally {
@@ -213,19 +197,33 @@ const Homepage = () => {
     fetchNews();
   }, []);
 
-  // Format date utility
+  // Format date utility - handle both API formats
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("id-ID", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
+    // If date is already formatted like "05 Nov 2025", return as-is
+    if (dateString.includes(' ')) {
+      return dateString;
+    }
+
+    // Try to parse ISO date format
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return dateString; // Return original if parsing fails
+      }
+      return date.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+    } catch {
+      return dateString;
+    }
   };
 
   // Calculate reading time
-  const getReadingTime = (content: string, readTime?: number) => {
+  const getReadingTime = (content?: string, readTime?: number) => {
     if (readTime) return readTime;
+    if (!content) return 3; // Default reading time for news without content
     const wordsPerMinute = 200;
     const words = content.split(" ").length;
     return Math.ceil(words / wordsPerMinute);
@@ -732,15 +730,21 @@ const Homepage = () => {
                 >
                   {/* Image Section */}
                   <div className="relative h-48 overflow-hidden">
-                    {news.image ? (
+                    {news.thumbnail ? (
                       <img
-                        src={news.image}
+                        src={news.thumbnail}
                         alt={news.title}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         onError={(e) => {
-                          e.currentTarget.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect fill='%23105091' width='400' height='200'/%3E%3Ctext fill='white' font-family='Arial' font-size='18' text-anchor='middle' x='200' y='100'%3E${encodeURIComponent(
-                            news.title
-                          )}%3C/text%3E%3C/svg%3E`;
+                          // Fallback to gradient if image fails
+                          e.currentTarget.style.display = 'none';
+                          const parent = e.currentTarget.parentElement;
+                          if (parent) {
+                            const fallbackDiv = document.createElement('div');
+                            fallbackDiv.className = `h-full bg-gradient-to-br ${getCategoryColor(news.category)} flex items-center justify-center`;
+                            fallbackDiv.innerHTML = `<svg class="w-16 h-16 text-white opacity-50" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd" /><path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z" /></svg>`;
+                            parent.appendChild(fallbackDiv);
+                          }
                         }}
                       />
                     ) : (
@@ -769,7 +773,7 @@ const Homepage = () => {
                     <div className="absolute top-4 right-4">
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/90 backdrop-blur-sm text-gray-700 shadow-lg">
                         <FaCalendarAlt className="w-3 h-3 mr-1" />
-                        {formatDate(news.published_at)}
+                        {formatDate(news.date)}
                       </span>
                     </div>
 
@@ -779,16 +783,14 @@ const Homepage = () => {
 
                   {/* Content Section */}
                   <div className="p-6">
-                    <div className="flex items-center text-sm text-gray-500 mb-3 space-x-4">
-                      <span className="flex items-center">
-                        <FaUser className="w-4 h-4 mr-1" />
-                        {news.author}
-                      </span>
-                      <span className="flex items-center">
-                        <FaClock className="w-4 h-4 mr-1" />
-                        {getReadingTime(news.content, news.read_time)} min read
-                      </span>
-                    </div>
+                    {news.author && (
+                      <div className="flex items-center text-sm text-gray-500 mb-3">
+                        <span className="flex items-center">
+                          <FaUser className="w-4 h-4 mr-1" />
+                          {news.author}
+                        </span>
+                      </div>
+                    )}
 
                     <h3 className="font-display text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-[#105091] transition-colors duration-300">
                       {news.title}
