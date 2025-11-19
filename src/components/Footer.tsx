@@ -6,7 +6,13 @@
  */
 
 import { Link } from "react-router-dom";
-import { FaFacebook, FaInstagram, FaWhatsapp, FaYoutube, FaExternalLinkAlt } from "react-icons/fa";
+import {
+  FaFacebook,
+  FaInstagram,
+  FaWhatsapp,
+  FaYoutube,
+  FaExternalLinkAlt,
+} from "react-icons/fa";
 
 /**
  * Data link navigasi footer.
@@ -18,13 +24,7 @@ const footerLinks = {
     { name: "Tugas dan Fungsi", href: "/profil#tugas-fungsi" },
     { name: "Struktur Organisasi", href: "/profil#struktur-organisasi" },
   ],
-  administrasi: [
-    { name: "Bagian Umum", href: "/administrasi/bagian-umum" },
-    { name: "Bagian Keuangan", href: "/administrasi/bagian-keuangan" },
-    { name: "Bagian Sumber Daya", href: "/administrasi/bagian-sumber-daya" },
-    { name: "Bagian Kerjasama", href: "/administrasi/bagian-kerjasama" },
-    { name: "Bagian Umum & Akademik", href: "/administrasi/bagian-umum-akademik" },
-  ],
+  administrasi: [{ name: "Bagian Umum", href: "/administrasi/bagian-umum" }],
   pui: [
     {
       name: "Anggrek, Kopi, Lada, Kako",
@@ -86,7 +86,8 @@ const socialIcons = [
     name: "Instagram",
     href: "https://instagram.com/lppmunila",
     icon: FaInstagram,
-    color: "hover:bg-gradient-to-br hover:from-purple-600 hover:via-pink-600 hover:to-orange-600",
+    color:
+      "hover:bg-gradient-to-br hover:from-purple-600 hover:via-pink-600 hover:to-orange-600",
   },
   {
     name: "WhatsApp",
@@ -110,9 +111,12 @@ const Footer = () => (
   <footer className="bg-gradient-to-br from-white via-gray-50/50 to-white border-t border-gray-100/80 relative overflow-hidden">
     {/* Background Pattern */}
     <div className="absolute inset-0 opacity-5">
-      <div className="absolute inset-0" style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23105091' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-      }}></div>
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23105091' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }}
+      ></div>
     </div>
 
     <div className="relative max-w-screen-2xl mx-auto px-6 sm:px-8 lg:px-12 py-16">
@@ -137,8 +141,16 @@ const Footer = () => (
             <div className="space-y-3 font-body text-[15px] text-gray-700 leading-relaxed">
               <div className="flex items-start space-x-3">
                 <div className="w-5 h-5 mt-0.5 flex-shrink-0">
-                  <svg className="w-full h-full text-[#105091]" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                  <svg
+                    className="w-full h-full text-[#105091]"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
                 <span>
@@ -149,7 +161,11 @@ const Footer = () => (
 
               <div className="flex items-center space-x-3">
                 <div className="w-5 h-5 flex-shrink-0">
-                  <svg className="w-full h-full text-[#105091]" fill="currentColor" viewBox="0 0 20 20">
+                  <svg
+                    className="w-full h-full text-[#105091]"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
                     <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                   </svg>
                 </div>
@@ -163,7 +179,11 @@ const Footer = () => (
 
               <div className="flex items-center space-x-3">
                 <div className="w-5 h-5 flex-shrink-0">
-                  <svg className="w-full h-full text-[#105091]" fill="currentColor" viewBox="0 0 20 20">
+                  <svg
+                    className="w-full h-full text-[#105091]"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
                     <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                     <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                   </svg>
@@ -206,7 +226,10 @@ const Footer = () => (
         {/* Navigation Sections */}
         <div className="flex flex-col gap-8">
           <FooterLinkSection title="Profil" links={footerLinks.profil} />
-          <FooterLinkSection title="Administrasi" links={footerLinks.administrasi} />
+          <FooterLinkSection
+            title="Administrasi"
+            links={footerLinks.administrasi}
+          />
         </div>
 
         <div className="flex flex-col gap-8">

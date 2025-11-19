@@ -33,20 +33,6 @@ const navLinks: NavLink[] = [
     ],
   },
   {
-    name: "Administrasi",
-    type: "dropdown",
-    items: [
-      { name: "Bagian Umum", href: "/administrasi/bagian-umum" },
-      { name: "Bagian Keuangan", href: "/administrasi/bagian-keuangan" },
-      { name: "Bagian Sumber Daya", href: "/administrasi/bagian-sumber-daya" },
-      { name: "Bagian Kerjasama", href: "/administrasi/bagian-kerjasama" },
-      { name: "Bagian Umum & Akademik", href: "/administrasi/bagian-umum-akademik" },
-      { name: "Bagian Penelitian", href: "/administrasi/bagian-penelitian" },
-      { name: "Bagian Pengabdian Masyarakat", href: "/administrasi/bagian-pengabdian-masyarakat" },
-      { name: "Bagian Inovasi & Kerjasama", href: "/administrasi/bagian-inovasi-kerjasama" },
-    ],
-  },
-  {
     name: "PUI",
     type: "dropdown",
     items: [
@@ -103,6 +89,11 @@ const navLinks: NavLink[] = [
     ],
   },
   {
+    name: "Administrasi",
+    type: "dropdown",
+    items: [{ name: "Bagian Umum", href: "/administrasi/bagian-umum" }],
+  },
+  {
     name: "Layanan",
     type: "dropdown",
     items: [
@@ -124,7 +115,6 @@ const navLinks: NavLink[] = [
       { name: "PPID", href: "https://ppid.lppm.unila.ac.id", external: true },
     ],
   },
-  { name: "Unduhan", href: "/unduhan", type: "link" },
 ];
 
 const Header = () => {
@@ -171,14 +161,18 @@ const Header = () => {
                     >
                       <span>{link.name}</span>
                       <ChevronDown
-                        className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === link.name ? 'rotate-180' : ''}`}
+                        className={`w-4 h-4 transition-transform duration-300 ${
+                          activeDropdown === link.name ? "rotate-180" : ""
+                        }`}
                       />
                     </button>
 
                     {/* Enhanced Dropdown Menu */}
                     <div
                       className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100/50 backdrop-blur-lg transition-all duration-300 ${
-                        activeDropdown === link.name ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'
+                        activeDropdown === link.name
+                          ? "opacity-100 visible translate-y-0"
+                          : "opacity-0 invisible translate-y-2"
                       } z-50`}
                       onMouseEnter={() => setActiveDropdown(link.name)}
                       onMouseLeave={() => setActiveDropdown(null)}
@@ -193,7 +187,9 @@ const Header = () => {
                                 rel="noopener noreferrer"
                                 className="flex items-center justify-between px-5 py-3 text-sm font-body text-gray-600 hover:bg-gradient-to-r hover:from-[#105091] hover:to-[#0d3a6b] hover:text-white transition-all duration-200 group/item hover:px-6"
                               >
-                                <span className="flex-1 font-medium">{item.name}</span>
+                                <span className="flex-1 font-medium">
+                                  {item.name}
+                                </span>
                                 <ExternalLink className="w-3.5 h-3.5 ml-2 text-gray-400 group-hover/item:text-white transition-colors duration-200" />
                               </a>
                             ) : (
@@ -235,7 +231,13 @@ const Header = () => {
       </div>
 
       {/* Enhanced Mobile Menu */}
-      <div className={`lg:hidden transition-all duration-300 ${isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+      <div
+        className={`lg:hidden transition-all duration-300 ${
+          isMenuOpen
+            ? "max-h-screen opacity-100"
+            : "max-h-0 opacity-0 overflow-hidden"
+        }`}
+      >
         <div className="bg-white/95 backdrop-blur-xs shadow-lg rounded-b-3xl border-t border-gray-100/50">
           <div className="px-6 py-4 space-y-1">
             {navLinks.map((link) =>
