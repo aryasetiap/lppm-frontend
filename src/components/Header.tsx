@@ -48,22 +48,22 @@ const navLinks: NavLink[] = [
     items: [
       {
         name: "Pimpinan",
-        href: "/profil#pimpinan",
+        href: "/profile#pimpinan",
         description: "Struktur kepemimpinan LPPM",
       },
       {
         name: "Visi & Misi",
-        href: "/profil#visi-misi",
+        href: "/profile#visi-misi",
         description: "Tujuan dan arah LPPM",
       },
       {
         name: "Tugas dan Fungsi",
-        href: "/profil#tugas-fungsi",
+        href: "/profile#tugas-fungsi",
         description: "Peran dan tanggung jawab",
       },
       {
         name: "Struktur Organisasi",
-        href: "/profil#struktur-organisasi",
+        href: "/profile#struktur-organisasi",
         description: "Struktur organisasi lengkap",
       },
     ],
