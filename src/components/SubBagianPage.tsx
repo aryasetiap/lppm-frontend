@@ -25,12 +25,21 @@ interface PimpinanData {
   };
 }
 
+interface ProfilData {
+  visi: string;
+  misi: string[];
+  program_unggulan: string[];
+  prestasi: string[];
+  keunggulan: string[];
+}
+
 interface SubBagianData {
   nama: string;
   singkatan: string;
   kategori: string;
   pimpinan: PimpinanData;
   profile_singkat: string;
+  profil: ProfilData;
   tugas_fungsi: string[];
   struktur_organisasi: {
     gambar_struktur: string;
@@ -340,6 +349,179 @@ const SubBagianPage: React.FC = () => {
                 <div className="inline-flex items-center justify-center px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
                   <Clock className="w-3 h-3 mr-1" />
                   {subBagianData.pimpinan.ketua.periode}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Profil Section */}
+      <section className="relative bg-gradient-to-br from-gray-50 to-slate-100 py-20 overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-10 right-10 w-64 h-64 bg-blue-500 rounded-full filter blur-3xl"></div>
+          <div className="absolute bottom-10 left-10 w-64 h-64 bg-indigo-500 rounded-full filter blur-3xl"></div>
+        </div>
+
+        <div className="relative container mx-auto px-6">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#105091] to-blue-600 rounded-2xl mb-6 shadow-lg">
+              <Star className="w-8 h-8 text-white" />
+            </div>
+            <h2 className="font-display text-4xl lg:text-5xl font-bold bg-gradient-to-r from-[#105091] to-blue-600 bg-clip-text text-transparent mb-6">
+              Profil {subBagianData.nama}
+            </h2>
+            <p className="font-body text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+              Visi, misi, dan keunggulan {subBagianData.nama} dalam mendukung keunggulan LPPM Universitas Lampung.
+            </p>
+          </div>
+
+          <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8">
+            {/* Visi dan Misi */}
+            <div className="space-y-6">
+              {/* Visi */}
+              <div className="group relative">
+                <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
+                  <div className="h-1 bg-gradient-to-r from-[#105091] to-blue-600"></div>
+                  <div className="relative p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#105091] to-blue-600 p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                        <div className="w-full h-full bg-white rounded-lg flex items-center justify-center">
+                          <Star className="w-5 h-5 text-[#105091]" />
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-display text-xl font-bold text-gray-900 mb-3 transition-colors duration-300 hover:text-[#105091]">
+                          Visi
+                        </h3>
+                        <p className="font-body text-gray-700 leading-relaxed">
+                          {subBagianData.profil.visi}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Misi */}
+              <div className="group relative">
+                <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
+                  <div className="h-1 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+                  <div className="relative p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                        <div className="w-full h-full bg-white rounded-lg flex items-center justify-center">
+                          <Target className="w-5 h-5 text-blue-600" />
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-display text-xl font-bold text-gray-900 mb-3 transition-colors duration-300 hover:text-blue-600">
+                          Misi
+                        </h3>
+                        <ul className="space-y-2">
+                          {subBagianData.profil.misi.map((item, index) => (
+                            <li key={index} className="font-body text-gray-700 leading-relaxed flex items-start gap-2">
+                              <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Program Unggulan dan Prestasi */}
+            <div className="space-y-6">
+              {/* Program Unggulan */}
+              <div className="group relative">
+                <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
+                  <div className="h-1 bg-gradient-to-r from-indigo-600 to-purple-600"></div>
+                  <div className="relative p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                        <div className="w-full h-full bg-white rounded-lg flex items-center justify-center">
+                          <Lightbulb className="w-5 h-5 text-indigo-600" />
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-display text-xl font-bold text-gray-900 mb-3 transition-colors duration-300 hover:text-indigo-600">
+                          Program Unggulan
+                        </h3>
+                        <ul className="space-y-2">
+                          {subBagianData.profil.program_unggulan.map((item, index) => (
+                            <li key={index} className="font-body text-gray-700 leading-relaxed flex items-start gap-2">
+                              <div className="w-2 h-2 bg-indigo-600 rounded-full mt-2 flex-shrink-0"></div>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Prestasi */}
+              <div className="group relative">
+                <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
+                  <div className="h-1 bg-gradient-to-r from-purple-600 to-pink-600"></div>
+                  <div className="relative p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-pink-600 p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                        <div className="w-full h-full bg-white rounded-lg flex items-center justify-center">
+                          <Award className="w-5 h-5 text-purple-600" />
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-display text-xl font-bold text-gray-900 mb-3 transition-colors duration-300 hover:text-purple-600">
+                          Prestasi
+                        </h3>
+                        <ul className="space-y-2">
+                          {subBagianData.profil.prestasi.map((item, index) => (
+                            <li key={index} className="font-body text-gray-700 leading-relaxed flex items-start gap-2">
+                              <div className="w-2 h-2 bg-purple-600 rounded-full mt-2 flex-shrink-0"></div>
+                              <span>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Keunggulan - Full Width */}
+          <div className="mt-8">
+            <div className="group relative">
+              <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
+                <div className="h-1 bg-gradient-to-r from-[#105091] via-blue-600 to-indigo-600"></div>
+                <div className="relative p-6">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#105091] via-blue-600 to-indigo-600 p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                      <div className="w-full h-full bg-white rounded-lg flex items-center justify-center">
+                        <Shield className="w-5 h-5 text-[#105091]" />
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-display text-xl font-bold text-gray-900 mb-3 transition-colors duration-300 hover:text-[#105091]">
+                        Keunggulan
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {subBagianData.profil.keunggulan.map((item, index) => (
+                      <div key={index} className="flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50 px-3 py-2 rounded-lg border border-blue-100">
+                        <div className="w-2 h-2 bg-gradient-to-r from-[#105091] to-blue-600 rounded-full flex-shrink-0"></div>
+                        <span className="font-body text-gray-700 text-sm">{item}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
