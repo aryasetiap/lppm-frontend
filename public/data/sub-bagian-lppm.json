@@ -1,0 +1,327 @@
+{
+  "metadata": {
+    "last_updated": "2024-11-20",
+    "data_source": "LPPM Unila Database",
+    "description": "Data lengkap sub bagian dan unit di LPPM Universitas Lampung"
+  },
+  "sub_bagian": {
+    "pui": {
+      "pusat-unggulan-ipteks-anggrek-kopi-lada-kako-dan-pengembangan-komoditas-strategis-dan-agroindustri-lampung": {
+        "nama": "Pusat Unggulan Ipteks Anggrek, Kopi, Lada, Kako dan Pengembangan Komoditas Strategis dan Agroindustri Lampung",
+        "singkatan": "PUI Anggrek dan Kopi",
+        "kategori": "PUI",
+        "pimpinan": {
+          "ketua": {
+            "nama": "Prof. Dr. Ir. Sc. Akhmad Arifin Hadi, M.P.",
+            "foto": "/images/sub-bagian/pui-anggrek-kopi/ketua.jpg",
+            "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+PUI+Anggrek+dan+Kopi",
+            "jabatan": "Ketua PUI",
+            "periode": "2024-2029"
+          }
+        },
+        "profile_singkat": "Pusat Unggulan Ipteks yang berfokus pada pengembangan komoditas strategis pertanian Lampung meliputi anggrek, kopi, lada, dan kako melalui riset inovatif dan pengembangan agroindustri berkelanjutan.",
+        "tugas_fungsi": [
+          "Melaksanakan penelitian unggulan di bidang budi daya anggrek dan kopi",
+          "Mengembangkan varietas unggul dan teknologi budidaya inovatif",
+          "Melakukan pengembangan agroindustri berbasis komoditas lokal",
+          "Membangun jejaring kerjasama nasional dan internasional",
+          "Melakukan diseminasi hasil penelitian dan teknologi kepada masyarakat"
+        ],
+        "struktur_organisasi": {
+          "gambar_struktur": "/images/sub-bagian/pui-anggrek-kopi/struktur-organisasi.jpg",
+          "gambar_placeholder": "https://via.placeholder.com/1200x800/f0f9ff/105091?text=Struktur+Organisasi+PUI+Anggrek+dan+Kopi"
+        }
+      }
+    },
+    "puslit": {
+      "pusat-penelitian-kuliah-kerja-nyata-kkn": {
+        "nama": "Pusat Penelitian Kuliah Kerja Nyata (KKN)",
+        "singkatan": "Puslit KKN",
+        "kategori": "PUSLIT",
+        "pimpinan": {
+          "ketua": {
+            "nama": "Dr. Ir. Yuli Haryanto, M.P.",
+            "foto": "/images/sub-bagian/puslit-kkn/ketua.jpg",
+            "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+KKN",
+            "jabatan": "Kepala Pusat Penelitian KKN",
+            "periode": "2024-2029"
+          }
+        },
+        "profile_singkat": "Pusat yang menangani pelaksanaan dan pengembangan program Kuliah Kerja Nyata (KKN) sebagai wahana penerapan ilmu pengetahuan dan teknologi bagi mahasiswa untuk memberdayakan masyarakat.",
+        "tugas_fungsi": [
+          "Menyusun perencanaan dan pengembangan program KKN",
+          "Melakukan koordinasi pelaksanaan KKN reguler dan tematik",
+          "Membangun jejaring dengan mitra KKN di berbagai daerah",
+          "Melakukan monitoring dan evaluasi pelaksanaan KKN",
+          "Mengembangkan inovasi program KKN berbasis kebutuhan masyarakat"
+        ],
+        "struktur_organisasi": {
+          "gambar_struktur": "/images/sub-bagian/puslit-kkn/struktur-organisasi.jpg",
+          "gambar_placeholder": "https://via.placeholder.com/1200x800/f0f9ff/105091?text=Struktur+Organisasi+Puslit+KKN"
+        }
+      },
+      "pusat-penelitian-hak-kekayaan-intelektual-hki-dan-paten": {
+        "nama": "Pusat Penelitian Hak Kekayaan Intelektual (HKI) dan Paten",
+        "singkatan": "Puslit HKI dan Paten",
+        "kategori": "PUSLIT",
+        "pimpinan": {
+          "ketua": {
+            "nama": "Dr. Eng. Irma Rizkiana, S.T., M.T.",
+            "foto": "/images/sub-bagian/puslit-haki-paten/ketua.jpg",
+            "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+HKI+dan+Paten",
+            "jabatan": "Kepala Pusat Penelitian HKI dan Paten",
+            "periode": "2024-2029"
+          }
+        },
+        "profile_singkat": "Pusat yang berfungsi sebagai pusat layanan dan pengembangan proteksi kekayaan intelektual serta fasilitasi pendaftaran paten bagi peneliti dan dosen Universitas Lampung.",
+        "tugas_fungsi": [
+          "Memberikan layanan konsultasi HKI dan paten kepada sivitas akademika",
+          "Melakukan fasilitasi pendaftaran paten dan HKI lainnya",
+          "Mengembangkan sistem manajemen HKI institusional",
+          "Melakukan sosialisasi dan edukasi tentang perlindungan HKI",
+          "Membangun kerjasama dengan lembaga HKI nasional dan internasional"
+        ],
+        "struktur_organisasi": {
+          "gambar_struktur": "/images/sub-bagian/puslit-haki-paten/struktur-organisasi.jpg",
+          "gambar_placeholder": "https://via.placeholder.com/1200x800/f0f9ff/105091?text=Struktur+Organisasi+Puslit+HKI+dan+Paten"
+        }
+      },
+      "pusat-penelitian-bencana-lingkungan-hidup-dan-sumber-daya-alam": {
+        "nama": "Pusat Penelitian Bencana, Lingkungan Hidup dan Sumber Daya Alam",
+        "singkatan": "Puslit BLH SDA",
+        "kategori": "PUSLIT",
+        "pimpinan": {
+          "ketua": {
+            "nama": "Dr. Ir. Bambang Setiawan, M.Si.",
+            "foto": "/images/sub-bagian/puslit-bencana-lingkungan/ketua.jpg",
+            "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+BLH+SDA",
+            "jabatan": "Kepala Pusat Penelitian Bencana dan Lingkungan",
+            "periode": "2024-2029"
+          }
+        },
+        "profile_singkat": "Pusat penelitian yang fokus pada kajian mitigasi bencana, konservasi lingkungan hidup, dan pengelolaan sumber daya alam berkelanjutan untuk mendukung pembangunan berwawasan lingkungan.",
+        "tugas_fungsi": [
+          "Melakukan penelitian mitigasi dan adaptasi perubahan iklim",
+          "Mengembangkan sistem monitoring lingkungan dan sumber daya alam",
+          "Melakukan kajian dampak lingkungan dan sosial",
+          "Memberikan rekomendasi kebijakan pengelolaan lingkungan",
+          "Membangun kapasitas masyarakat dalam pengelolaan sumber daya alam"
+        ],
+        "struktur_organisasi": {
+          "gambar_struktur": "/images/sub-bagian/puslit-bencana-lingkungan/struktur-organisasi.jpg",
+          "gambar_placeholder": "https://via.placeholder.com/1200x800/f0f9ff/105091?text=Struktur+Organisasi+Puslit+BLH+SDA"
+        }
+      },
+      "pusat-penelitian-studi-kebijakan-publik-pembangunan-dan-sosial-budaya": {
+        "nama": "Pusat Penelitian Studi Kebijakan Publik, Pembangunan dan Sosial Budaya",
+        "singkatan": "Puslit Kebijakan Publik",
+        "kategori": "PUSLIT",
+        "pimpinan": {
+          "ketua": {
+            "nama": "Dr. Sunaryo, M.Si.",
+            "foto": "/images/sub-bagian/puslit-kebijakan-publik/ketua.jpg",
+            "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+Kebijakan+Publik",
+            "jabatan": "Kepala Pusat Studi Kebijakan Publik",
+            "periode": "2024-2029"
+          }
+        },
+        "profile_singkat": "Pusat yang menangani penelitian di bidang kebijakan publik, pembangunan ekonomi dan sosial, serta isu-isu sosial budaya relevan untuk pengembangan masyarakat.",
+        "tugas_fungsi": [
+          "Melakukan analisis kebijakan publik dan dampaknya terhadap masyarakat",
+          "Meneliti isu-isu pembangunan ekonomi dan sosial",
+          "Mengkaji dinamika sosial budaya dalam konteks pembangunan",
+          "Memberikan rekomendasi kebijakan berbasis hasil penelitian",
+          "Melakukan publikasi ilmiah dan diseminasi hasil penelitian"
+        ],
+        "struktur_organisasi": {
+          "gambar_struktur": "/images/sub-bagian/puslit-kebijakan-publik/struktur-organisasi.jpg",
+          "gambar_placeholder": "https://via.placeholder.com/1200x800/f0f9ff/105091?text=Struktur+Organisasi+Puslit+Kebijakan+Publik"
+        }
+      },
+      "pusat-penelitian-publikasi-dan-kerja-sama": {
+        "nama": "Pusat Penelitian Publikasi dan Kerja Sama",
+        "singkatan": "Puslit Publikasi dan Kerjasama",
+        "kategori": "PUSLIT",
+        "pimpinan": {
+          "ketua": {
+            "nama": "Dr. Diana Kartikasari, M.Si.",
+            "foto": "/images/sub-bagian/puslit-publikasi-kerjasama/ketua.jpg",
+            "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+Publikasi+dan+Kerjasama",
+            "jabatan": "Kepala Pusat Publikasi dan Kerjasama",
+            "periode": "2024-2029"
+          }
+        },
+        "profile_singkat": "Pusat yang mengelola publikasi ilmiah, jurnal, serta mengembangkan jaringan kerjasama penelitian dengan institusi nasional dan internasional.",
+        "tugas_fungsi": [
+          "Mengelola publikasi ilmiah dan jurnal institusi",
+          "Membangun jaringan kerjasama penelitian nasional dan internasional",
+          "Melakukan promosi dan diseminasi hasil penelitian",
+          "Mengelola database publikasi dan kekayaan intelektual",
+          "Menyelenggarakan seminar dan konferensi ilmiah"
+        ],
+        "struktur_organisasi": {
+          "gambar_struktur": "/images/sub-bagian/puslit-publikasi-kerjasama/struktur-organisasi.jpg",
+          "gambar_placeholder": "https://via.placeholder.com/1200x800/f0f9ff/105091?text=Struktur+Organisasi+Puslit+Publikasi+dan+Kerjasama"
+        }
+      },
+      "pusat-penelitian-inkubator-bisnis-hilirisasi-inovasi-ketahanan-pangan-dan-sertifikasi-halal": {
+        "nama": "Pusat Penelitian Inkubator Bisnis, Hilirisasi Inovasi, Ketahanan Pangan dan Sertifikasi Halal",
+        "singkatan": "Puslit Inkubator Bisnis",
+        "kategori": "PUSLIT",
+        "pimpinan": {
+          "ketua": {
+            "nama": "Dr. Ir. Ahmad Syafi'i, M.P.",
+            "foto": "/images/sub-bagian/puslit-inkubator-bisnis/ketua.jpg",
+            "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+Inkubator+Bisnis",
+            "jabatan": "Kepala Pusat Inkubator Bisnis dan Inovasi",
+            "periode": "2024-2029"
+          }
+        },
+        "profile_singkat": "Pusat yang mengembangkan inkubator bisnis, hilirisasi inovasi penelitian, ketahanan pangan, serta layanan sertifikasi halal untuk mendukung kemandirian ekonomi.",
+        "tugas_fungsi": [
+          "Mengelola program inkubasi bisnis dan startup",
+          "Melakukan hilirisasi hasil inovasi penelitian",
+          "Mengembangkan teknologi ketahanan pangan",
+          "Memberikan layanan sertifikasi halal dan keamanan pangan",
+          "Membangun ekosistem kewirausahaan di perguruan tinggi"
+        ],
+        "struktur_organisasi": {
+          "gambar_struktur": "/images/sub-bagian/puslit-inkubator-bisnis/struktur-organisasi.jpg",
+          "gambar_placeholder": "https://via.placeholder.com/1200x800/f0f9ff/105091?text=Struktur+Organisasi+Puslit+Inkubator+Bisnis"
+        }
+      },
+      "pusat-penelitian-manajeman-sistem-informasi-komunikasi-digitalisasi-dan-kaloborasi-riset": {
+        "nama": "Pusat Penelitian Manajemen Sistem Informasi, Komunikasi, Digitalisasi dan Kolaborasi Riset",
+        "singkatan": "Puslit Sistem Informasi",
+        "kategori": "PUSLIT",
+        "pimpinan": {
+          "ketua": {
+            "nama": "Dr. Rini Handayani, M.Kom.",
+            "foto": "/images/sub-bagian/puslit-sistem-informasi/ketua.jpg",
+            "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+Sistem+Informasi",
+            "jabatan": "Kepala Pusat Sistem Informasi dan Digitalisasi",
+            "periode": "2024-2029"
+          }
+        },
+        "profile_singkat": "Pusat yang mengembangkan sistem informasi penelitian, digitalisasi layanan, serta memfasilitasi kolaborasi riset antar peneliti dan institusi.",
+        "tugas_fungsi": [
+          "Mengembangkan sistem informasi penelitian terintegrasi",
+          "Melakukan digitalisasi layanan penelitian dan pengabdian",
+          "Membangun platform kolaborasi riset daring",
+          "Menyediakan layanan analisis data penelitian",
+          "Melakukan pengembangan sistem informasi manajemen pengetahuan"
+        ],
+        "struktur_organisasi": {
+          "gambar_struktur": "/images/sub-bagian/puslit-sistem-informasi/struktur-organisasi.jpg",
+          "gambar_placeholder": "https://via.placeholder.com/1200x800/f0f9ff/105091?text=Struktur+Organisasi+Puslit+Sistem+Informasi"
+        }
+      },
+      "pusat-penelitian-sd-gs-pengembangan-wilayah-kemaritiman-dan-perdesaan": {
+        "nama": "Pusat Penelitian SDGs, Pengembangan Wilayah, Kemaritiman dan Perdesaan",
+        "singkatan": "Puslit SDGs",
+        "kategori": "PUSLIT",
+        "pimpinan": {
+          "ketua": {
+            "nama": "Dr. Bayu Krisnamurthi, M.P.",
+            "foto": "/images/sub-bagian/puslit-sdgs/ketua.jpg",
+            "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+SDGs",
+            "jabatan": "Kepala Pusat Penelitian SDGs",
+            "periode": "2024-2029"
+          }
+        },
+        "profile_singkat": "Pusat yang fokus pada penelitian berbasis Sustainable Development Goals (SDGs), pengembangan wilayah, isu kemaritiman, dan pembangunan perdesaan berkelanjutan.",
+        "tugas_fungsi": [
+          "Melakukan penelitian berbasis SDGs untuk pembangunan berkelanjutan",
+          "Mengembangkan model pengembangan wilayah dan perdesaan",
+          "Meneliti isu-isu kemaritiman dan sumber daya pesisir",
+          "Memberikan rekomendasi kebijakan pembangunan berkelanjutan",
+          "Membangun jejaling mitra SDGs dan pengembangan wilayah"
+        ],
+        "struktur_organisasi": {
+          "gambar_struktur": "/images/sub-bagian/puslit-sdgs/struktur-organisasi.jpg",
+          "gambar_placeholder": "https://via.placeholder.com/1200x800/f0f9ff/105091?text=Struktur+Organisasi+Puslit+SDGs"
+        }
+      },
+      "pusat-penelitian-kemandirian-energi-kelistrikan-dan-material-maju": {
+        "nama": "Pusat Penelitian Kemandirian Energi, Kelistrikan dan Material Maju",
+        "singkatan": "Puslit Energi dan Material",
+        "kategori": "PUSLIT",
+        "pimpinan": {
+          "ketua": {
+            "nama": "Dr. Ir. Hendra Gunawan, M.T.",
+            "foto": "/images/sub-bagian/puslit-energi-material/ketua.jpg",
+            "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+Energi+dan+Material",
+            "jabatan": "Kepala Pusat Energi dan Material Maju",
+            "periode": "2024-2029"
+          }
+        },
+        "profile_singkat": "Pusat yang mengembangkan penelitian di bidang energi terbarukan, kelistrikan, dan material maju untuk mendukung kemandirian energi dan kemajuan teknologi.",
+        "tugas_fungsi": [
+          "Mengembangkan teknologi energi terbarukan dan efisiensi energi",
+          "Melakukan penelitian sistem kelistrikan dan smart grid",
+          "Meneliti material maju untuk berbagai aplikasi",
+          "Membangun prototipe energi berbasis lokal",
+          "Kerjasama industri untuk hilirisasi teknologi energi"
+        ],
+        "struktur_organisasi": {
+          "gambar_struktur": "/images/sub-bagian/puslit-energi-material/struktur-organisasi.jpg",
+          "gambar_placeholder": "https://via.placeholder.com/1200x800/f0f9ff/105091?text=Struktur+Organisasi+Puslit+Energi+dan+Material"
+        }
+      },
+      "pusat-penelitian-ekonomi-kreatif-pariwisata-dan-perpajakan-berkelanjutan": {
+        "nama": "Pusat Penelitian Ekonomi Kreatif, Pariwisata dan Perpajakan Berkelanjutan",
+        "singkatan": "Puslit Ekonomi Kreatif",
+        "kategori": "PUSLIT",
+        "pimpinan": {
+          "ketua": {
+            "nama": "Dr. Ratna Dewi, M.Si.",
+            "foto": "/images/sub-bagian/puslit-ekonomi-kreatif/ketua.jpg",
+            "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+Ekonomi+Kreatif",
+            "jabatan": "Kepala Pusat Ekonomi Kreatif dan Pariwisata",
+            "periode": "2024-2029"
+          }
+        },
+        "profile_singkat": "Pusat yang menangani penelitian di bidang ekonomi kreatif, pengembangan pariwisata, serta sistem perpajakan yang berkelanjutan untuk mendukung pertumbuhan ekonomi.",
+        "tugas_fungsi": [
+          "Mengembangkan model ekonomi kreatif berbasis lokal",
+          "Melakukan penelitian pengembangan pariwisata berkelanjutan",
+          "Meneliti sistem perpajakan dan kebijakan fiskal",
+          "Membangun jejaring dengan pelaku ekonomi kreatif",
+          "Memberikan rekomendasi kebijakan pengembangan ekonomi kreatif"
+        ],
+        "struktur_organisasi": {
+          "gambar_struktur": "/images/sub-bagian/puslit-ekonomi-kreatif/struktur-organisasi.jpg",
+          "gambar_placeholder": "https://via.placeholder.com/1200x800/f0f9ff/105091?text=Struktur+Organisasi+Puslit+Ekonomi+Kreatif"
+        }
+      }
+    },
+    "administrasi": {
+      "bagian-umum": {
+        "nama": "Bagian Umum",
+        "singkatan": "Bagian Umum",
+        "kategori": "Administrasi",
+        "pimpinan": {
+          "ketua": {
+            "nama": "Ir. Budi Santoso, M.M.",
+            "foto": "/images/sub-bagian/bagian-umum/kepala.jpg",
+            "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Kepala+Bagian+Umum",
+            "jabatan": "Kepala Bagian Umum",
+            "periode": "2024-2029"
+          }
+        },
+        "profile_singkat": "Bagian Umum LPPM yang menangani administrasi umum, keuangan, kepegawaian, sarana prasarana, dan layanan pendukung lainnya untuk menunjang operasional LPPM.",
+        "tugas_fungsi": [
+          "Mengelola administrasi kepegawaian dan keuangan LPPM",
+          "Menyediakan layanan sarana prasarana dan fasilitas kantor",
+          "Melakukan pengadaan barang dan jasa",
+          "Mengelola sistem informasi administrasi",
+          "Menyelenggarakan layanan umum dan pendukung operasional"
+        ],
+        "struktur_organisasi": {
+          "gambar_struktur": "/images/sub-bagian/bagian-umum/struktur-organisasi.jpg",
+          "gambar_placeholder": "https://via.placeholder.com/1200x800/f0f9ff/105091?text=Struktur+Organisasi+Bagian+Umum"
+        }
+      }
+    }
+  }
+}
