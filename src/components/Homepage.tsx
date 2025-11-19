@@ -1,4 +1,12 @@
 import { Link } from "react-router-dom";
+import {
+  FaSearch,
+  FaHandsHelping,
+  FaDatabase,
+  FaBook,
+  FaInfoCircle,
+  FaArrowRight
+} from "react-icons/fa";
 
 const Homepage = () => {
   return (
@@ -49,140 +57,110 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Statistics Section */}
-      <section className="bg-gray-50 py-16">
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { number: "500+", label: "Penelitian per Tahun" },
-              { number: "300+", label: "Pengabdian Masyarakat" },
-              { number: "50+", label: "Pusat Studi" },
-              { number: "1000+", label: "Peneliti" },
-            ].map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-4xl lg:text-5xl font-bold text-[#105091] mb-2">
-                  {stat.number}
-                </div>
-                <div className="text-gray-600 text-lg">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Services Section */}
-      <section className="py-20">
+      {/* Portal Layanan Section */}
+      <section className="bg-gradient-to-br from-gray-50 to-white py-20">
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Layanan Kami
+            <h2 className="font-display text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+              PORTAL LAYANAN
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Berbagai layanan penelitian dan pengabdian masyarakat untuk mendukung
-              pengembangan ilmu pengetahuan dan pemberdayaan komunitas.
+            <p className="font-body text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+              LPPM Universitas Lampung Menyediakan Berbagai Layanan Untuk Mendukung Kegiatan Penelitian,
+              Pengabdian Kepada Masyarakat, Serta Akses Informasi Dan Publikasi Ilmiah.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 title: "Penelitian",
-                description: "Fasilitas dan dukungan untuk kegiatan penelitian yang inovatif dan bermutu.",
-                icon: "🔬",
-                link: "/penelitian",
+                icon: FaSearch,
+                color: "from-blue-500 to-blue-600",
+                description: "Kelola dan ajukan proposal penelitian",
+                link: "/penelitian"
               },
               {
-                title: "Pengabdian Masyarakat",
-                description: "Program pemberdayaan masyarakat berbasis penelitian dan kearifan lokal.",
-                icon: "🤝",
-                link: "/pengabdian",
-              },
-              {
-                title: "Publikasi Ilmiah",
-                description: "Platform publikasi karya ilmiah untuk mendukung diseminasi hasil penelitian.",
-                icon: "📚",
-                link: "https://journal.lppm.unila.ac.id",
-                external: true,
-              },
-              {
-                title: "Kerjasama",
-                description: "Jalinan kerjasama institusional untuk pengembangan riset kolaboratif.",
-                icon: "🤝",
-                link: "/kerjasama",
-              },
-              {
-                title: "Sistem Informasi",
-                description: "Sistem terintegrasi untuk pengelolaan penelitian dan pengabdian masyarakat.",
-                icon: "💻",
-                link: "https://silemlit.unila.ac.id",
-                external: true,
+                title: "Pengabdian",
+                icon: FaHandsHelping,
+                color: "from-green-500 to-green-600",
+                description: "Program pengabdian kepada masyarakat",
+                link: "/pengabdian"
               },
               {
                 title: "Repository",
-                description: "Digital repository untuk menyimpan dan mengakses karya ilmiah Unila.",
-                icon: "📁",
+                icon: FaDatabase,
+                color: "from-purple-500 to-purple-600",
+                description: "Koleksi karya ilmiah universitas",
                 link: "https://repository.lppm.unila.ac.id",
-                external: true,
+                external: true
               },
-            ].map((service, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
-              >
-                <div className="p-8">
-                  <div className="text-5xl mb-4">{service.icon}</div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                    {service.title}
-                  </h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">
-                    {service.description}
-                  </p>
-                  {service.external ? (
-                    <a
-                      href={service.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center text-[#105091] font-semibold hover:text-[#0a3b6d] transition-colors duration-200"
-                    >
-                      Selengkapnya
-                      <svg
-                        className="w-5 h-5 ml-2"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
+              {
+                title: "Journal",
+                icon: FaBook,
+                color: "from-orange-500 to-orange-600",
+                description: "Jurnal ilmiah dan publikasi",
+                link: "https://journal.lppm.unila.ac.id",
+                external: true
+              },
+              {
+                title: "PPID",
+                icon: FaInfoCircle,
+                color: "from-red-500 to-red-600",
+                description: "Informasi publik dan transparansi",
+                link: "https://ppid.lppm.unila.ac.id",
+                external: true
+              }
+            ].map((portal, index) => {
+              const IconComponent = portal.icon;
+              return (
+                <div
+                  key={index}
+                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden border border-gray-100"
+                >
+                  <div className={`h-2 bg-gradient-to-r ${portal.color}`}></div>
+                  <div className="p-8">
+                    <div className={`w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-r ${portal.color} flex items-center justify-center transform transition-transform duration-300 group-hover:scale-110`}>
+                      <IconComponent className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="font-display text-xl font-bold text-gray-900 mb-3 text-center">
+                      {portal.title}
+                    </h3>
+                    <p className="font-body text-gray-600 mb-6 text-center leading-relaxed">
+                      {portal.description}
+                    </p>
+                    {portal.external ? (
+                      <a
+                        href={portal.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center text-[#105091] font-semibold hover:text-[#0a3b6d] transition-colors duration-200 group"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                        />
-                      </svg>
-                    </a>
-                  ) : (
-                    <Link
-                      to={service.link}
-                      className="inline-flex items-center text-[#105091] font-semibold hover:text-[#0a3b6d] transition-colors duration-200"
-                    >
-                      Selengkapnya
-                      <svg
-                        className="w-5 h-5 ml-2"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
+                        Akses Portal
+                        <FaArrowRight className="w-4 h-4 ml-2 transform transition-transform duration-300 group-hover:translate-x-1" />
+                      </a>
+                    ) : (
+                      <Link
+                        to={portal.link}
+                        className="flex items-center justify-center text-[#105091] font-semibold hover:text-[#0a3b6d] transition-colors duration-200 group"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </Link>
-                  )}
+                        Akses Portal
+                        <FaArrowRight className="w-4 h-4 ml-2 transform transition-transform duration-300 group-hover:translate-x-1" />
+                      </Link>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link
+              to="/layanan"
+              className="inline-flex items-center bg-gradient-to-r from-[#105091] to-[#0a3b6d] text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-[#0a3b6d] hover:to-[#082847] transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              Lihat Semua Layanan
+              <FaArrowRight className="w-5 h-5 ml-2" />
+            </Link>
           </div>
         </div>
       </section>
@@ -230,32 +208,6 @@ const Homepage = () => {
               className="bg-[#105091] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#0a3b6d] transition-colors duration-200"
             >
               Lihat Semua Berita
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="bg-gradient-to-r from-[#105091] to-[#0a3b6d] py-16">
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 text-center">
-          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
-            Bergabunglah dengan Kami
-          </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Mari bersama-sama memajukan penelitian dan pengabdian masyarakat untuk Indonesia yang lebih baik.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/kontak"
-              className="bg-white text-[#105091] px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-lg"
-            >
-              Hubungi Kami
-            </Link>
-            <Link
-              to="/berita"
-              className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-[#105091] transition-all duration-300 transform hover:scale-105"
-            >
-              Pelajari Lebih Lanjut
             </Link>
           </div>
         </div>

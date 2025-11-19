@@ -1,12 +1,12 @@
 /**
- * Komponen Header clean dan fungsional untuk LPPM Unila.
- * Design sederhana, responsif, dan mudah digunakan dengan dropdown navigasi.
+ * Komponen Header modern dan elegan untuk LPPM Unila.
+ * Design modern dengan font yang bagus, responsif, dan dropdown navigasi yang ditingkatkan.
  */
 
 "use client";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import LanguageSwitcher from "./LanguageSwitcher";
+import { ChevronDown, ExternalLink, Menu, X } from "lucide-react";
 
 type NavLink =
   | { name: string; href: string; type: "link" }
@@ -30,6 +30,20 @@ const navLinks: NavLink[] = [
       { name: "Visi & Misi", href: "/profil#visi-misi" },
       { name: "Tugas dan Fungsi", href: "/profil#tugas-fungsi" },
       { name: "Struktur Organisasi", href: "/profil#struktur-organisasi" },
+    ],
+  },
+  {
+    name: "Administrasi",
+    type: "dropdown",
+    items: [
+      { name: "Bagian Umum", href: "/administrasi/bagian-umum" },
+      { name: "Bagian Keuangan", href: "/administrasi/bagian-keuangan" },
+      { name: "Bagian Sumber Daya", href: "/administrasi/bagian-sumber-daya" },
+      { name: "Bagian Kerjasama", href: "/administrasi/bagian-kerjasama" },
+      { name: "Bagian Umum & Akademik", href: "/administrasi/bagian-umum-akademik" },
+      { name: "Bagian Penelitian", href: "/administrasi/bagian-penelitian" },
+      { name: "Bagian Pengabdian Masyarakat", href: "/administrasi/bagian-pengabdian-masyarakat" },
+      { name: "Bagian Inovasi & Kerjasama", href: "/administrasi/bagian-inovasi-kerjasama" },
     ],
   },
   {
@@ -115,171 +129,131 @@ const navLinks: NavLink[] = [
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50 rounded-b-3xl">
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-8">
-        <div className="flex items-center justify-between h-20">
+    <header className="bg-white/95 backdrop-blur-xs shadow-sm sticky top-0 z-50 rounded-b-3xl border-b border-gray-100/50">
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-24">
           {/* Logo */}
-          <div className="flex-shrink-0 flex items-center min-w-[260px]">
-            <Link to="/" className="flex items-center">
+          <div className="flex-shrink-0 flex items-center">
+            <Link to="/" className="flex items-center group">
               <img
                 src="/logo-lppm-unila.png"
                 alt="Logo LPPM Unila"
-                width={180}
-                height={48}
-                className="object-contain"
+                width={200}
+                height={52}
+                className="object-contain transition-transform duration-300 group-hover:scale-105"
               />
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex flex-1 justify-center items-center space-x-10">
-            {navLinks.map((link) =>
-              link.type === "link" ? (
-                <Link
-                  key={link.name}
-                  to={link.href}
-                  className="text-lg font-normal text-black hover:text-[#105091] transition-colors duration-200"
-                >
-                  {link.name}
-                </Link>
-              ) : (
-                <div key={link.name} className="relative group">
-                  <button className="text-lg font-normal text-black hover:text-[#105091] transition-colors duration-200 flex items-center space-x-1">
-                    <span>{link.name}</span>
-                    <svg
-                      className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
+          <nav className="hidden lg:flex flex-1 justify-center items-center">
+            <ul className="flex items-center space-x-2">
+              {navLinks.map((link) =>
+                link.type === "link" ? (
+                  <li key={link.name}>
+                    <Link
+                      to={link.href}
+                      className="font-display font-medium text-[15px] text-gray-700 hover:text-[#105091] px-4 py-2 rounded-lg hover:bg-gray-50/50 transition-all duration-200 relative group"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19 9l-7 7-7-7"
+                      {link.name}
+                      <span className="absolute bottom-0 left-1/2 w-0 h-0.5 bg-[#105091] transition-all duration-300 group-hover:w-8 transform -translate-x-1/2"></span>
+                    </Link>
+                  </li>
+                ) : (
+                  <li key={link.name} className="relative">
+                    <button
+                      className="font-display font-medium text-[15px] text-gray-700 hover:text-[#105091] px-4 py-2 rounded-lg hover:bg-gray-50/50 transition-all duration-200 flex items-center space-x-1 group"
+                      onMouseEnter={() => setActiveDropdown(link.name)}
+                      onMouseLeave={() => setActiveDropdown(null)}
+                    >
+                      <span>{link.name}</span>
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === link.name ? 'rotate-180' : ''}`}
                       />
-                    </svg>
-                  </button>
+                    </button>
 
-                  {/* Dropdown Menu */}
-                  <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                    <div className="py-2">
-                      {link.items.map((item) =>
-                        item.external ? (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center justify-between px-4 py-3 text-sm text-gray-700 hover:bg-[#105091] hover:text-white transition-colors duration-150 group/item"
-                          >
-                            <span className="flex-1">{item.name}</span>
-                            <svg
-                              className="w-3 h-3 ml-2 text-gray-400 group-hover/item:text-white transition-colors duration-150"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                              />
-                            </svg>
-                          </a>
-                        ) : (
-                          <Link
-                            key={item.name}
-                            to={item.href}
-                            className="flex items-center justify-between px-4 py-3 text-sm text-gray-700 hover:bg-[#105091] hover:text-white transition-colors duration-150 group/item"
-                          >
-                            <span className="flex-1">{item.name}</span>
-                          </Link>
-                        )
-                      )}
+                    {/* Enhanced Dropdown Menu */}
+                    <div
+                      className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100/50 backdrop-blur-lg transition-all duration-300 ${
+                        activeDropdown === link.name ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'
+                      } z-50`}
+                      onMouseEnter={() => setActiveDropdown(link.name)}
+                      onMouseLeave={() => setActiveDropdown(null)}
+                    >
+                      <div className="py-2">
+                        {link.items.map((item, index) => (
+                          <div key={item.name} className="relative">
+                            {item.external ? (
+                              <a
+                                href={item.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center justify-between px-5 py-3 text-sm font-body text-gray-600 hover:bg-gradient-to-r hover:from-[#105091] hover:to-[#0d3a6b] hover:text-white transition-all duration-200 group/item hover:px-6"
+                              >
+                                <span className="flex-1 font-medium">{item.name}</span>
+                                <ExternalLink className="w-3.5 h-3.5 ml-2 text-gray-400 group-hover/item:text-white transition-colors duration-200" />
+                              </a>
+                            ) : (
+                              <Link
+                                to={item.href}
+                                className="block px-5 py-3 text-sm font-body text-gray-600 hover:bg-gradient-to-r hover:from-[#105091] hover:to-[#0d3a6b] hover:text-white transition-all duration-200 group/item hover:px-6 font-medium"
+                              >
+                                {item.name}
+                              </Link>
+                            )}
+                            {index < link.items.length - 1 && (
+                              <div className="mx-5 h-px bg-gradient-to-r from-transparent via-gray-100 to-transparent"></div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                </div>
-              )
-            )}
+                  </li>
+                )
+              )}
+            </ul>
           </nav>
-
-          {/* Right Side Actions */}
-          <div className="hidden lg:flex items-center space-x-4 min-w-[160px] justify-end">
-            {/* Search Button */}
-            <Link
-              to="/search"
-              className="p-2 text-black hover:text-[#105091] transition-colors duration-200 rounded-full hover:bg-gray-100"
-              aria-label="Pencarian"
-              title="Pencarian"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </Link>
-
-            {/* Language Switcher */}
-            <LanguageSwitcher />
-          </div>
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-black hover:text-[#105091] focus:outline-none"
+              className="inline-flex items-center justify-center p-3 rounded-xl text-gray-700 hover:text-[#105091] hover:bg-gray-50 transition-all duration-200"
             >
               <span className="sr-only">Buka menu</span>
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 6h16M4 12h16m-7 6h7"
-                />
-              </svg>
+              {isMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="lg:hidden bg-white shadow-md rounded-b-3xl">
-          <div className="px-4 pt-2 pb-3 space-y-1">
+      {/* Enhanced Mobile Menu */}
+      <div className={`lg:hidden transition-all duration-300 ${isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+        <div className="bg-white/95 backdrop-blur-xs shadow-lg rounded-b-3xl border-t border-gray-100/50">
+          <div className="px-6 py-4 space-y-1">
             {navLinks.map((link) =>
               link.type === "link" ? (
                 <Link
                   key={`mobile-${link.name}`}
                   to={link.href}
                   onClick={() => setIsMenuOpen(false)}
-                  className="block px-3 py-2 rounded-md text-base font-medium text-black hover:text-white hover:bg-[#105091] transition-colors duration-200"
+                  className="block font-display font-medium text-[15px] text-gray-700 hover:text-white hover:bg-gradient-to-r hover:from-[#105091] hover:to-[#0d3a6b] px-4 py-3 rounded-xl transition-all duration-200"
                 >
                   {link.name}
                 </Link>
               ) : (
-                <div key={`mobile-${link.name}`} className="space-y-1">
-                  <div className="px-3 py-2 text-sm font-semibold text-gray-500 uppercase tracking-wider">
+                <div key={`mobile-${link.name}`} className="space-y-2">
+                  <div className="font-display font-semibold text-[13px] text-gray-500 uppercase tracking-wider px-4 py-2">
                     {link.name}
                   </div>
-                  <div className="ml-4 space-y-1">
+                  <div className="ml-2 space-y-1">
                     {link.items.map((item) =>
                       item.external ? (
                         <a
@@ -288,29 +262,17 @@ const Header = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={() => setIsMenuOpen(false)}
-                          className="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-white hover:bg-[#105091] transition-colors duration-200"
+                          className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-body text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-[#105091] hover:to-[#0d3a6b] transition-all duration-200 group/item"
                         >
-                          <span>{item.name}</span>
-                          <svg
-                            className="w-3 h-3 text-gray-400"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                            />
-                          </svg>
+                          <span className="font-medium">{item.name}</span>
+                          <ExternalLink className="w-3.5 h-3.5 text-gray-400 group-hover/item:text-white transition-colors duration-200" />
                         </a>
                       ) : (
                         <Link
                           key={item.name}
                           to={item.href}
                           onClick={() => setIsMenuOpen(false)}
-                          className="block px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-white hover:bg-[#105091] transition-colors duration-200"
+                          className="block px-4 py-3 rounded-xl text-sm font-body text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-[#105091] hover:to-[#0d3a6b] transition-all duration-200 font-medium"
                         >
                           {item.name}
                         </Link>
@@ -320,36 +282,9 @@ const Header = () => {
                 </div>
               )
             )}
-
-            {/* Mobile Search */}
-            <Link
-              to="/search"
-              onClick={() => setIsMenuOpen(false)}
-              className="flex items-center px-3 py-2 rounded-md text-base font-medium text-black hover:text-white hover:bg-[#105091] transition-colors duration-200"
-            >
-              <svg
-                className="w-5 h-5 mr-3"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-              Pencarian
-            </Link>
-
-            {/* Mobile Language Switcher */}
-            <div className="px-3 pt-4 border-t border-gray-200">
-              <LanguageSwitcher />
-            </div>
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 };
