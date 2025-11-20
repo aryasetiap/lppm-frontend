@@ -24,6 +24,45 @@ import {
 } from "react-icons/fa";
 import { useState, useEffect } from "react";
 
+// Add custom styles for animations
+const customStyles = `
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInWidth {
+    from {
+      width: 0;
+      opacity: 0;
+    }
+    to {
+      width: var(--final-width);
+      opacity: 1;
+    }
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+`;
+
 // Types for News API
 interface NewsItem {
   id: number;
@@ -73,6 +112,18 @@ interface StatisticsData {
 }
 
 const Homepage = () => {
+  // Inject custom styles
+  useEffect(() => {
+    const styleSheet = document.createElement('style');
+    styleSheet.type = 'text/css';
+    styleSheet.innerText = customStyles;
+    document.head.appendChild(styleSheet);
+
+    return () => {
+      document.head.removeChild(styleSheet);
+    };
+  }, []);
+
   // State for news data
   const [newsData, setNewsData] = useState<NewsItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -726,23 +777,50 @@ const Homepage = () => {
               {newsData.map((news, index) => (
                 <article
                   key={news.id}
-                  className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100"
+                  className="group relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-700 transform hover:-translate-y-3 overflow-hidden border border-white/50 hover:border-[#105091]/20"
+                  style={{
+                    animationDelay: `${index * 100}ms`,
+                    animation: "fadeInUp 0.8s ease-out forwards",
+                    opacity: 0
+                  }}
                 >
-                  {/* Image Section */}
-                  <div className="relative h-48 overflow-hidden">
+                  {/* Gradient Border Top */}
+                  <div className={`h-1 bg-gradient-to-r ${getCategoryColor(news.category)} opacity-80`}></div>
+
+                  {/* Image Section with Modern Design */}
+                  <div className="relative h-56 overflow-hidden">
+                    {/* Background Pattern */}
+                    <div className="absolute inset-0 opacity-5">
+                      <div
+                        className="absolute inset-0"
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23105091' fill-opacity='0.3'%3E%3Cpath d='M10 10c0 2.21-1.79 4-4 4s-4-1.79-4-4 1.79-4 4-4 4 1.79 4 4zm4 0c0 2.21-1.79 4-4 4s-4-1.79-4-4 1.79-4 4-4 4 1.79 4 4z'/%3E%3C/g%3E%3C/svg%3E")`,
+                        }}
+                      ></div>
+                    </div>
+
                     {news.thumbnail ? (
                       <img
                         src={news.thumbnail}
                         alt={news.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:brightness-110"
                         onError={(e) => {
-                          // Fallback to gradient if image fails
+                          // Enhanced fallback to gradient if image fails
                           e.currentTarget.style.display = 'none';
                           const parent = e.currentTarget.parentElement;
                           if (parent) {
                             const fallbackDiv = document.createElement('div');
-                            fallbackDiv.className = `h-full bg-gradient-to-br ${getCategoryColor(news.category)} flex items-center justify-center`;
-                            fallbackDiv.innerHTML = `<svg class="w-16 h-16 text-white opacity-50" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd" /><path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z" /></svg>`;
+                            fallbackDiv.className = `h-full bg-gradient-to-br ${getCategoryColor(news.category)} flex items-center justify-center relative`;
+                            fallbackDiv.innerHTML = `
+                              <div class="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
+                              <div class="relative z-10 text-center">
+                                <svg class="w-20 h-20 text-white/70 mx-auto mb-3" fill="currentColor" viewBox="0 0 20 20">
+                                  <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd" />
+                                  <path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z" />
+                                </svg>
+                                <p class="text-white/80 text-sm font-medium">${news.category}</p>
+                              </div>
+                            `;
                             parent.appendChild(fallbackDiv);
                           }
                         }}
@@ -751,78 +829,124 @@ const Homepage = () => {
                       <div
                         className={`h-full bg-gradient-to-br ${getCategoryColor(
                           news.category
-                        )} flex items-center justify-center`}
+                        )} flex items-center justify-center relative`}
                       >
-                        <FaNewspaper className="w-16 h-16 text-white opacity-50" />
+                        {/* Overlay Pattern */}
+                        <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
+
+                        {/* Icon and Text */}
+                        <div className="relative z-10 text-center">
+                          <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center mx-auto mb-3 border border-white/30">
+                            <FaNewspaper className="w-10 h-10 text-white/80" />
+                          </div>
+                          <p className="text-white/90 text-sm font-semibold">{news.category}</p>
+                        </div>
                       </div>
                     )}
 
-                    {/* Category Badge */}
-                    <div className="absolute top-4 left-4">
-                      <span
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${getCategoryColor(
-                          news.category
-                        )} shadow-lg`}
-                      >
-                        <FaTag className="w-3 h-3 mr-1" />
-                        {news.category}
-                      </span>
-                    </div>
+                    {/* Modern Category Badge with Glass Effect */}
+                    <div className="absolute top-4 left-4 z-20">
+                      <div className="relative group/badge">
+                        {/* Glow Effect */}
+                        <div className={`absolute inset-0 bg-gradient-to-r ${getCategoryColor(news.category)} blur-lg opacity-50 group-hover/badge:opacity-70 transition-opacity duration-300`}></div>
 
-                    {/* Date Badge */}
-                    <div className="absolute top-4 right-4">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/90 backdrop-blur-sm text-gray-700 shadow-lg">
-                        <FaCalendarAlt className="w-3 h-3 mr-1" />
-                        {formatDate(news.date)}
-                      </span>
-                    </div>
-
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-
-                  {/* Content Section */}
-                  <div className="p-6">
-                    {news.author && (
-                      <div className="flex items-center text-sm text-gray-500 mb-3">
-                        <span className="flex items-center">
-                          <FaUser className="w-4 h-4 mr-1" />
-                          {news.author}
+                        <span className={`relative inline-flex items-center px-4 py-2 rounded-full text-xs font-bold text-white bg-gradient-to-r ${getCategoryColor(news.category)} shadow-lg backdrop-blur-sm border border-white/20`}>
+                          <FaTag className="w-3 h-3 mr-1.5" />
+                          {news.category}
                         </span>
                       </div>
+                    </div>
+
+                    {/* Modern Date Badge */}
+                    <div className="absolute top-4 right-4 z-20">
+                      <div className="relative group/date">
+                        {/* Glow Effect */}
+                        <div className="absolute inset-0 bg-white/30 blur-lg opacity-50 group-hover/date:opacity-70 transition-opacity duration-300"></div>
+
+                        <span className="relative inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-white/90 backdrop-blur-md text-gray-700 shadow-lg border border-white/50">
+                          <FaCalendarAlt className="w-3 h-3 mr-1.5 text-[#105091]" />
+                          {formatDate(news.date)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Animated Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+
+                    {/* Floating Action Button on Hover */}
+                    <div className="absolute bottom-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                      <Link
+                        to={`/berita/${news.slug}`}
+                        className={`inline-flex items-center justify-center w-12 h-12 bg-gradient-to-r ${getCategoryColor(news.category)} rounded-full shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-110 hover:rotate-12`}
+                      >
+                        <FaArrowRight className="w-5 h-5 text-white" />
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Enhanced Content Section */}
+                  <div className="p-8 relative">
+                    {/* Subtle Background Gradient */}
+                    <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#105091]/10 to-transparent"></div>
+
+                    {news.author && (
+                      <div className="flex items-center text-sm text-gray-600 mb-4 font-medium">
+                        <div className="flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                          <FaUser className="w-4 h-4 mr-2 text-[#105091]" />
+                          <span>{news.author}</span>
+                        </div>
+                      </div>
                     )}
 
-                    <h3 className="font-display text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-[#105091] transition-colors duration-300">
+                    <h3 className="font-display text-2xl font-bold text-gray-900 mb-4 line-clamp-2 group-hover:text-[#105091] transition-colors duration-500 leading-tight">
                       {news.title}
                     </h3>
 
-                    <p className="font-body text-gray-600 mb-4 leading-relaxed line-clamp-3">
+                    <p className="font-body text-gray-600 mb-6 leading-relaxed line-clamp-3 text-sm">
                       {news.excerpt}
                     </p>
 
-                    {/* Tags */}
+                    {/* Enhanced Tags Section */}
                     {news.tags && news.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-4">
+                      <div className="flex flex-wrap gap-2 mb-6">
                         {news.tags.slice(0, 3).map((tag, tagIndex) => (
                           <span
                             key={tagIndex}
-                            className="inline-flex items-center px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition-colors duration-200"
+                            className="inline-flex items-center px-3 py-1 text-xs font-medium bg-gradient-to-r from-gray-100 to-gray-50 text-gray-700 rounded-full hover:from-[#105091]/10 hover:to-blue-50 hover:text-[#105091] transition-all duration-300 border border-gray-200 hover:border-[#105091]/30 cursor-default"
                           >
                             #{tag}
                           </span>
                         ))}
+                        {news.tags.length > 3 && (
+                          <span className="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-500">
+                            +{news.tags.length - 3}
+                          </span>
+                        )}
                       </div>
                     )}
 
-                    {/* Read More Button */}
-                    <Link
-                      to={`/berita/${news.slug}`}
-                      className="inline-flex items-center text-[#105091] font-semibold hover:text-[#0a3b6d] transition-all duration-200 group"
-                    >
-                      <span>Baca Selengkapnya</span>
-                      <FaArrowRight className="w-4 h-4 ml-2 transform transition-transform duration-300 group-hover:translate-x-1" />
-                    </Link>
+                    {/* Enhanced Read More Button */}
+                    <div className="flex items-center justify-between">
+                      <Link
+                        to={`/berita/${news.slug}`}
+                        className="group/btn inline-flex items-center text-[#105091] font-semibold hover:text-[#0a3b6d] transition-all duration-300"
+                      >
+                        <span className="text-sm font-bold">Baca Selengkapnya</span>
+                        <div className="ml-2 flex items-center justify-center w-8 h-8 bg-[#105091]/10 rounded-full group-hover/btn:bg-[#105091]/20 transition-all duration-300">
+                          <FaArrowRight className="w-4 h-4 transform transition-transform duration-300 group-hover/btn:translate-x-1" />
+                        </div>
+                      </Link>
+
+                      {/* Reading Time */}
+                      <div className="flex items-center text-xs text-gray-500">
+                        <FaClock className="w-3 h-3 mr-1" />
+                        {getReadingTime(news.content, news.read_time)} min
+                      </div>
+                    </div>
                   </div>
+
+                  {/* Bottom Accent Border */}
+                  <div className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r ${getCategoryColor(news.category)} opacity-60 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left`}></div>
                 </article>
               ))}
             </div>
