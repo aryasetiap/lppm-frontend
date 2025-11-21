@@ -9,16 +9,15 @@ import {
   FaInstagram,
   FaWhatsapp,
   FaYoutube,
+  FaTiktok,
   FaExternalLinkAlt,
   FaMapMarkerAlt,
-  FaPhone,
   FaEnvelope,
   FaClock,
   FaBuilding,
   FaGraduationCap,
   FaGlobe,
   FaArrowRight,
-  FaPaperPlane,
 } from "react-icons/fa";
 
 /**
@@ -102,6 +101,11 @@ const footerSections = {
         href: "/puslit/pusat-penelitian-inkubator-bisnis-hilirisasi-inovasi-ketahanan-pangan-dan-sertifikasi-halal",
         description: "Inkubasi bisnis",
       },
+      {
+        name: "Unila Halal Center",
+        href: "/puslit/unila-halal-center",
+        description: "Layanan pemeriksa halal",
+      },
     ],
   },
   layanan: {
@@ -142,14 +146,14 @@ const footerSections = {
 const socialMedia = [
   {
     name: "Facebook",
-    href: "https://facebook.com/lppmunila",
+    href: "https://www.facebook.com/profile.php?id=100093413097453&locale=id_ID",
     icon: FaFacebook,
     gradient: "from-blue-600 to-blue-700",
     hover: "hover:shadow-blue-500/25",
   },
   {
     name: "Instagram",
-    href: "https://instagram.com/lppmunila",
+    href: "https://www.instagram.com/lppm_unila/?hl=en",
     icon: FaInstagram,
     gradient: "from-pink-600 via-purple-600 to-orange-600",
     hover: "hover:shadow-pink-500/25",
@@ -162,8 +166,15 @@ const socialMedia = [
     hover: "hover:shadow-green-500/25",
   },
   {
+    name: "TikTok",
+    href: "https://www.tiktok.com/@lppmunila",
+    icon: FaTiktok,
+    gradient: "from-gray-700 to-black",
+    hover: "hover:shadow-gray-500/25",
+  },
+  {
     name: "YouTube",
-    href: "https://youtube.com/@lppmunila",
+    href: "https://www.youtube.com/@lppmunila2879",
     icon: FaYoutube,
     gradient: "from-red-600 to-red-700",
     hover: "hover:shadow-red-500/25",
@@ -280,20 +291,6 @@ const Footer = () => {
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <FaPhone className="w-5 h-5 text-blue-300" />
-                        </div>
-                        <div>
-                          <h5 className="font-semibold text-white">Telepon</h5>
-                          <a
-                            href="tel:+6285380464628"
-                            className="text-blue-100 text-sm hover:text-white transition-colors duration-200 mt-1 block"
-                          >
-                            +62 853-8046-4628
-                          </a>
-                        </div>
-                      </div>
                     </div>
                     <div className="space-y-4">
                       <div className="flex items-center space-x-3">
@@ -349,6 +346,14 @@ const Footer = () => {
                   © {new Date().getFullYear()} LPPM Universitas Lampung. All
                   rights reserved.
                 </p>
+              </div>
+              <div className="flex justify-center flex-shrink-0 px-4">
+                <img
+                  src="/logolppm.png"
+                  alt="Kolaborasi Logo LPPM"
+                  className="h-14 lg:h-16 w-auto object-contain drop-shadow-md"
+                  loading="lazy"
+                />
               </div>
               <div className="flex flex-wrap items-center justify-center gap-6 text-sm">
                 <div className="flex items-center space-x-1 text-blue-100">

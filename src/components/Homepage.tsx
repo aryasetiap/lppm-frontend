@@ -1,10 +1,6 @@
 import { Link } from "react-router-dom";
 import {
-  FaSearch,
   FaHandsHelping,
-  FaDatabase,
-  FaBook,
-  FaInfoCircle,
   FaArrowRight,
   FaCalendarAlt,
   FaUser,
@@ -13,10 +9,8 @@ import {
   FaNewspaper,
   FaChartBar,
   FaChartLine,
-  FaUsers,
   FaProjectDiagram,
   FaTrophy,
-  FaUniversity,
   FaRocket,
   FaLightbulb,
   FaGlobe,
@@ -93,6 +87,9 @@ interface StatisticsData {
     pengabdian_blu: number;
     paten: number;
     haki: number;
+    pengabdian_breakdown?: {
+      [key: string]: number;
+    };
   }[];
   total_summary: {
     total_penelitian_blu: number;
@@ -248,6 +245,19 @@ const Homepage = () => {
     fetchNews();
   }, []);
 
+  const yearsCount = statsData?.yearly_data.length ?? 0;
+  const safeYearsCount = yearsCount > 0 ? yearsCount : 1;
+  const yearsRangeLabel =
+    yearsCount > 0 ? `${yearsCount} Tahun Terakhir` : "Periode Terbaru";
+  const chartMaxValue =
+    statsData && statsData.yearly_data.length > 0
+      ? Math.max(
+          ...statsData.yearly_data.map((d) =>
+            Math.max(d.penelitian_blu, d.pengabdian_blu)
+          )
+        )
+      : 0;
+
   // Format date utility - handle both API formats
   const formatDate = (dateString: string) => {
     // If date is already formatted like "05 Nov 2025", return as-is
@@ -279,6 +289,9 @@ const Homepage = () => {
     const words = content.split(" ").length;
     return Math.ceil(words / wordsPerMinute);
   };
+
+  const formatTrend = (value: number) =>
+    `${value >= 0 ? "+" : ""}${value.toFixed(1)}%`;
 
   // Category colors
   const getCategoryColor = (category: string) => {
@@ -1019,8 +1032,8 @@ const Homepage = () => {
             </h2>
             <p className="font-body text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
               Data dan statistik terkini kegiatan penelitian BLU, pengabdian
-              BLU, serta paten dan HKI LPPM Universitas Lampung dalam 5 tahun
-              terakhir.
+              BLU, serta paten dan HKI LPPM Universitas Lampung dalam enam tahun
+              terakhir (periode 2020-2025).
             </p>
             {statsData && (
               <p className="text-blue-200 text-sm mt-4">
@@ -1072,12 +1085,12 @@ const Homepage = () => {
                       statsData.total_summary.total_penelitian_blu.toLocaleString(
                         "id-ID"
                       ),
-                    subtitle: "5 Tahun Terakhir",
+                    subtitle: yearsRangeLabel,
                     icon: FaProjectDiagram,
                     color: "from-emerald-400 to-emerald-600",
-                    trend: `+${statsData.total_summary.growth_penelitian.toFixed(
-                      1
-                    )}%`,
+                    trend: formatTrend(
+                      statsData.total_summary.growth_penelitian
+                    ),
                   },
                   {
                     title: "Total Pengabdian BLU",
@@ -1085,12 +1098,12 @@ const Homepage = () => {
                       statsData.total_summary.total_pengabdian_blu.toLocaleString(
                         "id-ID"
                       ),
-                    subtitle: "5 Tahun Terakhir",
+                    subtitle: yearsRangeLabel,
                     icon: FaHandsHelping,
                     color: "from-blue-400 to-blue-600",
-                    trend: `+${statsData.total_summary.growth_pengabdian.toFixed(
-                      1
-                    )}%`,
+                    trend: formatTrend(
+                      statsData.total_summary.growth_pengabdian
+                    ),
                   },
                   {
                     title: "Total Paten",
@@ -1098,12 +1111,10 @@ const Homepage = () => {
                       statsData.total_summary.total_paten.toLocaleString(
                         "id-ID"
                       ),
-                    subtitle: "5 Tahun Terakhir",
+                    subtitle: yearsRangeLabel,
                     icon: FaTrophy,
                     color: "from-purple-400 to-purple-600",
-                    trend: `+${statsData.total_summary.growth_paten.toFixed(
-                      1
-                    )}%`,
+                    trend: formatTrend(statsData.total_summary.growth_paten),
                   },
                   {
                     title: "Total HKI",
@@ -1111,12 +1122,10 @@ const Homepage = () => {
                       statsData.total_summary.total_haki.toLocaleString(
                         "id-ID"
                       ),
-                    subtitle: "5 Tahun Terakhir",
+                    subtitle: yearsRangeLabel,
                     icon: FaAward,
                     color: "from-orange-400 to-orange-600",
-                    trend: `+${statsData.total_summary.growth_haki.toFixed(
-                      1
-                    )}%`,
+                    trend: formatTrend(statsData.total_summary.growth_haki),
                   },
                 ].map((stat, index) => {
                   const IconComponent = stat.icon;
@@ -1168,7 +1177,8 @@ const Homepage = () => {
                         <FaChartLine className="w-10 h-10 text-white" />
                       </div>
                       <h3 className="font-display text-2xl font-bold text-white">
-                        Tren Kinerja 5 Tahun
+                        Tren Kinerja{" "}
+                        {yearsCount > 0 ? `${yearsCount} Tahun` : "Multitahun"}
                       </h3>
                       <p className="text-blue-200 text-sm mt-2">Perkembangan Penelitian, Pengabdian, dan HKI</p>
                     </div>
@@ -1184,7 +1194,9 @@ const Homepage = () => {
                           style={{ bottom: `${line}%` }}
                         >
                           <span className="absolute -left-12 -top-2 text-xs text-blue-200 font-medium">
-                            {Math.round((825 * (100 - line)) / 100)}
+                            {Math.round(
+                              ((chartMaxValue || 0) * (100 - line)) / 100
+                            )}
                           </span>
                         </div>
                       ))}
@@ -1193,9 +1205,7 @@ const Homepage = () => {
                     {/* Chart Container */}
                     <div className="relative h-full flex items-end justify-around px-4">
                       {statsData.yearly_data.map((yearData, index) => {
-                        const maxValue = Math.max(
-                          ...statsData.yearly_data.map(d => Math.max(d.penelitian_blu, d.pengabdian_blu))
-                        );
+                        const maxValue = chartMaxValue || 1;
                         const penelitianHeight = (yearData.penelitian_blu / maxValue) * 240; // 240px is max height
                         const pengabdianHeight = (yearData.pengabdian_blu / maxValue) * 240;
 
@@ -1278,13 +1288,15 @@ const Homepage = () => {
                       </div>
                     </div>
                     <h4 className="font-display text-xl font-bold text-white mb-2">Total Penelitian</h4>
-                    <p className="text-emerald-100 text-sm mb-4">5 tahun terakhir</p>
+                    <p className="text-emerald-100 text-sm mb-4">{yearsRangeLabel}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-emerald-200 text-xs">Growth</span>
                       <div className="flex items-center space-x-1">
                         <FaChartLine className="w-3 h-3 text-emerald-300" />
                         <span className="text-emerald-300 font-bold text-sm">
-                          +{statsData.total_summary.growth_penelitian.toFixed(1)}%
+                        {formatTrend(
+                          statsData.total_summary.growth_penelitian
+                        )}
                         </span>
                       </div>
                     </div>
@@ -1301,13 +1313,15 @@ const Homepage = () => {
                       </div>
                     </div>
                     <h4 className="font-display text-xl font-bold text-white mb-2">Total Pengabdian</h4>
-                    <p className="text-blue-100 text-sm mb-4">5 tahun terakhir</p>
+                    <p className="text-blue-100 text-sm mb-4">{yearsRangeLabel}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-blue-200 text-xs">Growth</span>
                       <div className="flex items-center space-x-1">
                         <FaChartLine className="w-3 h-3 text-blue-300" />
                         <span className="text-blue-300 font-bold text-sm">
-                          +{statsData.total_summary.growth_pengabdian.toFixed(1)}%
+                        {formatTrend(
+                          statsData.total_summary.growth_pengabdian
+                        )}
                         </span>
                       </div>
                     </div>
@@ -1426,13 +1440,15 @@ const Homepage = () => {
                   <div className="space-y-2">
                     <div className="text-2xl font-bold text-emerald-300">
                       {Math.round(
-                        statsData.total_summary.total_penelitian_blu / 5
+                        statsData.total_summary.total_penelitian_blu /
+                          safeYearsCount
                       )}
                     </div>
                     <div className="text-sm text-blue-100">Penelitian BLU</div>
                     <div className="text-2xl font-bold text-blue-300">
                       {Math.round(
-                        statsData.total_summary.total_pengabdian_blu / 5
+                        statsData.total_summary.total_pengabdian_blu /
+                          safeYearsCount
                       )}
                     </div>
                     <div className="text-sm text-blue-100">Pengabdian BLU</div>

@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ChevronDown,
+  ChevronRight,
   ExternalLink,
   Menu,
   X,
@@ -31,6 +32,12 @@ type NavLink =
         href: string;
         external?: boolean;
         description?: string;
+        subItems?: {
+          name: string;
+          href: string;
+          external?: boolean;
+          description?: string;
+        }[];
       }[];
     };
 
@@ -114,6 +121,13 @@ const navLinks: NavLink[] = [
         name: "Pusat Penelitian Inkubator Bisnis, Hilirisasi Inovasi, Ketahanan Pangan dan Sertifikasi Halal",
         href: "/puslit/pusat-penelitian-inkubator-bisnis-hilirisasi-inovasi-ketahanan-pangan-dan-sertifikasi-halal",
         description: "Inkubasi dan inovasi bisnis",
+        subItems: [
+          {
+            name: "Unila Halal Center",
+            href: "/puslit/unila-halal-center",
+            description: "Lembaga Pemeriksa Halal Unila",
+          },
+        ],
       },
       {
         name: "Pusat Penelitian Manajemen Sistem Informasi, Komunikasi, Digitalisasi dan Kolaborasi Riset",
@@ -180,11 +194,29 @@ const navLinks: NavLink[] = [
       },
     ],
   },
+  {
+    name: "POS-AP",
+    type: "dropdown",
+    icon: Globe,
+    items: [
+      {
+        name: "Download",
+        href: "/pos-ap/download",
+        description: "Unduhan berkas POS-AP",
+      },
+      {
+        name: "Dokumen",
+        href: "/pos-ap/dokumen",
+        description: "Dokumen pedoman POS-AP",
+      },
+    ],
+  },
 ];
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [hoveredMegaItem, setHoveredMegaItem] = useState<string | null>(null);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[100]">
@@ -295,7 +327,12 @@ const Header = () => {
                       >
                         <div className="p-2">
                           {link.items.map((item, index) => (
-                            <div key={item.name} className="relative">
+                            <div
+                              key={item.name}
+                              className="relative"
+                              onMouseEnter={() => setHoveredMegaItem(item.name)}
+                              onMouseLeave={() => setHoveredMegaItem(null)}
+                            >
                               {item.external ? (
                                 <a
                                   href={item.href}
@@ -338,6 +375,60 @@ const Header = () => {
                                   </div>
                                 </Link>
                               )}
+                            {item.subItems && item.subItems.length > 0 && (
+                              <div
+                                className={`absolute top-3 left-full ml-4 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 transition-all duration-200 ${
+                                  hoveredMegaItem === item.name
+                                    ? "opacity-100 translate-x-0 visible"
+                                    : "opacity-0 -translate-x-2 pointer-events-none invisible"
+                                }`}
+                              >
+                                <div className="space-y-3">
+                                  {item.subItems.map((subItem) =>
+                                    subItem.external ? (
+                                      <a
+                                        key={subItem.name}
+                                        href={subItem.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-start justify-between text-sm text-gray-600 hover:text-[#105091] transition-colors duration-200"
+                                      >
+                                        <div>
+                                          <div className="flex items-center space-x-2 font-semibold">
+                                            <ChevronRight className="w-3 h-3 text-[#105091]" />
+                                            <span>{subItem.name}</span>
+                                          </div>
+                                          {subItem.description && (
+                                            <p className="text-xs text-gray-500 mt-1 ml-5">
+                                              {subItem.description}
+                                            </p>
+                                          )}
+                                        </div>
+                                        <ExternalLink className="w-3 h-3 text-gray-400" />
+                                      </a>
+                                    ) : (
+                                      <Link
+                                        key={subItem.name}
+                                        to={subItem.href}
+                                        className="flex items-start text-sm text-gray-600 hover:text-[#105091] transition-colors duration-200"
+                                      >
+                                        <div>
+                                          <div className="flex items-center space-x-2 font-semibold">
+                                            <ChevronRight className="w-3 h-3 text-[#105091]" />
+                                            <span>{subItem.name}</span>
+                                          </div>
+                                          {subItem.description && (
+                                            <p className="text-xs text-gray-500 mt-1 ml-5">
+                                              {subItem.description}
+                                            </p>
+                                          )}
+                                        </div>
+                                      </Link>
+                                    )
+                                  )}
+                                </div>
+                              </div>
+                            )}
                               {index < link.items.length - 1 && (
                                 <div className="mx-4 h-px bg-gradient-to-r from-transparent via-gray-100 to-transparent"></div>
                               )}
@@ -398,42 +489,74 @@ const Header = () => {
                   </div>
                 </div>
                 <div className="ml-4 space-y-1">
-                  {link.items.map((item) =>
-                    item.external ? (
-                      <a
-                        key={item.name}
-                        href={item.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => setIsMenuOpen(false)}
-                        className="group/item flex items-center justify-between px-4 py-3 rounded-xl font-body text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-[#105091] hover:to-blue-600 transition-all duration-300"
-                      >
-                        <div>
+                  {link.items.map((item) => (
+                    <div key={item.name} className="space-y-1">
+                      {item.external ? (
+                        <a
+                          href={item.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setIsMenuOpen(false)}
+                          className="group/item flex items-center justify-between px-4 py-3 rounded-xl font-body text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-[#105091] hover:to-blue-600 transition-all duration-300"
+                        >
+                          <div>
+                            <div className="font-medium">{item.name}</div>
+                            {item.description && (
+                              <div className="text-xs text-gray-500 mt-1">
+                                {item.description}
+                              </div>
+                            )}
+                          </div>
+                          <ExternalLink className="w-4 h-4 text-gray-400 group-hover/item:text-white transition-colors duration-200" />
+                        </a>
+                      ) : (
+                        <Link
+                          to={item.href}
+                          onClick={() => setIsMenuOpen(false)}
+                          className="block px-4 py-3 rounded-xl font-body text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-[#105091] hover:to-blue-600 transition-all duration-300"
+                        >
                           <div className="font-medium">{item.name}</div>
                           {item.description && (
                             <div className="text-xs text-gray-500 mt-1">
                               {item.description}
                             </div>
                           )}
+                        </Link>
+                      )}
+                      {item.subItems && item.subItems.length > 0 && (
+                        <div className="ml-8 space-y-1">
+                          {item.subItems.map((subItem) =>
+                            subItem.external ? (
+                              <a
+                                key={subItem.name}
+                                href={subItem.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={() => setIsMenuOpen(false)}
+                                className="flex items-center justify-between px-4 py-2 rounded-xl text-sm text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-[#105091]/70 hover:to-blue-600/70 transition-all duration-300"
+                              >
+                                <div className="flex items-center space-x-2">
+                                  <ChevronRight className="w-3 h-3" />
+                                  <span className="font-medium">{subItem.name}</span>
+                                </div>
+                                <ExternalLink className="w-3 h-3 text-gray-400" />
+                              </a>
+                            ) : (
+                              <Link
+                                key={subItem.name}
+                                to={subItem.href}
+                                onClick={() => setIsMenuOpen(false)}
+                                className="flex items-center space-x-2 px-4 py-2 rounded-xl text-sm text-gray-500 hover:text-white hover:bg-gradient-to-r hover:from-[#105091]/70 hover:to-blue-600/70 transition-all duration-300"
+                              >
+                                <ChevronRight className="w-3 h-3" />
+                                <span className="font-medium">{subItem.name}</span>
+                              </Link>
+                            )
+                          )}
                         </div>
-                        <ExternalLink className="w-4 h-4 text-gray-400 group-hover/item:text-white transition-colors duration-200" />
-                      </a>
-                    ) : (
-                      <Link
-                        key={item.name}
-                        to={item.href}
-                        onClick={() => setIsMenuOpen(false)}
-                        className="block px-4 py-3 rounded-xl font-body text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-[#105091] hover:to-blue-600 transition-all duration-300"
-                      >
-                        <div className="font-medium">{item.name}</div>
-                        {item.description && (
-                          <div className="text-xs text-gray-500 mt-1">
-                            {item.description}
-                          </div>
-                        )}
-                      </Link>
-                    )
-                  )}
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             )

@@ -407,6 +407,63 @@
           "gambar_placeholder": "https://via.placeholder.com/1200x800/f0f9ff/105091?text=Struktur+Organisasi+Puslit+Inkubator+Bisnis"
         }
       },
+      "unila-halal-center": {
+        "nama": "Unila Halal Center",
+        "singkatan": "LPH Unila",
+        "kategori": "PUSLIT",
+        "pimpinan": {
+          "ketua": {
+            "nama": "Dr. Nur Aisyah, S.TP., M.Si.",
+            "foto": "/images/sub-bagian/unila-halal-center/ketua.jpg",
+            "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Unila+Halal+Center",
+            "jabatan": "Kepala Lembaga Pemeriksa Halal",
+            "periode": "2024-2029"
+          }
+        },
+        "profile_singkat": "Lembaga Pemeriksa Halal (LPH) Universitas Lampung berada di bawah Pusat Inkubator Bisnis, Hilirisasi Inovasi, Ketahanan Pangan, dan Sertifikasi Halal LPPM Unila. LPH Unila menjalankan pemeriksaan dan pengujian kehalalan produk sesuai regulasi, sekaligus memperkuat ekosistem halal berbasis riset dan inovasi kampus. Hubungi kami melalui unila.halal.centre@kpa.unila.ac.id untuk layanan pemeriksaan halal.",
+        "profil": {
+          "visi": "Menjadi lembaga pemeriksa halal perguruan tinggi yang profesional, terpercaya, dan berbasis riset untuk menguatkan ekosistem halal nasional.",
+          "misi": [
+            "Memberikan layanan pemeriksaan dan pengujian kehalalan produk sesuai standar perundang-undangan.",
+            "Mengembangkan riset dan inovasi halal yang mendukung hilirisasi produk kampus dan mitra.",
+            "Meningkatkan kapasitas pelaku usaha melalui edukasi, asistensi, dan pendampingan sertifikasi halal.",
+            "Memperluas jejaring kolaborasi dengan regulator, industri, dan komunitas halal.",
+            "Menyediakan layanan konsultasi halal terpadu yang transparan dan akuntabel."
+          ],
+          "program_unggulan": [
+            "Layanan pemeriksaan halal terpadu untuk UMKM dan industri pangan.",
+            "Laboratorium pengujian halal berbasis riset inovatif kampus.",
+            "Klinik konsultasi dan pendampingan percepatan sertifikasi halal.",
+            "Pelatihan auditor internal dan penyelia halal berbasis kompetensi.",
+            "Program hilirisasi produk halal hasil inovasi sivitas akademika."
+          ],
+          "prestasi": [
+            "Pendampingan 100+ pelaku usaha memperoleh sertifikat halal.",
+            "Pengembangan protokol pengujian halal berbasis riset kampus.",
+            "Kemitraan strategis dengan BPJPH dan MUI Lampung.",
+            "Penghargaan layanan halal inovatif tingkat regional 2024.",
+            "Kontributor aktif ekosistem kampus halal nasional."
+          ],
+          "keunggulan": [
+            "Auditor halal bersertifikat dan berpengalaman lintas sektor.",
+            "Laboratorium pengujian halal terintegrasi dengan fasilitas LPPM.",
+            "Basis data riset halal dan inovasi produk kampus.",
+            "Pendampingan menyeluruh mulai asesmen, uji hingga rekomendasi.",
+            "Sinergi kuat dengan pusat inkubator bisnis dan hilirisasi inovasi."
+          ]
+        },
+        "tugas_fungsi": [
+          "Melakukan pemeriksaan dan pengujian kehalalan produk secara profesional.",
+          "Memberikan rekomendasi teknis kepada BPJPH dan MUI terkait sertifikasi halal.",
+          "Mengembangkan modul edukasi dan pelatihan ekosistem halal berbasis riset.",
+          "Menjalin kolaborasi dengan industri untuk hilirisasi produk halal inovatif.",
+          "Menyediakan layanan konsultasi dan pendampingan sertifikasi halal terintegrasi."
+        ],
+        "struktur_organisasi": {
+          "gambar_struktur": "/images/sub-bagian/unila-halal-center/struktur-organisasi.jpg",
+          "gambar_placeholder": "https://via.placeholder.com/1200x800/f0f9ff/105091?text=Struktur+Organisasi+Unila+Halal+Center"
+        }
+      },
       "pusat-penelitian-manajeman-sistem-informasi-komunikasi-digitalisasi-dan-kaloborasi-riset": {
         "nama": "Pusat Penelitian Manajemen Sistem Informasi, Komunikasi, Digitalisasi dan Kolaborasi Riset",
         "singkatan": "Puslit Sistem Informasi",

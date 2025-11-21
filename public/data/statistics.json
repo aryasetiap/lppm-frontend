@@ -1,55 +1,67 @@
 {
   "metadata": {
-    "last_updated": "2024-11-20",
+    "last_updated": "2025-11-21",
     "data_source": "LPPM Unila Database",
-    "description": "Statistik penelitian, pengabdian, dan HKI/Paten LPPM Universitas Lampung 5 tahun terakhir"
+    "description": "Statistik penelitian, pengabdian, dan HKI/Paten LPPM Universitas Lampung periode 2020-2025"
   },
   "yearly_data": [
     {
       "year": 2020,
       "penelitian_blu": 342,
       "pengabdian_blu": 156,
-      "paten": 8,
-      "haki": 23
+      "paten": 20,
+      "haki": 60
     },
     {
       "year": 2021,
       "penelitian_blu": 418,
       "pengabdian_blu": 189,
-      "paten": 12,
-      "haki": 31
+      "paten": 28,
+      "haki": 60
     },
     {
       "year": 2022,
       "penelitian_blu": 523,
       "pengabdian_blu": 234,
-      "paten": 15,
-      "haki": 42
+      "paten": 24,
+      "haki": 145
     },
     {
       "year": 2023,
       "penelitian_blu": 687,
       "pengabdian_blu": 289,
-      "paten": 18,
-      "haki": 56
+      "paten": 29,
+      "haki": 90
     },
     {
       "year": 2024,
       "penelitian_blu": 825,
-      "pengabdian_blu": 342,
-      "paten": 24,
-      "haki": 67
+      "pengabdian_blu": 140,
+      "paten": 42,
+      "haki": 92,
+      "pengabdian_breakdown": {
+        "diseminasi_hasil_riset": 20,
+        "desa_binaan": 20,
+        "unggulan": 100
+      }
+    },
+    {
+      "year": 2025,
+      "penelitian_blu": 368,
+      "pengabdian_blu": 231,
+      "paten": 0,
+      "haki": 71
     }
   ],
   "total_summary": {
-    "total_penelitian_blu": 2795,
-    "total_pengabdian_blu": 1210,
-    "total_paten": 77,
-    "total_haki": 219,
-    "growth_penelitian": 141.2,
-    "growth_pengabdian": 119.2,
-    "growth_paten": 200.0,
-    "growth_haki": 191.3
+    "total_penelitian_blu": 3163,
+    "total_pengabdian_blu": 1239,
+    "total_paten": 143,
+    "total_haki": 518,
+    "growth_penelitian": 7.6,
+    "growth_pengabdian": 48.1,
+    "growth_paten": -100.0,
+    "growth_haki": 18.3
   },
   "quarterly_data": [
     {
