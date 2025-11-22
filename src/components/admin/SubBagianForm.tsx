@@ -70,9 +70,13 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
 
   if (!formData) return <div className="text-blue-100">Memuat data...</div>;
 
-  // Ensure structure exists
+  // Ensure structure exists dengan default values
   const safeData: SubBagianData = {
-    ...formData,
+    metadata: {
+      last_updated: formData.metadata?.last_updated || "",
+      data_source: formData.metadata?.data_source || "LPPM Unila Database",
+      description: formData.metadata?.description || "",
+    },
     sub_bagian: {
       pui: formData.sub_bagian?.pui || {},
       puslit: formData.sub_bagian?.puslit || {},
@@ -86,7 +90,10 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
 
   const updateMetadata = (field: string, value: string) => {
     const newData = { ...safeData };
-    newData.metadata = { ...newData.metadata, [field]: value };
+    newData.metadata = {
+      ...safeData.metadata,
+      [field]: value,
+    };
     setFormData(newData);
     onChange(newData);
   };

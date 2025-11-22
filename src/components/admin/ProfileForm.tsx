@@ -52,10 +52,49 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
 
   if (!formData) return <div className="text-blue-100">Memuat data...</div>;
 
+  // Safe data dengan default values untuk menghindari undefined errors
+  const safeData: ProfileData = {
+    metadata: {
+      last_updated: formData.metadata?.last_updated || "",
+      data_source: formData.metadata?.data_source || "LPPM Unila Database",
+      description: formData.metadata?.description || "",
+    },
+    pimpinan: {
+      kepala_lppm: {
+        nama: formData.pimpinan?.kepala_lppm?.nama || "",
+        foto: formData.pimpinan?.kepala_lppm?.foto || "",
+        placeholder: formData.pimpinan?.kepala_lppm?.placeholder || "",
+        jabatan: formData.pimpinan?.kepala_lppm?.jabatan || "",
+        periode: formData.pimpinan?.kepala_lppm?.periode || "",
+      },
+      sekretaris_lppm: {
+        nama: formData.pimpinan?.sekretaris_lppm?.nama || "",
+        foto: formData.pimpinan?.sekretaris_lppm?.foto || "",
+        placeholder: formData.pimpinan?.sekretaris_lppm?.placeholder || "",
+        jabatan: formData.pimpinan?.sekretaris_lppm?.jabatan || "",
+        periode: formData.pimpinan?.sekretaris_lppm?.periode || "",
+      },
+    },
+    visi_misi: {
+      visi: formData.visi_misi?.visi || "",
+      misi: formData.visi_misi?.misi || [],
+    },
+    tugas_fungsi: {
+      tugas: formData.tugas_fungsi?.tugas || [],
+      fungsi: formData.tugas_fungsi?.fungsi || [],
+    },
+    struktur_organisasi: {
+      gambar_struktur: formData.struktur_organisasi?.gambar_struktur || "",
+      gambar_placeholder: formData.struktur_organisasi?.gambar_placeholder || "",
+      deskripsi: formData.struktur_organisasi?.deskripsi || "",
+    },
+  };
+
   const updateField = (path: string[], value: any) => {
-    const newData = { ...formData };
+    const newData = { ...safeData };
     let current: any = newData;
     for (let i = 0; i < path.length - 1; i++) {
+      if (!current[path[i]]) current[path[i]] = {};
       current = current[path[i]];
     }
     current[path[path.length - 1]] = value;
@@ -64,9 +103,10 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
   };
 
   const updateArrayItem = (path: string[], index: number, value: any) => {
-    const newData = { ...formData };
+    const newData = { ...safeData };
     let current: any = newData;
     for (const key of path) {
+      if (!current[key]) current[key] = [];
       current = current[key];
     }
     current[index] = { ...current[index], ...value };
@@ -75,9 +115,10 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
   };
 
   const addArrayItem = (path: string[], newItem: any) => {
-    const newData = { ...formData };
+    const newData = { ...safeData };
     let current: any = newData;
     for (const key of path) {
+      if (!current[key]) current[key] = [];
       current = current[key];
     }
     current.push(newItem);
@@ -86,9 +127,10 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
   };
 
   const removeArrayItem = (path: string[], index: number) => {
-    const newData = { ...formData };
+    const newData = { ...safeData };
     let current: any = newData;
     for (const key of path) {
+      if (!current[key]) current[key] = [];
       current = current[key];
     }
     current.splice(index, 1);
@@ -110,7 +152,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
             </label>
             <input
               type="text"
-              value={formData.metadata.last_updated}
+              value={safeData.metadata.last_updated}
               onChange={(e) => updateField(["metadata", "last_updated"], e.target.value)}
               className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
             />
@@ -121,7 +163,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
             </label>
             <input
               type="text"
-              value={formData.metadata.data_source}
+              value={safeData.metadata.data_source}
               onChange={(e) => updateField(["metadata", "data_source"], e.target.value)}
               className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
             />
@@ -131,7 +173,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
               Description
             </label>
             <textarea
-              value={formData.metadata.description}
+              value={safeData.metadata.description}
               onChange={(e) => updateField(["metadata", "description"], e.target.value)}
               className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
               rows={2}
@@ -155,7 +197,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
               </label>
               <input
                 type="text"
-                value={formData.pimpinan.kepala_lppm.nama}
+                value={safeData.pimpinan.kepala_lppm.nama}
                 onChange={(e) =>
                   updateField(["pimpinan", "kepala_lppm", "nama"], e.target.value)
                 }
@@ -168,7 +210,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
               </label>
               <input
                 type="text"
-                value={formData.pimpinan.kepala_lppm.foto}
+                value={safeData.pimpinan.kepala_lppm.foto}
                 onChange={(e) =>
                   updateField(["pimpinan", "kepala_lppm", "foto"], e.target.value)
                 }
@@ -181,7 +223,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
               </label>
               <input
                 type="text"
-                value={formData.pimpinan.kepala_lppm.jabatan}
+                value={safeData.pimpinan.kepala_lppm.jabatan}
                 onChange={(e) =>
                   updateField(["pimpinan", "kepala_lppm", "jabatan"], e.target.value)
                 }
@@ -194,7 +236,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
               </label>
               <input
                 type="text"
-                value={formData.pimpinan.kepala_lppm.periode}
+                value={safeData.pimpinan.kepala_lppm.periode}
                 onChange={(e) =>
                   updateField(["pimpinan", "kepala_lppm", "periode"], e.target.value)
                 }
@@ -212,7 +254,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
               </label>
               <input
                 type="text"
-                value={formData.pimpinan.sekretaris_lppm.nama}
+                value={safeData.pimpinan.sekretaris_lppm.nama}
                 onChange={(e) =>
                   updateField(["pimpinan", "sekretaris_lppm", "nama"], e.target.value)
                 }
@@ -225,7 +267,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
               </label>
               <input
                 type="text"
-                value={formData.pimpinan.sekretaris_lppm.foto}
+                value={safeData.pimpinan.sekretaris_lppm.foto}
                 onChange={(e) =>
                   updateField(["pimpinan", "sekretaris_lppm", "foto"], e.target.value)
                 }
@@ -238,7 +280,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
               </label>
               <input
                 type="text"
-                value={formData.pimpinan.sekretaris_lppm.jabatan}
+                value={safeData.pimpinan.sekretaris_lppm.jabatan}
                 onChange={(e) =>
                   updateField(["pimpinan", "sekretaris_lppm", "jabatan"], e.target.value)
                 }
@@ -251,7 +293,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
               </label>
               <input
                 type="text"
-                value={formData.pimpinan.sekretaris_lppm.periode}
+                value={safeData.pimpinan.sekretaris_lppm.periode}
                 onChange={(e) =>
                   updateField(["pimpinan", "sekretaris_lppm", "periode"], e.target.value)
                 }
@@ -273,7 +315,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
               Visi
             </label>
             <textarea
-              value={formData.visi_misi.visi}
+              value={safeData.visi_misi.visi}
               onChange={(e) => updateField(["visi_misi", "visi"], e.target.value)}
               className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
               rows={3}
@@ -283,7 +325,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
             <label className="block text-sm font-medium text-blue-100 mb-2">
               Misi
             </label>
-            {formData.visi_misi.misi.map((item, index) => (
+            {safeData.visi_misi.misi.map((item, index) => (
               <div key={item.id} className="flex gap-2 mb-2">
                 <input
                   type="text"
@@ -307,7 +349,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
             <button
               onClick={() =>
                 addArrayItem(["visi_misi", "misi"], {
-                  id: formData.visi_misi.misi.length + 1,
+                  id: safeData.visi_misi.misi.length + 1,
                   item: "",
                 })
               }
@@ -328,7 +370,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
           {/* Tugas */}
           <div>
             <h4 className="font-medium text-blue-200 mb-3">Tugas</h4>
-            {formData.tugas_fungsi.tugas.map((item, index) => (
+            {safeData.tugas_fungsi.tugas.map((item, index) => (
               <div key={item.id} className="flex gap-2 mb-2">
                 <input
                   type="text"
@@ -352,7 +394,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
             <button
               onClick={() =>
                 addArrayItem(["tugas_fungsi", "tugas"], {
-                  id: formData.tugas_fungsi.tugas.length + 1,
+                  id: safeData.tugas_fungsi.tugas.length + 1,
                   item: "",
                 })
               }
@@ -365,7 +407,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
           {/* Fungsi */}
           <div>
             <h4 className="font-medium text-blue-200 mb-3">Fungsi</h4>
-            {formData.tugas_fungsi.fungsi.map((item, index) => (
+            {safeData.tugas_fungsi.fungsi.map((item, index) => (
               <div key={item.id} className="flex gap-2 mb-2">
                 <input
                   type="text"
@@ -389,7 +431,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
             <button
               onClick={() =>
                 addArrayItem(["tugas_fungsi", "fungsi"], {
-                  id: formData.tugas_fungsi.fungsi.length + 1,
+                  id: safeData.tugas_fungsi.fungsi.length + 1,
                   item: "",
                 })
               }
@@ -413,7 +455,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
             </label>
             <input
               type="text"
-              value={formData.struktur_organisasi.gambar_struktur}
+              value={safeData.struktur_organisasi.gambar_struktur}
               onChange={(e) =>
                 updateField(["struktur_organisasi", "gambar_struktur"], e.target.value)
               }
@@ -425,7 +467,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
               Deskripsi
             </label>
             <textarea
-              value={formData.struktur_organisasi.deskripsi}
+              value={safeData.struktur_organisasi.deskripsi}
               onChange={(e) =>
                 updateField(["struktur_organisasi", "deskripsi"], e.target.value)
               }
