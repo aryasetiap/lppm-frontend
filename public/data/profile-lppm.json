@@ -14,7 +14,7 @@
     },
     "sekretaris_lppm": {
       "nama": "Suparman Arif, S.Pd., M.Pd.",
-      "foto": "/images/pimpinan/sekretaris-lppm.jpg",
+      "foto": "/images/pimpinan/sekretaris-lppm.jpeg",
       "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Sekretaris+LPPM",
       "jabatan": "Sekretaris LPPM",
       "periode": "2024-2029"
@@ -88,8 +88,8 @@
     ]
   },
   "struktur_organisasi": {
-    "gambar_struktur": "/images/struktur/struktur-organisasi.jpg",
+    "gambar_struktur": "/images/struktur/struktur-organisasi.png",
     "gambar_placeholder": "https://via.placeholder.com/1200x800/f0f9ff/105091?text=Struktur+Organisasi+LPPM",
-    "deskripsi": "Struktur Organisasi LPPM Universitas Lampung mencakup unsur pimpinan, pelaksana harian, bidang-bidang fungsional, dan unit pendukung yang bekerja secara sinergis untuk mencapai tujuan lembaga."
+    "deskripsi": ""
   }
 }
