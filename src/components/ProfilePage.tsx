@@ -362,7 +362,7 @@ const ProfilePage: React.FC = () => {
                 <div className="relative p-8 text-center">
                   {/* Image Container */}
                   <div className="relative mb-6">
-                    <div className="mx-auto w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                    <div className="mx-auto w-48 h-48 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
                       <div className="w-full h-full bg-white rounded-xl overflow-hidden">
                         <img
                           src={profileData.pimpinan.kepala_lppm.foto}
@@ -379,7 +379,7 @@ const ProfilePage: React.FC = () => {
                     <div className="absolute inset-0 w-24 h-24 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
                   </div>
 
-                  <h3 className="font-display text-xl font-bold text-gray-900 mb-3 transition-colors duration-300 group-hover:text-[#105091]">
+                  <h3 className="font-display text-lg font-bold text-gray-900 mb-3 transition-colors duration-300 group-hover:text-[#105091]">
                     {profileData.pimpinan.kepala_lppm.nama}
                   </h3>
 
@@ -388,10 +388,10 @@ const ProfilePage: React.FC = () => {
                     {profileData.pimpinan.kepala_lppm.jabatan}
                   </div>
 
-                  <div className="inline-flex items-center justify-center px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
+                  {/* <div className="inline-flex items-center justify-center px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
                     <Clock className="w-3 h-3 mr-1" />
                     {profileData.pimpinan.kepala_lppm.periode}
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -408,7 +408,7 @@ const ProfilePage: React.FC = () => {
                 <div className="relative p-8 text-center">
                   {/* Image Container */}
                   <div className="relative mb-6">
-                    <div className="mx-auto w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
+                    <div className="mx-auto w-48 h-48 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
                       <div className="w-full h-full bg-white rounded-xl overflow-hidden">
                         <img
                           src={profileData.pimpinan.sekretaris_lppm.foto}
@@ -425,7 +425,7 @@ const ProfilePage: React.FC = () => {
                     <div className="absolute inset-0 w-24 h-24 mx-auto rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
                   </div>
 
-                  <h3 className="font-display text-xl font-bold text-gray-900 mb-3 transition-colors duration-300 group-hover:text-[#105091]">
+                  <h3 className="font-display text-lg font-bold text-gray-900 mb-3 transition-colors duration-300 group-hover:text-[#105091]">
                     {profileData.pimpinan.sekretaris_lppm.nama}
                   </h3>
 
@@ -434,10 +434,10 @@ const ProfilePage: React.FC = () => {
                     {profileData.pimpinan.sekretaris_lppm.jabatan}
                   </div>
 
-                  <div className="inline-flex items-center justify-center px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
+                  {/* <div className="inline-flex items-center justify-center px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
                     <Clock className="w-3 h-3 mr-1" />
                     {profileData.pimpinan.sekretaris_lppm.periode}
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -589,7 +589,7 @@ const ProfilePage: React.FC = () => {
                 {profileData.tugas_fungsi.tugas.map((item, index) => (
                   <div key={item.id} className="group flex items-start gap-4">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#105091] to-blue-600 p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110">
-                      <div className="w-full h-full bg-white rounded-lg flex items-center justify-center">
+                      <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
                         <span className="font-bold text-sm text-[#105091]">
                           {index + 1}
                         </span>
@@ -617,7 +617,7 @@ const ProfilePage: React.FC = () => {
                 {profileData.tugas_fungsi.fungsi.map((item, index) => (
                   <div key={item.id} className="group flex items-start gap-4">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110">
-                      <div className="w-full h-full bg-white rounded-lg flex items-center justify-center">
+                      <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
                         <span className="font-bold text-sm text-blue-600">
                           {index + 1}
                         </span>
