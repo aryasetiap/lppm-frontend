@@ -328,7 +328,11 @@ const Header = () => {
 
                       {/* Enhanced Mega Dropdown */}
                       <div
-                        className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-3 w-96 bg-white rounded-2xl shadow-2xl border border-gray-100/50 backdrop-blur-xl transition-all duration-300 ${
+                        className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-3 ${
+                          link.name === "PUSLIT"
+                            ? "w-[768px] max-w-[90vw]"
+                            : "w-96"
+                        } bg-white rounded-2xl shadow-2xl border border-gray-100/50 backdrop-blur-xl transition-all duration-300 ${
                           activeDropdown === link.name
                             ? "opacity-100 visible translate-y-0"
                             : "opacity-0 invisible translate-y-2"
@@ -336,14 +340,126 @@ const Header = () => {
                         onMouseEnter={() => setActiveDropdown(link.name)}
                         onMouseLeave={() => setActiveDropdown(null)}
                       >
-                        <div className="p-2">
-                          {link.items.map((item, index) => (
-                            <div
-                              key={item.name}
-                              className="relative"
-                              onMouseEnter={() => setHoveredMegaItem(item.name)}
-                              onMouseLeave={() => setHoveredMegaItem(null)}
-                            >
+                        <div className="p-4">
+                          {link.name === "PUSLIT" ? (
+                            /* Special 2-column layout for PUSLIT */
+                            <div className="grid grid-cols-2 gap-2">
+                              {link.items.map((item, index) => (
+                                <div
+                                  key={item.name}
+                                  className="relative"
+                                  onMouseEnter={() => setHoveredMegaItem(item.name)}
+                                  onMouseLeave={() => setHoveredMegaItem(null)}
+                                >
+                                  {item.external ? (
+                                    <a
+                                      href={item.href}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="group/item flex items-start justify-between p-3 rounded-xl hover:bg-gradient-to-r hover:from-[#105091]/5 hover:to-blue-600/5 transition-all duration-200"
+                                    >
+                                      <div className="flex-1 min-w-0">
+                                        <div className="flex items-center space-x-2">
+                                          <div className="w-2 h-2 bg-gradient-to-r from-[#105091] to-blue-600 rounded-full flex-shrink-0"></div>
+                                          <h4 className="font-display font-semibold text-gray-900 group-hover/item:text-[#105091] transition-colors duration-200 text-sm leading-tight line-clamp-2">
+                                            {item.name}
+                                          </h4>
+                                        </div>
+                                        {item.description && (
+                                          <p className="text-xs text-gray-500 mt-1 ml-4 line-clamp-2">
+                                            {item.description}
+                                          </p>
+                                        )}
+                                      </div>
+                                      <ExternalLink className="w-4 h-4 text-gray-400 group-hover/item:text-[#105091] transition-colors duration-200 flex-shrink-0 mt-1 ml-2" />
+                                    </a>
+                                  ) : (
+                                    <Link
+                                      to={item.href}
+                                      className="group/item flex items-start justify-between p-3 rounded-xl hover:bg-gradient-to-r hover:from-[#105091]/5 hover:to-blue-600/5 transition-all duration-200"
+                                    >
+                                      <div className="flex-1 min-w-0">
+                                        <div className="flex items-center space-x-2">
+                                          <div className="w-2 h-2 bg-gradient-to-r from-[#105091] to-blue-600 rounded-full flex-shrink-0"></div>
+                                          <h4 className="font-display font-semibold text-gray-900 group-hover/item:text-[#105091] transition-colors duration-200 text-sm leading-tight line-clamp-2">
+                                            {item.name}
+                                          </h4>
+                                        </div>
+                                        {item.description && (
+                                          <p className="text-xs text-gray-500 mt-1 ml-4 line-clamp-2">
+                                            {item.description}
+                                          </p>
+                                        )}
+                                      </div>
+                                    </Link>
+                                  )}
+                                {item.subItems && item.subItems.length > 0 && (
+                                  <div
+                                    className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 transition-all duration-200 ${
+                                      hoveredMegaItem === item.name
+                                        ? "opacity-100 translate-y-0 visible z-50"
+                                        : "opacity-0 -translate-y-2 pointer-events-none invisible"
+                                    }`}
+                                  >
+                                    <div className="space-y-3">
+                                      {item.subItems.map((subItem) =>
+                                        subItem.external ? (
+                                          <a
+                                            key={subItem.name}
+                                            href={subItem.href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex items-start justify-between text-sm text-gray-600 hover:text-[#105091] transition-colors duration-200"
+                                          >
+                                            <div>
+                                              <div className="flex items-center space-x-2 font-semibold">
+                                                <ChevronRight className="w-3 h-3 text-[#105091]" />
+                                                <span>{subItem.name}</span>
+                                              </div>
+                                              {subItem.description && (
+                                                <p className="text-xs text-gray-500 mt-1 ml-5">
+                                                  {subItem.description}
+                                                </p>
+                                              )}
+                                            </div>
+                                            <ExternalLink className="w-3 h-3 text-gray-400" />
+                                          </a>
+                                        ) : (
+                                          <Link
+                                            key={subItem.name}
+                                            to={subItem.href}
+                                            className="flex items-start text-sm text-gray-600 hover:text-[#105091] transition-colors duration-200"
+                                          >
+                                            <div>
+                                              <div className="flex items-center space-x-2 font-semibold">
+                                                <ChevronRight className="w-3 h-3 text-[#105091]" />
+                                                <span>{subItem.name}</span>
+                                              </div>
+                                              {subItem.description && (
+                                                <p className="text-xs text-gray-500 mt-1 ml-5">
+                                                  {subItem.description}
+                                                </p>
+                                              )}
+                                            </div>
+                                          </Link>
+                                        )
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            /* Original single-column layout for other dropdowns */
+                            <div className="space-y-1">
+                              {link.items.map((item, index) => (
+                                <div
+                                  key={item.name}
+                                  className="relative"
+                                  onMouseEnter={() => setHoveredMegaItem(item.name)}
+                                  onMouseLeave={() => setHoveredMegaItem(null)}
+                                >
                               {item.external ? (
                                 <a
                                   href={item.href}
@@ -440,11 +556,13 @@ const Header = () => {
                                 </div>
                               </div>
                             )}
-                              {index < link.items.length - 1 && (
-                                <div className="mx-4 h-px bg-gradient-to-r from-transparent via-gray-100 to-transparent"></div>
-                              )}
+                            {index < link.items.length - 1 && (
+                              <div className="mx-4 h-px bg-gradient-to-r from-transparent via-gray-100 to-transparent"></div>
+                            )}
+                                </div>
+                              ))}
                             </div>
-                          ))}
+                          )}
                         </div>
                       </div>
                     </li>

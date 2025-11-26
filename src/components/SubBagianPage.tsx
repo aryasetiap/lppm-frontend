@@ -6,7 +6,6 @@ import {
   Briefcase,
   Building,
   Award,
-  Clock,
   ArrowLeft,
   BookOpen,
   Star,
@@ -63,7 +62,9 @@ interface SubBagianResponse {
 const SubBagianPage: React.FC = () => {
   const { category, slug } = useParams<{ category: string; slug: string }>();
   const navigate = useNavigate();
-  const [subBagianData, setSubBagianData] = useState<SubBagianData | null>(null);
+  const [subBagianData, setSubBagianData] = useState<SubBagianData | null>(
+    null
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -140,7 +141,9 @@ const SubBagianPage: React.FC = () => {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-red-100 rounded-full mb-6">
             <Shield className="w-10 h-10 text-red-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Data Tidak Ditemukan</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Data Tidak Ditemukan
+          </h2>
           <p className="text-gray-600 mb-8">{error}</p>
           <button
             onClick={() => navigate("/")}
@@ -212,7 +215,9 @@ const SubBagianPage: React.FC = () => {
               Beranda
             </button>
             <span className="text-white/60">/</span>
-            <span className="text-white/80">{getCategoryDisplayName(category || "")}</span>
+            <span className="text-white/80">
+              {getCategoryDisplayName(category || "")}
+            </span>
             <span className="text-white/60">/</span>
             <span className="text-white font-medium">{subBagianData.nama}</span>
           </nav>
@@ -293,7 +298,10 @@ const SubBagianPage: React.FC = () => {
           ></div>
           <div
             className="absolute bottom-10 right-10 w-64 h-64 bg-indigo-500 rounded-full filter blur-3xl"
-            style={{ animation: "float 6s ease-in-out infinite", animationDelay: "2s" }}
+            style={{
+              animation: "float 6s ease-in-out infinite",
+              animationDelay: "2s",
+            }}
           ></div>
         </div>
 
@@ -306,7 +314,8 @@ const SubBagianPage: React.FC = () => {
               Pimpinan
             </h2>
             <p className="font-body text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              Kepemimpinan yang berdedikasi untuk mengemban amanah dalam mengembangkan {subBagianData.nama.toLowerCase()}.
+              Kepemimpinan yang berdedikasi untuk mengemban amanah dalam
+              mengembangkan {subBagianData.nama.toLowerCase()}.
             </p>
           </div>
 
@@ -321,12 +330,13 @@ const SubBagianPage: React.FC = () => {
               <div className="relative p-8 text-center">
                 {/* Image Container */}
                 <div className="relative mb-6">
-                  <div className="mx-auto w-32 h-32 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-1 shadow-lg transform transition-all duration-500 hover:scale-110 hover:rotate-3">
+                  <div className="mx-auto w-48 h-48 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-1 shadow-lg transform transition-all duration-500 hover:scale-110 hover:rotate-3">
                     <div className="w-full h-full bg-white rounded-xl overflow-hidden">
                       <img
                         src={subBagianData.pimpinan.ketua.foto}
                         onError={(e) => {
-                          e.currentTarget.src = subBagianData.pimpinan.ketua.placeholder;
+                          e.currentTarget.src =
+                            subBagianData.pimpinan.ketua.placeholder;
                         }}
                         alt={subBagianData.pimpinan.ketua.nama}
                         className="w-full h-full object-cover"
@@ -346,10 +356,10 @@ const SubBagianPage: React.FC = () => {
                   {subBagianData.pimpinan.ketua.jabatan}
                 </div>
 
-                <div className="inline-flex items-center justify-center px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
+                {/* <div className="inline-flex items-center justify-center px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
                   <Clock className="w-3 h-3 mr-1" />
                   {subBagianData.pimpinan.ketua.periode}
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -373,11 +383,12 @@ const SubBagianPage: React.FC = () => {
               Profil {subBagianData.nama}
             </h2>
             <p className="font-body text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              Visi, misi, dan keunggulan {subBagianData.nama} dalam mendukung keunggulan LPPM Universitas Lampung.
+              Visi, misi, dan keunggulan {subBagianData.nama} dalam mendukung
+              keunggulan LPPM Universitas Lampung.
             </p>
           </div>
 
-          <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8">
+          <div className="max-w-6xl mx-auto grid lg:grid-cols-1 gap-8">
             {/* Visi dan Misi */}
             <div className="space-y-6">
               {/* Visi */}
@@ -421,7 +432,10 @@ const SubBagianPage: React.FC = () => {
                         </h3>
                         <ul className="space-y-2">
                           {subBagianData.profil.misi.map((item, index) => (
-                            <li key={index} className="font-body text-gray-700 leading-relaxed flex items-start gap-2">
+                            <li
+                              key={index}
+                              className="font-body text-gray-700 leading-relaxed flex items-start gap-2"
+                            >
                               <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
                               <span>{item}</span>
                             </li>
@@ -435,9 +449,9 @@ const SubBagianPage: React.FC = () => {
             </div>
 
             {/* Program Unggulan dan Prestasi */}
-            <div className="space-y-6">
-              {/* Program Unggulan */}
-              <div className="group relative">
+            {/* <div className="space-y-6"> */}
+            {/* Program Unggulan */}
+            {/* <div className="group relative">
                 <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
                   <div className="h-1 bg-gradient-to-r from-indigo-600 to-purple-600"></div>
                   <div className="relative p-6">
@@ -452,21 +466,26 @@ const SubBagianPage: React.FC = () => {
                           Program Unggulan
                         </h3>
                         <ul className="space-y-2">
-                          {subBagianData.profil.program_unggulan.map((item, index) => (
-                            <li key={index} className="font-body text-gray-700 leading-relaxed flex items-start gap-2">
-                              <div className="w-2 h-2 bg-indigo-600 rounded-full mt-2 flex-shrink-0"></div>
-                              <span>{item}</span>
-                            </li>
-                          ))}
+                          {subBagianData.profil.program_unggulan.map(
+                            (item, index) => (
+                              <li
+                                key={index}
+                                className="font-body text-gray-700 leading-relaxed flex items-start gap-2"
+                              >
+                                <div className="w-2 h-2 bg-indigo-600 rounded-full mt-2 flex-shrink-0"></div>
+                                <span>{item}</span>
+                              </li>
+                            )
+                          )}
                         </ul>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
-              {/* Prestasi */}
-              <div className="group relative">
+            {/* Prestasi */}
+            {/* <div className="group relative">
                 <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
                   <div className="h-1 bg-gradient-to-r from-purple-600 to-pink-600"></div>
                   <div className="relative p-6">
@@ -482,7 +501,10 @@ const SubBagianPage: React.FC = () => {
                         </h3>
                         <ul className="space-y-2">
                           {subBagianData.profil.prestasi.map((item, index) => (
-                            <li key={index} className="font-body text-gray-700 leading-relaxed flex items-start gap-2">
+                            <li
+                              key={index}
+                              className="font-body text-gray-700 leading-relaxed flex items-start gap-2"
+                            >
                               <div className="w-2 h-2 bg-purple-600 rounded-full mt-2 flex-shrink-0"></div>
                               <span>{item}</span>
                             </li>
@@ -492,12 +514,12 @@ const SubBagianPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </div> */}
+            {/* </div> */}
           </div>
 
           {/* Keunggulan - Full Width */}
-          <div className="mt-8">
+          {/* <div className="mt-8">
             <div className="group relative">
               <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
                 <div className="h-1 bg-gradient-to-r from-[#105091] via-blue-600 to-indigo-600"></div>
@@ -516,16 +538,21 @@ const SubBagianPage: React.FC = () => {
                   </div>
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
                     {subBagianData.profil.keunggulan.map((item, index) => (
-                      <div key={index} className="flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50 px-3 py-2 rounded-lg border border-blue-100">
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50 px-3 py-2 rounded-lg border border-blue-100"
+                      >
                         <div className="w-2 h-2 bg-gradient-to-r from-[#105091] to-blue-600 rounded-full flex-shrink-0"></div>
-                        <span className="font-body text-gray-700 text-sm">{item}</span>
+                        <span className="font-body text-gray-700 text-sm">
+                          {item}
+                        </span>
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
 
@@ -546,7 +573,8 @@ const SubBagianPage: React.FC = () => {
               Tugas & Fungsi
             </h2>
             <p className="font-body text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              Peran dan tanggung jawab {subBagianData.nama} dalam mendukung pencapaian visi dan misi LPPM Universitas Lampung.
+              Peran dan tanggung jawab {subBagianData.nama} dalam mendukung
+              pencapaian visi dan misi LPPM Universitas Lampung.
             </p>
           </div>
 
@@ -556,7 +584,13 @@ const SubBagianPage: React.FC = () => {
                 <div key={index} className="group relative">
                   <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
                     {/* Top Gradient Bar */}
-                    <div className={`h-1 bg-gradient-to-r ${index % 2 === 0 ? 'from-[#105091] to-blue-600' : 'from-blue-600 to-indigo-600'}`}></div>
+                    <div
+                      className={`h-1 bg-gradient-to-r ${
+                        index % 2 === 0
+                          ? "from-[#105091] to-blue-600"
+                          : "from-blue-600 to-indigo-600"
+                      }`}
+                    ></div>
 
                     {/* Glass Effect Overlay */}
                     <div className="absolute inset-0 bg-white/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -564,10 +598,20 @@ const SubBagianPage: React.FC = () => {
                     <div className="relative p-6">
                       <div className="flex items-start gap-4">
                         <div
-                          className={`w-10 h-10 rounded-xl bg-gradient-to-br ${index % 2 === 0 ? 'from-[#105091] to-blue-600' : 'from-blue-600 to-indigo-600'} p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3`}
+                          className={`w-10 h-10 rounded-xl bg-gradient-to-br ${
+                            index % 2 === 0
+                              ? "from-[#105091] to-blue-600"
+                              : "from-blue-600 to-indigo-600"
+                          } p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3`}
                         >
                           <div className="w-full h-full bg-white rounded-lg flex items-center justify-center">
-                            <span className={`font-bold text-sm ${index % 2 === 0 ? 'text-[#105091]' : 'text-blue-600'}`}>
+                            <span
+                              className={`font-bold text-sm ${
+                                index % 2 === 0
+                                  ? "text-[#105091]"
+                                  : "text-blue-600"
+                              }`}
+                            >
                               {index + 1}
                             </span>
                           </div>
@@ -595,7 +639,10 @@ const SubBagianPage: React.FC = () => {
           ></div>
           <div
             className="absolute bottom-10 left-10 w-64 h-64 bg-indigo-500 rounded-full filter blur-3xl"
-            style={{ animation: "float 6s ease-in-out infinite", animationDelay: "2s" }}
+            style={{
+              animation: "float 6s ease-in-out infinite",
+              animationDelay: "2s",
+            }}
           ></div>
         </div>
 
@@ -608,7 +655,9 @@ const SubBagianPage: React.FC = () => {
               Struktur Organisasi
             </h2>
             <p className="font-body text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              Struktur organisasi {subBagianData.nama} yang menggambarkan hierarki dan hubungan kerja antar unit dalam mencapai tujuan lembaga.
+              Struktur organisasi {subBagianData.nama} yang menggambarkan
+              hierarki dan hubungan kerja antar unit dalam mencapai tujuan
+              lembaga.
             </p>
           </div>
 
@@ -626,7 +675,8 @@ const SubBagianPage: React.FC = () => {
                     <img
                       src={subBagianData.struktur_organisasi.gambar_struktur}
                       onError={(e) => {
-                        e.currentTarget.src = subBagianData.struktur_organisasi.gambar_placeholder;
+                        e.currentTarget.src =
+                          subBagianData.struktur_organisasi.gambar_placeholder;
                       }}
                       alt={`Struktur Organisasi ${subBagianData.nama}`}
                       className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
