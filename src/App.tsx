@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -10,6 +10,7 @@ import BeritaDetailPage from "./pages/BeritaDetailPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminDataEditorPage from "./pages/AdminDataEditorPage";
+import PosApDownloadsPage from "./pages/PosApDownloadsPage";
 import { adminAuth } from "./utils/adminAuth";
 
 const AdminRoute = ({ children }: { children: ReactNode }) => {
@@ -45,6 +46,8 @@ function App() {
                 </AdminRoute>
               }
             />
+            <Route path="/pos-ap" element={<PosApDownloadsPage />} />
+            <Route path="/pos-ap/:category" element={<PosApDownloadsPage />} />
             <Route path="/:category/:slug" element={<SubBagianPage />} />
             <Route path="*" element={<Homepage />} />
           </Routes>

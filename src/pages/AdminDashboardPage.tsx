@@ -63,15 +63,17 @@ const AdminDashboardPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-[#091f43] via-blue-900 to-indigo-950 text-white">
       {/* Top navigation */}
       <header className="border-b border-white/10 bg-white/10 backdrop-blur-2xl">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div>
+        <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center gap-3">
+            <div>
             <p className="text-xs uppercase tracking-[0.4em] text-blue-100">
               Dashboard Admin
             </p>
             <h1 className="text-2xl font-display font-bold">LPPM Control Center</h1>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
+          </div>
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="text-left md:text-right">
               <p className="text-sm text-blue-100">Masuk sebagai</p>
               <p className="font-semibold text-white">{displayName}</p>
             </div>

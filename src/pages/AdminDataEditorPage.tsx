@@ -42,6 +42,238 @@ const DATASETS = [
   },
 ];
 
+const StatisticsQuickEditor = ({
+  data,
+  onChange,
+}: {
+  data: any;
+  onChange: (data: any) => void;
+}) => {
+  if (!data) return null;
+
+  const safeData = {
+    metadata: data.metadata || {},
+    total_summary: data.total_summary || {
+      total_penelitian_blu: 0,
+      total_pengabdian_blu: 0,
+      total_paten: 0,
+      total_haki: 0,
+      growth_penelitian: 0,
+      growth_pengabdian: 0,
+      growth_paten: 0,
+      growth_haki: 0,
+    },
+    yearly_data: data.yearly_data || [],
+    quarterly_data: data.quarterly_data || [],
+  };
+
+  const updateTotalSummary = (field: string, value: number) => {
+    const next = {
+      ...data,
+      total_summary: {
+        ...safeData.total_summary,
+        [field]: value,
+      },
+    };
+    onChange(next);
+  };
+
+  const updateYearlyData = (index: number, field: string, value: number) => {
+    const yearly = safeData.yearly_data.map((item: any, idx: number) =>
+      idx === index ? { ...item, [field]: value } : item
+    );
+    onChange({
+      ...data,
+      yearly_data: yearly,
+    });
+  };
+
+  const updateQuarterlyData = (index: number, field: string, value: number | string) => {
+    const quarterly = safeData.quarterly_data.map((item: any, idx: number) =>
+      idx === index ? { ...item, [field]: value } : item
+    );
+    onChange({
+      ...data,
+      quarterly_data: quarterly,
+    });
+  };
+
+  const summaryFields = [
+    { key: "total_penelitian_blu", label: "Total Penelitian" },
+    { key: "total_pengabdian_blu", label: "Total Pengabdian" },
+    { key: "total_paten", label: "Total Paten" },
+    { key: "total_haki", label: "Total HKI" },
+  ];
+
+  const growthFields = [
+    { key: "growth_penelitian", label: "Growth Penelitian (%)" },
+    { key: "growth_pengabdian", label: "Growth Pengabdian (%)" },
+    { key: "growth_paten", label: "Growth Paten (%)" },
+    { key: "growth_haki", label: "Growth HKI (%)" },
+  ];
+
+  return (
+    <section className="bg-white/10 border border-white/20 rounded-3xl p-6 space-y-6">
+      <div>
+        <h3 className="text-xl font-semibold mb-4">Quick Edit • Ringkasan Angka</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {summaryFields.map((field) => (
+            <label key={field.key} className="block bg-[#0b1f3d] border border-white/10 rounded-2xl p-4">
+              <span className="text-xs uppercase tracking-wide text-blue-100">{field.label}</span>
+              <input
+                type="number"
+                value={safeData.total_summary[field.key] ?? 0}
+                onChange={(e) => updateTotalSummary(field.key, parseInt(e.target.value) || 0)}
+                className="mt-2 w-full bg-black/20 border border-white/10 rounded-xl px-3 py-2 text-white text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
+              />
+            </label>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+          {growthFields.map((field) => (
+            <label key={field.key} className="block bg-[#0b1f3d] border border-white/10 rounded-2xl p-4">
+              <span className="text-xs uppercase tracking-wide text-blue-100">{field.label}</span>
+              <input
+                type="number"
+                step="0.1"
+                value={safeData.total_summary[field.key] ?? 0}
+                onChange={(e) => updateTotalSummary(field.key, parseFloat(e.target.value) || 0)}
+                className="mt-2 w-full bg-black/20 border border-white/10 rounded-xl px-3 py-2 text-white text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
+              />
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {safeData.yearly_data.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xl font-semibold">Quick Edit • Data Tahunan</h3>
+            <p className="text-xs text-blue-100">Masukkan angka sesuai JSON tahunan</p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-left text-blue-50">
+              <thead>
+                <tr className="text-blue-200 uppercase text-xs tracking-wider">
+                  <th className="px-4 py-3">Tahun</th>
+                  <th className="px-4 py-3">Penelitian BLU</th>
+                  <th className="px-4 py-3">Pengabdian BLU</th>
+                  <th className="px-4 py-3">Paten</th>
+                  <th className="px-4 py-3">HKI</th>
+                </tr>
+              </thead>
+              <tbody>
+                {safeData.yearly_data.map((row: any, index: number) => (
+                  <tr key={row.year ?? index} className="border-t border-white/5">
+                    <td className="px-4 py-3">
+                      <input
+                        type="number"
+                        value={row.year ?? 0}
+                        onChange={(e) => updateYearlyData(index, "year", parseInt(e.target.value) || 0)}
+                        className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
+                      />
+                    </td>
+                    <td className="px-4 py-3">
+                      <input
+                        type="number"
+                        value={row.penelitian_blu ?? 0}
+                        onChange={(e) =>
+                          updateYearlyData(index, "penelitian_blu", parseInt(e.target.value) || 0)
+                        }
+                        className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
+                      />
+                    </td>
+                    <td className="px-4 py-3">
+                      <input
+                        type="number"
+                        value={row.pengabdian_blu ?? 0}
+                        onChange={(e) =>
+                          updateYearlyData(index, "pengabdian_blu", parseInt(e.target.value) || 0)
+                        }
+                        className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
+                      />
+                    </td>
+                    <td className="px-4 py-3">
+                      <input
+                        type="number"
+                        value={row.paten ?? 0}
+                        onChange={(e) => updateYearlyData(index, "paten", parseInt(e.target.value) || 0)}
+                        className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
+                      />
+                    </td>
+                    <td className="px-4 py-3">
+                      <input
+                        type="number"
+                        value={row.haki ?? 0}
+                        onChange={(e) => updateYearlyData(index, "haki", parseInt(e.target.value) || 0)}
+                        className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {safeData.quarterly_data.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xl font-semibold">Quick Edit • Data Kuartalan</h3>
+            <p className="text-xs text-blue-100">Sesuaikan angka per kuartal di sini</p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-left text-blue-50">
+              <thead>
+                <tr className="text-blue-200 uppercase text-xs tracking-wider">
+                  <th className="px-4 py-3">Kuartal</th>
+                  <th className="px-4 py-3">Penelitian BLU</th>
+                  <th className="px-4 py-3">Pengabdian BLU</th>
+                </tr>
+              </thead>
+              <tbody>
+                {safeData.quarterly_data.map((row: any, index: number) => (
+                  <tr key={row.quarter ?? index} className="border-t border-white/5">
+                    <td className="px-4 py-3">
+                      <input
+                        type="text"
+                        value={row.quarter ?? ""}
+                        onChange={(e) => updateQuarterlyData(index, "quarter", e.target.value)}
+                        className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
+                      />
+                    </td>
+                    <td className="px-4 py-3">
+                      <input
+                        type="number"
+                        value={row.penelitian_blu ?? 0}
+                        onChange={(e) =>
+                          updateQuarterlyData(index, "penelitian_blu", parseInt(e.target.value) || 0)
+                        }
+                        className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
+                      />
+                    </td>
+                    <td className="px-4 py-3">
+                      <input
+                        type="number"
+                        value={row.pengabdian_blu ?? 0}
+                        onChange={(e) =>
+                          updateQuarterlyData(index, "pengabdian_blu", parseInt(e.target.value) || 0)
+                        }
+                        className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+};
+
 const AdminDataEditorPage = () => {
   const navigate = useNavigate();
   const token = adminAuth.getToken();
@@ -199,6 +431,16 @@ const AdminDataEditorPage = () => {
             </button>
           ))}
         </section>
+
+        {selectedId === "statistics" && parsedData && (
+          <StatisticsQuickEditor
+            data={parsedData}
+            onChange={(newData) => {
+              setParsedData(newData);
+              setRawContent(JSON.stringify(newData, null, 2));
+            }}
+          />
+        )}
 
         <section className="bg-white/10 border border-white/20 rounded-3xl p-6 space-y-4">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">

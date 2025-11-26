@@ -5,7 +5,7 @@
 
 "use client";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   ChevronDown,
   ChevronRight,
@@ -20,6 +20,7 @@ import {
   Settings,
   Layers,
 } from "lucide-react";
+import { adminAuth } from "../utils/adminAuth";
 
 type NavLink =
   | { name: string; href: string; type: "link"; icon?: any }
@@ -217,6 +218,16 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [hoveredMegaItem, setHoveredMegaItem] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
+  const isAdminLoggedIn = Boolean(adminAuth.getToken());
+  const adminDisplayName = adminAuth.getUser() ?? "Administrator";
+
+  const handleAdminLogout = () => {
+    adminAuth.logout();
+    navigate("/admin/login");
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[100]">
@@ -442,6 +453,22 @@ const Header = () => {
               </ul>
             </nav>
 
+            {/* Admin Actions */}
+            {isAdminRoute && isAdminLoggedIn && (
+              <div className="hidden lg:flex items-center gap-3">
+                <div className="text-right">
+                  <p className="text-xs text-gray-500">Admin</p>
+                  <p className="font-semibold text-gray-800">{adminDisplayName}</p>
+                </div>
+                <button
+                  onClick={handleAdminLogout}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-red-600 border border-red-200 bg-red-50 hover:bg-red-100 transition-colors"
+                >
+                  Keluar
+                </button>
+              </div>
+            )}
+
             {/* Mobile Menu Button */}
             <div className="lg:hidden flex items-center">
               <button
@@ -469,6 +496,23 @@ const Header = () => {
         }`}
       >
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-2">
+          {isAdminRoute && isAdminLoggedIn && (
+            <div className="flex items-center justify-between px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 mb-4">
+              <div>
+                <p className="text-xs text-gray-500">Admin</p>
+                <p className="font-semibold text-gray-800">{adminDisplayName}</p>
+              </div>
+              <button
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  handleAdminLogout();
+                }}
+                className="px-4 py-2 rounded-xl text-sm font-semibold text-red-600 border border-red-200 bg-white hover:bg-red-50 transition-colors"
+              >
+                Keluar
+              </button>
+            </div>
+          )}
           {navLinks.map((link) =>
             link.type === "link" ? (
               <Link
