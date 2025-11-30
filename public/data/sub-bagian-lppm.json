@@ -12,7 +12,7 @@
         "kategori": "PUI",
         "pimpinan": {
           "ketua": {
-            "nama": "Prof. Dr. Ir. Yusnita, M.Sc.",
+            "nama": "Prof. Dr. Ir. Yusnita, M. Sc.",
             "foto": "/images/sub-bagian/pui-anggrek-kopi/ketua.jpg",
             "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+PUI+Anggrek+dan+Kopi",
             "jabatan": "Ketua PUI",
@@ -128,7 +128,7 @@
         "kategori": "PUSLIT",
         "pimpinan": {
           "ketua": {
-            "nama": "Ade Arif Firmansyah S.H.,M.H",
+            "nama": "Dr. Ade arif Firmansyah, S.H., M.H",
             "foto": "/images/sub-bagian/puslit-haki-paten/ketua.jpg",
             "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+HKI+dan+Paten",
             "jabatan": "Kepala Pusat Penelitian HKI dan Paten",
@@ -185,7 +185,7 @@
         "kategori": "PUSLIT",
         "pimpinan": {
           "ketua": {
-            "nama": "Amril Ma’ruf Siregar, S.T.,M.T",
+            "nama": "Amril Ma'ruf Siregar. S.T.,M.T.",
             "foto": "/images/sub-bagian/puslit-bencana-lingkungan/ketua.jpg",
             "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+BLH+SDA",
             "jabatan": "Kepala Pusat Penelitian Bencana dan Lingkungan",
@@ -242,8 +242,8 @@
         "kategori": "PUSLIT",
         "pimpinan": {
           "ketua": {
-            "nama": "Gita Paramita Djausal, S.IP.,M. B. A",
-            "foto": "/images/sub-bagian/puslit-kebijakan-publik/ketua.png",
+            "nama": "Gita Paramita Djausal, S. IP., M. B. A",
+            "foto": "/images/sub-bagian/puslit-kebijakan-publik/ketua.jpg",
             "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+Kebijakan+Publik",
             "jabatan": "Kepala Pusat Studi Kebijakan Publik",
             "periode": "2024-2029"
@@ -299,7 +299,7 @@
         "kategori": "PUSLIT",
         "pimpinan": {
           "ketua": {
-            "nama": "Ir. Gigih Forda Nama, S.T., M.T., IPM",
+            "nama": "Gigih Forda Nama, S.T., M.T",
             "foto": "/images/sub-bagian/puslit-publikasi-kerjasama/ketua.jpg",
             "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+Publikasi+dan+Kerjasama",
             "jabatan": "Kepala Pusat Publikasi dan Kerjasama",
@@ -346,7 +346,7 @@
           "Menyelenggarakan seminar dan konferensi ilmiah"
         ],
         "struktur_organisasi": {
-          "gambar_struktur": "/images/sub-bagian/puslit-publikasi-kerjasama/struktur-organisasi.png",
+          "gambar_struktur": "/images/sub-bagian/puslit-publikasi-kerjasama/struktur-organisasi.jpg",
           "gambar_placeholder": "https://via.placeholder.com/1200x800/f0f9ff/105091?text=Struktur+Organisasi+Puslit+Publikasi+dan+Kerjasama"
         }
       },
@@ -357,7 +357,7 @@
         "pimpinan": {
           "ketua": {
             "nama": "Dr. Dewi Sartika, S.T.P., M.Si.",
-            "foto": "/images/sub-bagian/puslit-inkubator-bisnis/ketua.png",
+            "foto": "/images/sub-bagian/puslit-inkubator-bisnis/ketua.jpg",
             "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+Inkubator+Bisnis",
             "jabatan": "Kepala Pusat Inkubator Bisnis dan Inovasi",
             "periode": "2024-2029"
@@ -470,8 +470,8 @@
         "kategori": "PUSLIT",
         "pimpinan": {
           "ketua": {
-            "nama": "Trisya Septiana, S.T., M.T",
-            "foto": "/images/sub-bagian/puslit-sistem-informasi/ketua.png",
+            "nama": "Trisya Septiana, S.T., M.T,",
+            "foto": "/images/sub-bagian/puslit-sistem-informasi/ketua.jpg",
             "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+Sistem+Informasi",
             "jabatan": "Kepala Pusat Sistem Informasi dan Digitalisasi",
             "periode": "2024-2029"
@@ -585,7 +585,7 @@
         "pimpinan": {
           "ketua": {
             "nama": "Khairudin, S.T., M.T., PhD Eng",
-            "foto": "/images/sub-bagian/puslit-energi-material/ketua.jpeg",
+            "foto": "/images/sub-bagian/puslit-energi-material/ketua.jpg",
             "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+Energi+dan+Material",
             "jabatan": "Kepala Pusat Energi dan Material Maju",
             "periode": "2024-2029"
@@ -641,8 +641,8 @@
         "kategori": "PUSLIT",
         "pimpinan": {
           "ketua": {
-            "nama": "Fajrin Satria Dwi Kesumah, S.E., M.FBE",
-            "foto": "/images/sub-bagian/puslit-ekonomi-kreatif/ketua.jpeg",
+            "nama": "Fajrin Satria Dwi Kesumah, S.E., M.FBE.",
+            "foto": "/images/sub-bagian/puslit-ekonomi-kreatif/ketua.jpg",
             "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Ketua+Puslit+Ekonomi+Kreatif",
             "jabatan": "Kepala Pusat Ekonomi Kreatif dan Pariwisata",
             "periode": "2024-2029"
@@ -700,7 +700,7 @@
         "kategori": "Administrasi",
         "pimpinan": {
           "ketua": {
-            "nama": "Ahmad Suntara, S.Kom",
+            "nama": "Ir. Budi Santoso, M.M.",
             "foto": "/images/sub-bagian/bagian-umum/kepala.jpg",
             "placeholder": "https://via.placeholder.com/400x400/105091/ffffff?text=Kepala+Bagian+Umum",
             "jabatan": "Kepala Bagian Umum",

@@ -42,22 +42,42 @@ const BeritaDetailPage = () => {
 
       try {
         setIsLoading(true);
+        const apiBase = (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") || 
+          (window.location.hostname === "lppm.unila.ac.id" || window.location.hostname.includes("unila.ac.id")
+            ? "https://lppm.unila.ac.id/api"
+            : "http://localhost:8000/api");
         // First, try to find the news by slug from the list endpoint
-        const listResponse = await fetch(`http://127.0.0.1:8000/api/posts?search=${encodeURIComponent(slug)}`);
+        // Fetch multiple pages to find the post by slug (since backend doesn't support search by slug)
+        let newsItem = null;
+        let page = 1;
+        const maxPages = 10; // Limit search to first 10 pages to avoid infinite loop
+        
+        while (!newsItem && page <= maxPages) {
+          const listResponse = await fetch(`${apiBase}/posts?page=${page}&limit=12`);
 
-        if (!listResponse.ok) {
-          throw new Error("Failed to fetch news");
+          if (!listResponse.ok) {
+            throw new Error("Failed to fetch news");
+          }
+
+          const listData = await listResponse.json();
+          newsItem = listData.data?.find((item: any) => item.slug === slug);
+          
+          if (newsItem) break;
+          
+          // If no more pages, stop searching
+          if (!listData.pagination || page >= listData.pagination.last_page) {
+            break;
+          }
+          
+          page++;
         }
-
-        const listData = await listResponse.json();
-        const newsItem = listData.data?.find((item: any) => item.slug === slug);
 
         if (!newsItem) {
           throw new Error("Berita tidak ditemukan");
         }
 
         // Then fetch the full details using the ID
-        const detailResponse = await fetch(`http://127.0.0.1:8000/api/posts/${newsItem.id}`);
+        const detailResponse = await fetch(`${apiBase}/posts/${newsItem.id}`);
 
         if (!detailResponse.ok) {
           throw new Error("Failed to fetch news details");
@@ -339,58 +359,8 @@ const BeritaDetailPage = () => {
           {/* Article Body */}
           <div className="prose prose-lg max-w-none">
             <div
-              className="bg-white rounded-2xl shadow-lg p-8 lg:p-12 text-gray-800 leading-relaxed"
+              className="bg-white rounded-2xl shadow-lg p-8 lg:p-12 text-gray-800 leading-relaxed prose-headings:text-gray-900 prose-headings:font-bold prose-p:mb-4 prose-p:leading-relaxed prose-ul:pl-6 prose-ol:pl-6 prose-li:mb-2 prose-strong:text-gray-900 prose-a:text-[#105091] prose-a:underline prose-a:font-medium hover:prose-a:text-[#0a3b6d] prose-blockquote:border-l-4 prose-blockquote:border-[#105091] prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:bg-gray-50 prose-blockquote:py-4 prose-blockquote:rounded-lg"
               dangerouslySetInnerHTML={{ __html: newsData.content }}
-              style={{
-                // Custom styles for HTML content
-                '& h1, & h2, & h3, & h4, & h5, & h6': {
-                  color: '#1f2937',
-                  fontWeight: 'bold',
-                  marginTop: '2rem',
-                  marginBottom: '1rem',
-                },
-                '& h1': { fontSize: '2rem' },
-                '& h2': { fontSize: '1.75rem' },
-                '& h3': { fontSize: '1.5rem' },
-                '& p': {
-                  marginBottom: '1rem',
-                  lineHeight: '1.75',
-                },
-                '& ul, & ol': {
-                  paddingLeft: '1.5rem',
-                  marginBottom: '1rem',
-                },
-                '& ul': {
-                  listStyleType: 'disc',
-                },
-                '& ol': {
-                  listStyleType: 'decimal',
-                },
-                '& li': {
-                  marginBottom: '0.5rem',
-                  paddingLeft: '0.5rem',
-                },
-                '& strong, & b': {
-                  fontWeight: 'bold',
-                  color: '#1f2937',
-                },
-                '& a': {
-                  color: '#105091',
-                  textDecoration: 'underline',
-                  fontWeight: '500',
-                },
-                '& a:hover': {
-                  color: '#0a3b6d',
-                },
-                '& blockquote': {
-                  borderLeft: '4px solid #105091',
-                  paddingLeft: '1rem',
-                  fontStyle: 'italic',
-                  backgroundColor: '#f8fafc',
-                  padding: '1rem',
-                  borderRadius: '0.5rem',
-                },
-              }}
             />
           </div>
 

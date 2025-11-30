@@ -162,7 +162,11 @@ const Homepage = () => {
       try {
         setIsLoading(true);
         // Using the Laravel API endpoint from integration docs
-        const response = await fetch("http://127.0.0.1:8000/api/posts?limit=6");
+        const apiBase = (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") || 
+          (window.location.hostname === "lppm.unila.ac.id" || window.location.hostname.includes("unila.ac.id")
+            ? "https://lppm.unila.ac.id/api"
+            : "http://localhost:8000/api");
+        const response = await fetch(`${apiBase}/posts?limit=6`);
 
         if (!response.ok) {
           throw new Error("Failed to fetch news");
@@ -309,7 +313,7 @@ const Homepage = () => {
   return (
     <div className="min-h-screen">
       {/* Enhanced Hero Section - Modern UI/UX with Hero Image */}
-      <section className="relative h-screen bg-gradient-to-br from-[#105091] via-blue-900 to-indigo-900 text-white overflow-hidden">
+      <section className="relative min-h-screen bg-gradient-to-br from-[#105091] via-blue-900 to-indigo-900 text-white overflow-hidden pt-20 md:pt-24">
         {/* Animated Background Elements */}
         <div className="absolute inset-0">
           <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full filter blur-3xl animate-pulse"></div>
@@ -361,7 +365,7 @@ const Homepage = () => {
           </div>
         </div>
 
-        <div className="relative h-screen max-w-screen-2xl mx-auto px-4 sm:px-8 flex items-center">
+        <div className="relative min-h-[calc(100vh-5rem)] max-w-screen-2xl mx-auto px-4 sm:px-8 flex items-center py-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center w-full">
             {/* Left Content */}
             <div className="space-y-8">
@@ -445,7 +449,7 @@ const Homepage = () => {
                   <div className="relative overflow-hidden rounded-2xl">
                     {/* Hero Image */}
                     <img
-                      src="/hero-image.jpg"
+                      src={`${import.meta.env.BASE_URL}hero-image.jpg`}
                       alt="LPPM Universitas Lampung"
                       className="w-full h-80 lg:h-96 object-cover transition-transform duration-700 group-hover:scale-110"
                       onError={(e) => {
@@ -552,7 +556,7 @@ const Homepage = () => {
             {[
               {
                 title: "Penelitian",
-                icon: "/icons/penelitian.png",
+                icon: `${import.meta.env.BASE_URL}icons/penelitian.png`,
                 color: "from-blue-500 to-blue-600",
                 description: "Kelola dan ajukan proposal penelitian",
                 link: "/penelitian",
@@ -561,7 +565,7 @@ const Homepage = () => {
               },
               {
                 title: "Pengabdian",
-                icon: "/icons/pengabdian.png",
+                icon: `${import.meta.env.BASE_URL}icons/pengabdian.png`,
                 color: "from-emerald-500 to-emerald-600",
                 description: "Program pengabdian kepada masyarakat",
                 link: "/pengabdian",
@@ -570,7 +574,7 @@ const Homepage = () => {
               },
               {
                 title: "Repository",
-                icon: "/icons/repository.png",
+                icon: `${import.meta.env.BASE_URL}icons/repository.png`,
                 color: "from-purple-500 to-purple-600",
                 description: "Koleksi karya ilmiah universitas",
                 link: "https://repository.lppm.unila.ac.id",
@@ -580,7 +584,7 @@ const Homepage = () => {
               },
               {
                 title: "Journal",
-                icon: "/icons/journal.png",
+                icon: `${import.meta.env.BASE_URL}icons/journal.png`,
                 color: "from-orange-500 to-orange-600",
                 description: "Jurnal ilmiah dan publikasi",
                 link: "https://journal.lppm.unila.ac.id",
@@ -590,7 +594,7 @@ const Homepage = () => {
               },
               {
                 title: "PPID",
-                icon: "/icons/ppid.png",
+                icon: `${import.meta.env.BASE_URL}icons/ppid.png`,
                 color: "from-red-500 to-red-600",
                 description: "Informasi publik dan transparansi",
                 link: "https://ppid.lppm.unila.ac.id",

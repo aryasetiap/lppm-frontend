@@ -16,7 +16,9 @@ import SubBagianForm from "../components/admin/SubBagianForm";
 
 const LARAVEL_API_BASE =
   (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") ||
-  "http://localhost:8000/api";
+  (typeof window !== "undefined" && (window.location.hostname === "lppm.unila.ac.id" || window.location.hostname.includes("unila.ac.id"))
+    ? "https://lppm.unila.ac.id/api"
+    : "http://localhost:8000/api");
 
 const DATASETS = [
   {

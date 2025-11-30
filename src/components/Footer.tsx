@@ -222,7 +222,7 @@ const Footer = () => {
                 <div className="group">
                   <div className="relative inline-block">
                     <img
-                      src="/logo-footer-lppm-unila.png"
+                      src={`${import.meta.env.BASE_URL}logo-footer-lppm-unila.png`}
                       alt="Logo LPPM Unila"
                       width={260}
                       height={60}
@@ -349,7 +349,7 @@ const Footer = () => {
               </div>
               <div className="flex justify-center flex-shrink-0 px-4">
                 <img
-                  src="/logolppm.png"
+                  src={`${import.meta.env.BASE_URL}logolppm.png`}
                   alt="Kolaborasi Logo LPPM"
                   className="h-14 lg:h-16 w-auto object-contain drop-shadow-md"
                   loading="lazy"

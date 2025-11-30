@@ -68,6 +68,16 @@ const SubBagianPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Helper function to resolve image paths (handle subfolder deployment)
+  const resolveImagePath = (path: string): string => {
+    if (!path) return path;
+    // If path starts with /, it's relative to root, need to add /app prefix
+    if (path.startsWith('/') && !path.startsWith('//') && !path.startsWith('/http')) {
+      return '/app' + path;
+    }
+    return path;
+  };
+
   useEffect(() => {
     const loadSubBagianData = async () => {
       try {
@@ -333,7 +343,7 @@ const SubBagianPage: React.FC = () => {
                   <div className="mx-auto w-48 h-48 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-1 shadow-lg transform transition-all duration-500 hover:scale-110 hover:rotate-3">
                     <div className="w-full h-full bg-white rounded-xl overflow-hidden">
                       <img
-                        src={subBagianData.pimpinan.ketua.foto}
+                        src={resolveImagePath(subBagianData.pimpinan.ketua.foto)}
                         onError={(e) => {
                           e.currentTarget.src =
                             subBagianData.pimpinan.ketua.placeholder;
@@ -673,7 +683,7 @@ const SubBagianPage: React.FC = () => {
                 <div className="relative group">
                   <div className="aspect-video bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl shadow-lg overflow-hidden">
                     <img
-                      src={subBagianData.struktur_organisasi.gambar_struktur}
+                      src={resolveImagePath(subBagianData.struktur_organisasi.gambar_struktur)}
                       onError={(e) => {
                         e.currentTarget.src =
                           subBagianData.struktur_organisasi.gambar_placeholder;

@@ -49,10 +49,14 @@ const BeritaPage = () => {
     const fetchNews = async (page: number = 1) => {
       try {
         setIsLoading(true);
-        let url = `http://127.0.0.1:8000/api/posts?page=${page}&limit=12`;
+        const apiBase = (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") || 
+          (window.location.hostname === "lppm.unila.ac.id" || window.location.hostname.includes("unila.ac.id")
+            ? "https://lppm.unila.ac.id/api"
+            : "http://localhost:8000/api");
+        let url = `${apiBase}/posts?page=${page}&limit=12`;
 
         if (searchTerm) {
-          url += `&search=${encodeURIComponent(searchTerm)}`;
+          url += `&keyword=${encodeURIComponent(searchTerm)}`;
         }
 
         if (selectedCategory) {

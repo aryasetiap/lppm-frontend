@@ -13,6 +13,7 @@ import AdminDataEditorPage from "./pages/AdminDataEditorPage";
 import PosApDownloadsPage from "./pages/PosApDownloadsPage";
 import { adminAuth } from "./utils/adminAuth";
 
+
 const AdminRoute = ({ children }: { children: ReactNode }) => {
   const token = adminAuth.getToken();
   return token ? <>{children}</> : <Navigate to="/admin/login" replace />;
@@ -20,7 +21,7 @@ const AdminRoute = ({ children }: { children: ReactNode }) => {
 
 function App() {
   return (
-    <Router>
+    <Router basename="/app">
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-grow">

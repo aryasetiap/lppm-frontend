@@ -62,7 +62,6 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
   const [formData, setFormData] = useState<SubBagianData | null>(data);
   const [selectedCategory, setSelectedCategory] = useState<"pui" | "puslit" | "administrasi">("pui");
   const [selectedItemSlug, setSelectedItemSlug] = useState<string | null>(null);
-  const [isAddingNew, setIsAddingNew] = useState(false);
 
   useEffect(() => {
     setFormData(data);
@@ -197,7 +196,6 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
     setFormData(newData);
     onChange(newData);
     setSelectedItemSlug(newSlug);
-    setIsAddingNew(false);
   };
 
   const deleteItem = (slug: string) => {
@@ -268,7 +266,6 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
                   onClick={() => {
                     setSelectedCategory(cat);
                     setSelectedItemSlug(null);
-                    setIsAddingNew(false);
                   }}
                   className={`text-left px-4 py-3 rounded-xl transition-colors ${
                     selectedCategory === cat
@@ -313,7 +310,6 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
                       }`}
                       onClick={() => {
                         setSelectedItemSlug(slug);
-                        setIsAddingNew(false);
                       }}
                     >
                       <div className="flex items-start justify-between gap-2">

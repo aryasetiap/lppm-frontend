@@ -280,7 +280,7 @@ const Header = () => {
               <Link to="/" className="flex items-center group">
                 <div className="relative">
                   <img
-                    src="/logo-lppm-unila.png"
+                    src={`${import.meta.env.BASE_URL}logo-lppm-unila.png`}
                     alt="Logo LPPM Unila"
                     width={180}
                     height={48}
@@ -344,7 +344,7 @@ const Header = () => {
                           {link.name === "PUSLIT" ? (
                             /* Special 2-column layout for PUSLIT */
                             <div className="grid grid-cols-2 gap-2">
-                              {link.items.map((item, index) => (
+                              {link.items.map((item) => (
                                 <div
                                   key={item.name}
                                   className="relative"
@@ -609,7 +609,7 @@ const Header = () => {
       <div
         className={`lg:hidden transition-all duration-500 bg-white/95 backdrop-blur-xl border-b border-white/20 ${
           isMenuOpen
-            ? "max-h-[80vh] opacity-100 shadow-2xl"
+            ? "max-h-[80vh] opacity-100 shadow-2xl overflow-y-auto"
             : "max-h-0 opacity-0 overflow-hidden"
         }`}
       >

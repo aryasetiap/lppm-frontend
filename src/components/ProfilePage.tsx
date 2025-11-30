@@ -5,7 +5,6 @@ import {
   Briefcase,
   Building,
   Award,
-  Clock,
   BookOpen,
   Star,
   Lightbulb,
@@ -51,7 +50,16 @@ interface ProfileData {
 const ProfilePage: React.FC = () => {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeSection, setActiveSection] = useState<string>("pimpinan");
+
+  // Helper function to resolve image paths (handle subfolder deployment)
+  const resolveImagePath = (path: string): string => {
+    if (!path) return path;
+    // If path starts with /, it's relative to root, need to add /app prefix
+    if (path.startsWith('/') && !path.startsWith('//') && !path.startsWith('/http')) {
+      return '/app' + path;
+    }
+    return path;
+  };
 
   useEffect(() => {
     const loadProfileData = async () => {
@@ -99,28 +107,27 @@ const ProfilePage: React.FC = () => {
         top: offsetPosition,
         behavior: "smooth",
       });
-      setActiveSection(sectionId);
     }
   };
 
-  // Intersection Observer for active section detection
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
+  // Intersection Observer for active section detection (disabled - navigation commented out)
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       entries.forEach((entry) => {
+  //         if (entry.isIntersecting) {
+  //           setActiveSection(entry.target.id);
+  //         }
+  //       });
+  //     },
+  //     { threshold: 0.3 }
+  //   );
 
-    const sections = document.querySelectorAll("section[id]");
-    sections.forEach((section) => observer.observe(section));
+  //   const sections = document.querySelectorAll("section[id]");
+  //   sections.forEach((section) => observer.observe(section));
 
-    return () => observer.disconnect();
-  }, []);
+  //   return () => observer.disconnect();
+  // }, []);
 
   if (loading) {
     return (
@@ -365,7 +372,7 @@ const ProfilePage: React.FC = () => {
                     <div className="mx-auto w-48 h-48 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
                       <div className="w-full h-full bg-white rounded-xl overflow-hidden">
                         <img
-                          src={profileData.pimpinan.kepala_lppm.foto}
+                          src={resolveImagePath(profileData.pimpinan.kepala_lppm.foto)}
                           onError={(e) => {
                             e.currentTarget.src =
                               profileData.pimpinan.kepala_lppm.placeholder;
@@ -411,7 +418,7 @@ const ProfilePage: React.FC = () => {
                     <div className="mx-auto w-48 h-48 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3">
                       <div className="w-full h-full bg-white rounded-xl overflow-hidden">
                         <img
-                          src={profileData.pimpinan.sekretaris_lppm.foto}
+                          src={resolveImagePath(profileData.pimpinan.sekretaris_lppm.foto)}
                           onError={(e) => {
                             e.currentTarget.src =
                               profileData.pimpinan.sekretaris_lppm.placeholder;
@@ -678,7 +685,7 @@ const ProfilePage: React.FC = () => {
                 <div className="relative group">
                   <div className="aspect-video bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl shadow-lg overflow-hidden">
                     <img
-                      src={profileData.struktur_organisasi.gambar_struktur}
+                      src={resolveImagePath(profileData.struktur_organisasi.gambar_struktur)}
                       onError={(e) => {
                         e.currentTarget.src =
                           profileData.struktur_organisasi.gambar_placeholder;

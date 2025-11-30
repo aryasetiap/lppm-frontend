@@ -21,27 +21,31 @@
     }
   },
   "visi_misi": {
-    "visi": "Pada Tahun 2025 Menjadi Lembaga yang Unggul dan Terkemuka di Tingkat Nasional dan Internasional.",
+    "visi": "Menjadi Lembaga Riset dan Pengabdian kepada Masyarakat yang Unggul, Inovatif, dan Kolaboratif dalam Mendukung Unila sebagai Universitas Berkelas Dunia yang Berbasis Keberlanjutan dan Nilai Lokal.",
     "misi": [
       {
         "id": 1,
-        "item": "Merencanakan, melaksanakan, mengendalikan, dan mengevaluasi penelitian dan pengabdian kepada masyarakat untuk meningkatkan mutu pendidikan dan kesejahteraan masyarakat."
+        "item": "Mengembangkan budaya riset unggulan dan kolaboratif"
       },
       {
         "id": 2,
-        "item": "Mengembangkan sistem manajemen mutu penelitian, pengabdian kepada masyarakat dan publikasi ilmiah secara berkelanjutan."
+        "item": "Mendorong pengabdian kepada masyarakat berbasis hasil riset dan teknologi tepat guna"
       },
       {
         "id": 3,
-        "item": "Mengembangkan jalinan kerja sama kelembagaan baik lokal, nasional, maupun internasional yang saling menguntungkan."
+        "item": "Memperkuat tata kelola riset dan pengabdian yang adaptif, profesional, dan berbasis teknologi digital"
       },
       {
         "id": 4,
-        "item": "Mengembangkan dan memperbaiki sistem informasi dan manajemen penelitian dan pengabdian kepada masyarakat yang efisien dan profesional."
+        "item": "Meningkatkan kemitraan strategis nasional dan internasional"
       },
       {
         "id": 5,
-        "item": "Membangun suasana dan budaya penelitian dan pengabdian kepada masyarakat yang kondusif dan bermoral."
+        "item": "Mengintegrasikan nilai-nilai kearifan lokal Lampung dalam kegiatan penelitian dan pengabdian"
+      },
+      {
+        "id": 6,
+        "item": "Mendorong pengembangan ekosistem inovasi dan kewirausahaan berbasis riset"
       }
     ]
   },
