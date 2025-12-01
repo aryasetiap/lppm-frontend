@@ -32,7 +32,7 @@ const AdminDashboardPage = () => {
     const loadStats = async () => {
       try {
         setLoading(true);
-        const response = await fetch("/data/statistics.json");
+        const response = await fetch(`${import.meta.env.BASE_URL}data/statistics.json`);
         if (!response.ok) {
           throw new Error("Tidak dapat memuat data statistik.");
         }

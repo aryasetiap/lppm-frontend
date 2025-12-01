@@ -137,7 +137,7 @@ const Homepage = () => {
       try {
         setStatsLoading(true);
         // Fetch from local JSON file
-        const response = await fetch("/data/statistics.json");
+        const response = await fetch(`${import.meta.env.BASE_URL}data/statistics.json`);
 
         if (!response.ok) {
           throw new Error("Failed to fetch statistics data");
