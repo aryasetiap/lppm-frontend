@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Download as DownloadIcon, FileText, RefreshCw } from "lucide-react";
+import { ArrowLeft, Download as DownloadIcon, FileText, RefreshCw, Search, ChevronLeft, ChevronRight } from "lucide-react";
 
 const LARAVEL_API_BASE =
   (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") ||
@@ -37,6 +37,12 @@ const PosApDownloadsPage = () => {
   const [categories, setCategories] = useState<PosApCategory[]>([]);
   const [categoriesReady, setCategoriesReady] = useState(false);
   const [categoriesError, setCategoriesError] = useState<string | null>(null);
+
+  // Search & Pagination State
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const activeCategory = useMemo(
     () => categories.find((cat) => cat.slug === category),
@@ -123,17 +129,24 @@ const PosApDownloadsPage = () => {
 
       let url = `${LARAVEL_API_BASE}/pos-ap/downloads?category=${category}`;
       if (category === "dokumen") {
-        url = `${LARAVEL_API_BASE}/documents`;
+        url = `${LARAVEL_API_BASE}/documents?page=${page}&limit=10`;
+        if (debouncedSearch) {
+          url += `&search=${encodeURIComponent(debouncedSearch)}`;
+        }
       }
 
       const response = await fetch(url);
 
       if (!response.ok) {
-        throw new Error("Gagal memuat data POS-AP");
+        throw new Error("Gagal memuat data");
       }
 
       const payload = await response.json();
       setItems(payload.data || []);
+
+      if (category === "dokumen" && payload.meta?.pagination) {
+        setTotalPages(payload.meta.pagination.last_page);
+      }
     } catch (err) {
       console.error(err);
       setError("Tidak dapat memuat data. Coba muat ulang.");
@@ -148,10 +161,18 @@ const PosApDownloadsPage = () => {
   }, []);
 
   useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1); // Reset page on search
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  useEffect(() => {
     if (!categoriesReady) return;
     fetchDownloads();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, categoriesReady]);
+  }, [category, categoriesReady, page, debouncedSearch]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#091f43] via-blue-900 to-slate-950 text-white">
@@ -185,7 +206,8 @@ const PosApDownloadsPage = () => {
           <p className="mt-4 text-sm text-red-200">{categoriesError}</p>
         )}
 
-        {categories.length > 0 && (
+        {/* Hide categories if in 'dokumen' mode */}
+        {category !== "dokumen" && categories.length > 0 && (
           <div className="mt-8 flex flex-wrap gap-3">
             {categories.map((cat) => {
               const isActive = cat.slug === category;
@@ -203,6 +225,24 @@ const PosApDownloadsPage = () => {
                 </button>
               );
             })}
+          </div>
+        )}
+
+        {/* Search Bar for Dokumen */}
+        {category === "dokumen" && (
+          <div className="mt-8 max-w-xl">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-blue-200" />
+              </div>
+              <input
+                type="text"
+                className="block w-full pl-11 pr-4 py-3 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-blue-200/50 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-transparent transition"
+                placeholder="Cari dokumen..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
           </div>
         )}
       </header>
@@ -251,7 +291,7 @@ const PosApDownloadsPage = () => {
                 key={item.id}
                 className="bg-white/5 border border-white/10 rounded-3xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:bg-white/10 transition"
               >
-                <div className="w-full md:w-4/6">
+                <div>
                   <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
                   <p className="text-blue-100/80 text-sm mb-2 line-clamp-2">{item.excerpt}</p>
                   <p className="text-xs text-blue-100/60">
@@ -290,6 +330,31 @@ const PosApDownloadsPage = () => {
                 </div>
               </div>
             ))}
+
+            {/* Pagination Controls */}
+            {category === "dokumen" && totalPages > 1 && (
+              <div className="flex justify-center items-center gap-4 mt-8 pt-4 border-t border-white/10">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  Sebelumnya
+                </button>
+                <span className="text-sm text-blue-100">
+                  Halaman {page} dari {totalPages}
+                </span>
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                >
+                  Selanjutnya
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
           </div>
         )}
       </main>
