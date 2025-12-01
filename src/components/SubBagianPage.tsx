@@ -12,6 +12,8 @@ import {
   Shield,
   Lightbulb,
   Home,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 interface PimpinanData {
@@ -22,6 +24,13 @@ interface PimpinanData {
     jabatan: string;
     periode: string;
   };
+  staff?: {
+    nama: string;
+    foto: string;
+    placeholder: string;
+    jabatan: string;
+    periode: string;
+  }[];
 }
 
 interface ProfilData {
@@ -68,6 +77,21 @@ const SubBagianPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Slider State
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const nextSlide = () => {
+    if (!subBagianData?.pimpinan) return;
+    const totalMembers = 1 + (subBagianData.pimpinan.staff?.length || 0);
+    setCurrentSlide((prev) => (prev + 1) % totalMembers);
+  };
+
+  const prevSlide = () => {
+    if (!subBagianData?.pimpinan) return;
+    const totalMembers = 1 + (subBagianData.pimpinan.staff?.length || 0);
+    setCurrentSlide((prev) => (prev - 1 + totalMembers) % totalMembers);
+  };
+
   // Helper function to resolve image paths (handle subfolder deployment)
   const resolveImagePath = (path: string): string => {
     if (!path) return "";
@@ -79,12 +103,12 @@ const SubBagianPage: React.FC = () => {
     // and if we are not in dev mode (where / is root) - but here we assume /app is always needed based on previous context
     // or better yet, use import.meta.env.BASE_URL
     if (path.startsWith('/')) {
-       const baseUrl = import.meta.env.BASE_URL;
-       // Remove leading slash from path to avoid double slashes if baseUrl ends with slash
-       const cleanPath = path.substring(1);
-       // Ensure baseUrl ends with slash
-       const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
-       return cleanBaseUrl + cleanPath;
+      const baseUrl = import.meta.env.BASE_URL;
+      // Remove leading slash from path to avoid double slashes if baseUrl ends with slash
+      const cleanPath = path.substring(1);
+      // Ensure baseUrl ends with slash
+      const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+      return cleanBaseUrl + cleanPath;
     }
     return path;
   };
@@ -332,7 +356,7 @@ const SubBagianPage: React.FC = () => {
               <Users className="w-8 h-8 text-white" />
             </div>
             <h2 className="font-display text-4xl lg:text-5xl font-bold bg-gradient-to-r from-[#105091] to-blue-600 bg-clip-text text-transparent mb-6">
-              Pimpinan
+              {subBagianData?.pimpinan?.staff && subBagianData.pimpinan.staff.length > 0 ? "Pimpinan dan Staff" : "Pimpinan"}
             </h2>
             <p className="font-body text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
               Kepemimpinan yang berdedikasi untuk mengemban amanah dalam
@@ -340,52 +364,133 @@ const SubBagianPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="max-w-2xl mx-auto">
-            <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
-              {/* Top Gradient Bar */}
-              <div className="h-1 bg-gradient-to-r from-[#105091] to-blue-600"></div>
+          <div className="max-w-6xl mx-auto px-4">
+            {subBagianData?.pimpinan?.staff && subBagianData.pimpinan.staff.length > 0 ? (
+              <div className="relative">
+                {/* Slider Container */}
+                <div className="flex items-center justify-center gap-4 md:gap-8">
+                  <button
+                    onClick={prevSlide}
+                    className="p-2 rounded-full bg-white/80 hover:bg-white shadow-lg text-[#105091] transition-all z-10"
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </button>
 
-              {/* Glass Effect Overlay */}
-              <div className="absolute inset-0 bg-white/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="flex-1 overflow-hidden">
+                    <div
+                      className="flex transition-transform duration-500 ease-in-out"
+                      style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                    >
+                      {[subBagianData.pimpinan.ketua, ...subBagianData.pimpinan.staff].map((person, index) => (
+                        <div key={index} className="w-full flex-shrink-0 px-4">
+                          <div className="max-w-md mx-auto bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
+                            {/* Top Gradient Bar */}
+                            <div className="h-1 bg-gradient-to-r from-[#105091] to-blue-600"></div>
 
-              <div className="relative p-8 text-center">
-                {/* Image Container */}
-                <div className="relative mb-6">
-                  <div className="mx-auto w-48 h-48 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-1 shadow-lg transform transition-all duration-500 hover:scale-110 hover:rotate-3">
-                    <div className="w-full h-full bg-white rounded-xl overflow-hidden">
-                      <img
-                        src={resolveImagePath(subBagianData?.pimpinan?.ketua?.foto)}
-                        onError={(e) => {
-                          const target = e.currentTarget;
-                          // Prevent infinite loop if placeholder also fails
-                          if (target.src !== subBagianData?.pimpinan?.ketua?.placeholder) {
-                              target.src = subBagianData?.pimpinan?.ketua?.placeholder || "https://via.placeholder.com/400x400?text=No+Image";
-                          }
-                        }}
-                        alt={subBagianData?.pimpinan?.ketua?.nama}
-                        className="w-full h-full object-cover"
-                      />
+                            {/* Glass Effect Overlay */}
+                            <div className="absolute inset-0 bg-white/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                            <div className="relative p-8 text-center">
+                              {/* Image Container */}
+                              <div className="relative mb-6">
+                                <div className="mx-auto w-48 h-48 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-1 shadow-lg transform transition-all duration-500 hover:scale-110 hover:rotate-3">
+                                  <div className="w-full h-full bg-white rounded-xl overflow-hidden">
+                                    <img
+                                      src={resolveImagePath(person.foto)}
+                                      onError={(e) => {
+                                        const target = e.currentTarget;
+                                        if (target.src !== person.placeholder) {
+                                          target.src = person.placeholder || "https://via.placeholder.com/400x400?text=No+Image";
+                                        }
+                                      }}
+                                      alt={person.nama}
+                                      className="w-full h-full object-cover"
+                                    />
+                                  </div>
+                                </div>
+                                {/* Glow Effect */}
+                                <div className="absolute inset-0 w-32 h-32 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 blur-xl opacity-20 transition-opacity duration-500"></div>
+                              </div>
+
+                              <h3 className="font-display text-2xl font-bold text-gray-900 mb-3 transition-colors duration-300 hover:text-[#105091]">
+                                {person.nama}
+                              </h3>
+
+                              <div className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-[#105091] to-blue-600 text-white font-semibold text-sm rounded-xl mb-3 shadow-lg">
+                                <Award className="w-4 h-4 mr-2" />
+                                {person.jabatan}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                  {/* Glow Effect */}
-                  <div className="absolute inset-0 w-32 h-32 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 blur-xl opacity-20 transition-opacity duration-500"></div>
+
+                  <button
+                    onClick={nextSlide}
+                    className="p-2 rounded-full bg-white/80 hover:bg-white shadow-lg text-[#105091] transition-all z-10"
+                  >
+                    <ChevronRight className="w-6 h-6" />
+                  </button>
                 </div>
 
-                <h3 className="font-display text-2xl font-bold text-gray-900 mb-3 transition-colors duration-300 hover:text-[#105091]">
-                  {subBagianData?.pimpinan?.ketua?.nama}
-                </h3>
-
-                <div className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-[#105091] to-blue-600 text-white font-semibold text-sm rounded-xl mb-3 shadow-lg">
-                  <Award className="w-4 h-4 mr-2" />
-                  {subBagianData?.pimpinan?.ketua?.jabatan}
+                {/* Dots Indicator */}
+                <div className="flex justify-center gap-2 mt-8">
+                  {[subBagianData.pimpinan.ketua, ...subBagianData.pimpinan.staff].map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentSlide(index)}
+                      className={`w-3 h-3 rounded-full transition-all duration-300 ${currentSlide === index ? "bg-[#105091] w-6" : "bg-blue-200 hover:bg-blue-300"
+                        }`}
+                    />
+                  ))}
                 </div>
-
-                {/* <div className="inline-flex items-center justify-center px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
-                  <Clock className="w-3 h-3 mr-1" />
-                  {subBagianData.pimpinan.ketua.periode}
-                </div> */}
               </div>
-            </div>
+            ) : (
+              <div className="max-w-2xl mx-auto">
+                <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
+                  {/* Top Gradient Bar */}
+                  <div className="h-1 bg-gradient-to-r from-[#105091] to-blue-600"></div>
+
+                  {/* Glass Effect Overlay */}
+                  <div className="absolute inset-0 bg-white/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                  <div className="relative p-8 text-center">
+                    {/* Image Container */}
+                    <div className="relative mb-6">
+                      <div className="mx-auto w-48 h-48 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-1 shadow-lg transform transition-all duration-500 hover:scale-110 hover:rotate-3">
+                        <div className="w-full h-full bg-white rounded-xl overflow-hidden">
+                          <img
+                            src={resolveImagePath(subBagianData?.pimpinan?.ketua?.foto)}
+                            onError={(e) => {
+                              const target = e.currentTarget;
+                              // Prevent infinite loop if placeholder also fails
+                              if (target.src !== subBagianData?.pimpinan?.ketua?.placeholder) {
+                                target.src = subBagianData?.pimpinan?.ketua?.placeholder || "https://via.placeholder.com/400x400?text=No+Image";
+                              }
+                            }}
+                            alt={subBagianData?.pimpinan?.ketua?.nama}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </div>
+                      {/* Glow Effect */}
+                      <div className="absolute inset-0 w-32 h-32 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 blur-xl opacity-20 transition-opacity duration-500"></div>
+                    </div>
+
+                    <h3 className="font-display text-2xl font-bold text-gray-900 mb-3 transition-colors duration-300 hover:text-[#105091]">
+                      {subBagianData?.pimpinan?.ketua?.nama}
+                    </h3>
+
+                    <div className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-[#105091] to-blue-600 text-white font-semibold text-sm rounded-xl mb-3 shadow-lg">
+                      <Award className="w-4 h-4 mr-2" />
+                      {subBagianData?.pimpinan?.ketua?.jabatan}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -609,11 +714,10 @@ const SubBagianPage: React.FC = () => {
                   <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
                     {/* Top Gradient Bar */}
                     <div
-                      className={`h-1 bg-gradient-to-r ${
-                        index % 2 === 0
+                      className={`h-1 bg-gradient-to-r ${index % 2 === 0
                           ? "from-[#105091] to-blue-600"
                           : "from-blue-600 to-indigo-600"
-                      }`}
+                        }`}
                     ></div>
 
                     {/* Glass Effect Overlay */}
@@ -622,19 +726,17 @@ const SubBagianPage: React.FC = () => {
                     <div className="relative p-6">
                       <div className="flex items-start gap-4">
                         <div
-                          className={`w-10 h-10 rounded-xl bg-gradient-to-br ${
-                            index % 2 === 0
+                          className={`w-10 h-10 rounded-xl bg-gradient-to-br ${index % 2 === 0
                               ? "from-[#105091] to-blue-600"
                               : "from-blue-600 to-indigo-600"
-                          } p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3`}
+                            } p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3`}
                         >
                           <div className="w-full h-full bg-white rounded-lg flex items-center justify-center">
                             <span
-                              className={`font-bold text-sm ${
-                                index % 2 === 0
+                              className={`font-bold text-sm ${index % 2 === 0
                                   ? "text-[#105091]"
                                   : "text-blue-600"
-                              }`}
+                                }`}
                             >
                               {index + 1}
                             </span>
@@ -701,7 +803,7 @@ const SubBagianPage: React.FC = () => {
                       onError={(e) => {
                         const target = e.currentTarget;
                         if (target.src !== subBagianData?.struktur_organisasi?.gambar_placeholder) {
-                           target.src = subBagianData?.struktur_organisasi?.gambar_placeholder || "https://via.placeholder.com/1200x800?text=No+Image";
+                          target.src = subBagianData?.struktur_organisasi?.gambar_placeholder || "https://via.placeholder.com/1200x800?text=No+Image";
                         }
                       }}
                       alt={`Struktur Organisasi ${subBagianData?.nama}`}
