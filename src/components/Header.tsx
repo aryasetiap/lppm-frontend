@@ -202,7 +202,8 @@ const navLinks: NavLink[] = [
     items: [
       {
         name: "POS-AP",
-        href: "/arsip/pos-ap",
+        href: "https://drive.google.com/drive/folders/10d3p05LQ7suDTzUQzmMIjqec81HHPpyK?usp=sharing", // Ganti dengan link drive yang sudah disiapkan
+        external: true,
         description: "Unduh berkas POS-AP",
       },
       {

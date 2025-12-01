@@ -660,7 +660,7 @@ const Homepage = () => {
                   </p>
 
                   {/* Button */}
-                  {/* {portal.external ? (
+                  {portal.external ? (
                     <a
                       href={portal.link}
                       target="_blank"
@@ -702,7 +702,7 @@ const Homepage = () => {
                         />
                       </svg>
                     </Link>
-                  )} */}
+                  )}
                 </div>
               </div>
             ))}
