@@ -50,23 +50,12 @@ const footerSections = {
       },
     ],
   },
-  administrasi: {
-    title: "Administrasi",
-    icon: FaBuilding,
-    links: [
-      {
-        name: "Bagian Umum",
-        href: "/administrasi/bagian-umum",
-        description: "Layanan administrasi",
-      },
-    ],
-  },
   pui: {
     title: "PUI",
     icon: FaGraduationCap,
     links: [
       {
-        name: "Pusat Unggulan Ipteks",
+        name: "Pusat Unggulan Ipteks Anggrek, Kopi, Lada, Kako dan Pengembangan Komoditas Strategis dan Agroindustri Lampung",
         href: "/pui/pusat-unggulan-ipteks-anggrek-kopi-lada-kako-dan-pengembangan-komoditas-strategis-dan-agroindustri-lampung",
         description: "Pertanian & agroindustri",
       },
@@ -77,34 +66,72 @@ const footerSections = {
     icon: FaGraduationCap,
     links: [
       {
-        name: "Kuliah Kerja Nyata",
+        name: "Pusat Penelitian KKN",
         href: "/puslit/pusat-penelitian-kuliah-kerja-nyata-kkn",
         description: "Program KKN",
       },
       {
-        name: "HAKI & Paten",
+        name: "Pusat Penelitian HKI dan PATEN",
         href: "/puslit/pusat-penelitian-hak-kekayaan-intelektual-hki-dan-paten",
-        description: "Proteksi intelektual",
+        description: "Proteksi kekayaan intelektual",
       },
       {
-        name: "Lingkungan & SDA",
+        name: "Pusat Penelitian Lingkungan Hidup dan Penanggulangan Bencana",
         href: "/puslit/pusat-penelitian-bencana-lingkungan-hidup-dan-sumber-daya-alam",
-        description: "Penelitian lingkungan",
+        description: "Penelitian lingkungan dan sumber daya",
       },
       {
-        name: "Publikasi & Kerjasama",
+        name: "Pusat Penelitian Studi Kebijakan Publik, Pembangunan dan Sosial Budaya",
+        href: "/puslit/pusat-penelitian-studi-kebijakan-publik-pembangunan-dan-sosial-budaya",
+        description: "Studi kebijakan dan sosial",
+      },
+      {
+        name: "Pusat Penelitian Publikasi dan Kerjasama",
         href: "/puslit/pusat-penelitian-publikasi-dan-kerja-sama",
-        description: "Publikasi ilmiah",
+        description: "Publikasi ilmiah dan kerjasama",
       },
       {
-        name: "Inkubator Bisnis",
+        name: "Pusat Penelitian Inkubator Bisnis, Hilirisasi Inovasi, Ketahanan Pangan dan Sertifikasi Halal",
         href: "/puslit/pusat-penelitian-inkubator-bisnis-hilirisasi-inovasi-ketahanan-pangan-dan-sertifikasi-halal",
-        description: "Inkubasi bisnis",
+        description: "Inkubasi dan inovasi bisnis",
+        subItems: [
+          {
+            name: "Unila Halal Center",
+            href: "/puslit/unila-halal-center",
+            description: "Lembaga Pemeriksa Halal Unila",
+          },
+        ],
       },
       {
-        name: "Unila Halal Center",
-        href: "/puslit/unila-halal-center",
-        description: "Layanan pemeriksa halal",
+        name: "Pusat Penelitian Manajemen Sistem Informasi, Komunikasi, Digitalisasi dan Kolaborasi Riset",
+        href: "/puslit/pusat-penelitian-manajeman-sistem-informasi-komunikasi-digitalisasi-dan-kaloborasi-riset",
+        description: "Sistem informasi dan kolaborasi",
+      },
+      {
+        name: "Pusat Penelitian SDGs, Pengembangan Wilayah, Kemaritiman, dan Perdesaan",
+        href: "/puslit/pusat-penelitian-sd-gs-pengembangan-wilayah-kemaritiman-dan-perdesaan",
+        description: "SDGs dan pengembangan wilayah",
+      },
+      {
+        name: "Pusat Penelitian Kemandirian Energi, Kelistrikan dan Material Maju",
+        href: "/puslit/pusat-penelitian-kemandirian-energi-kelistrikan-dan-material-maju",
+        description: "Energi dan material maju",
+      },
+      {
+        name: "Pusat Penelitian Ekonomi Kreatif, Pariwisata, dan Perpajakan Berkelanjutan",
+        href: "/puslit/pusat-penelitian-ekonomi-kreatif-pariwisata-dan-perpajakan-berkelanjutan",
+        description: "Ekonomi kreatif dan pariwisata",
+      },
+    ],
+  },
+  administrasi: {
+    title: "Administrasi",
+    icon: FaBuilding,
+    links: [
+      {
+        name: "Bagian Umum",
+        href: "/administrasi/bagian-umum",
+        description: "Layanan administrasi",
       },
     ],
   },
