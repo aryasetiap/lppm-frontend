@@ -61,69 +61,7 @@ const footerSections = {
       },
     ],
   },
-  puslit: {
-    title: "Pusat Penelitian",
-    icon: FaGraduationCap,
-    links: [
-      {
-        name: "Pusat Penelitian KKN",
-        href: "/puslit/pusat-penelitian-kuliah-kerja-nyata-kkn",
-        description: "Program KKN",
-      },
-      {
-        name: "Pusat Penelitian HKI dan PATEN",
-        href: "/puslit/pusat-penelitian-hak-kekayaan-intelektual-hki-dan-paten",
-        description: "Proteksi kekayaan intelektual",
-      },
-      {
-        name: "Pusat Penelitian Lingkungan Hidup dan Penanggulangan Bencana",
-        href: "/puslit/pusat-penelitian-bencana-lingkungan-hidup-dan-sumber-daya-alam",
-        description: "Penelitian lingkungan dan sumber daya",
-      },
-      {
-        name: "Pusat Penelitian Studi Kebijakan Publik, Pembangunan dan Sosial Budaya",
-        href: "/puslit/pusat-penelitian-studi-kebijakan-publik-pembangunan-dan-sosial-budaya",
-        description: "Studi kebijakan dan sosial",
-      },
-      {
-        name: "Pusat Penelitian Publikasi dan Kerjasama",
-        href: "/puslit/pusat-penelitian-publikasi-dan-kerja-sama",
-        description: "Publikasi ilmiah dan kerjasama",
-      },
-      {
-        name: "Pusat Penelitian Inkubator Bisnis, Hilirisasi Inovasi, Ketahanan Pangan dan Sertifikasi Halal",
-        href: "/puslit/pusat-penelitian-inkubator-bisnis-hilirisasi-inovasi-ketahanan-pangan-dan-sertifikasi-halal",
-        description: "Inkubasi dan inovasi bisnis",
-        subItems: [
-          {
-            name: "Unila Halal Center",
-            href: "/puslit/unila-halal-center",
-            description: "Lembaga Pemeriksa Halal Unila",
-          },
-        ],
-      },
-      {
-        name: "Pusat Penelitian Manajemen Sistem Informasi, Komunikasi, Digitalisasi dan Kolaborasi Riset",
-        href: "/puslit/pusat-penelitian-manajeman-sistem-informasi-komunikasi-digitalisasi-dan-kaloborasi-riset",
-        description: "Sistem informasi dan kolaborasi",
-      },
-      {
-        name: "Pusat Penelitian SDGs, Pengembangan Wilayah, Kemaritiman, dan Perdesaan",
-        href: "/puslit/pusat-penelitian-sd-gs-pengembangan-wilayah-kemaritiman-dan-perdesaan",
-        description: "SDGs dan pengembangan wilayah",
-      },
-      {
-        name: "Pusat Penelitian Kemandirian Energi, Kelistrikan dan Material Maju",
-        href: "/puslit/pusat-penelitian-kemandirian-energi-kelistrikan-dan-material-maju",
-        description: "Energi dan material maju",
-      },
-      {
-        name: "Pusat Penelitian Ekonomi Kreatif, Pariwisata, dan Perpajakan Berkelanjutan",
-        href: "/puslit/pusat-penelitian-ekonomi-kreatif-pariwisata-dan-perpajakan-berkelanjutan",
-        description: "Ekonomi kreatif dan pariwisata",
-      },
-    ],
-  },
+
   administrasi: {
     title: "Administrasi",
     icon: FaBuilding,
@@ -207,6 +145,73 @@ const socialMedia = [
     hover: "hover:shadow-red-500/25",
   },
 ];
+
+/**
+ * Data khusus untuk bagian Puslit yang dipisahkan agar bisa full width
+ */
+const puslitSection = {
+  title: "Pusat Penelitian",
+  icon: FaGraduationCap,
+  links: [
+    {
+      name: "Pusat Penelitian KKN",
+      href: "/puslit/pusat-penelitian-kuliah-kerja-nyata-kkn",
+      description: "Program KKN",
+    },
+    {
+      name: "Pusat Penelitian HKI dan PATEN",
+      href: "/puslit/pusat-penelitian-hak-kekayaan-intelektual-hki-dan-paten",
+      description: "Proteksi kekayaan intelektual",
+    },
+    {
+      name: "Pusat Penelitian Lingkungan Hidup dan Penanggulangan Bencana",
+      href: "/puslit/pusat-penelitian-bencana-lingkungan-hidup-dan-sumber-daya-alam",
+      description: "Penelitian lingkungan dan sumber daya",
+    },
+    {
+      name: "Pusat Penelitian Studi Kebijakan Publik, Pembangunan dan Sosial Budaya",
+      href: "/puslit/pusat-penelitian-studi-kebijakan-publik-pembangunan-dan-sosial-budaya",
+      description: "Studi kebijakan dan sosial",
+    },
+    {
+      name: "Pusat Penelitian Publikasi dan Kerjasama",
+      href: "/puslit/pusat-penelitian-publikasi-dan-kerja-sama",
+      description: "Publikasi ilmiah dan kerjasama",
+    },
+    {
+      name: "Pusat Penelitian Inkubator Bisnis, Hilirisasi Inovasi, Ketahanan Pangan dan Sertifikasi Halal",
+      href: "/puslit/pusat-penelitian-inkubator-bisnis-hilirisasi-inovasi-ketahanan-pangan-dan-sertifikasi-halal",
+      description: "Inkubasi dan inovasi bisnis",
+      subItems: [
+        {
+          name: "Unila Halal Center",
+          href: "/puslit/unila-halal-center",
+          description: "Lembaga Pemeriksa Halal Unila",
+        },
+      ],
+    },
+    {
+      name: "Pusat Penelitian Manajemen Sistem Informasi, Komunikasi, Digitalisasi dan Kolaborasi Riset",
+      href: "/puslit/pusat-penelitian-manajeman-sistem-informasi-komunikasi-digitalisasi-dan-kaloborasi-riset",
+      description: "Sistem informasi dan kolaborasi",
+    },
+    {
+      name: "Pusat Penelitian SDGs, Pengembangan Wilayah, Kemaritiman, dan Perdesaan",
+      href: "/puslit/pusat-penelitian-sd-gs-pengembangan-wilayah-kemaritiman-dan-perdesaan",
+      description: "SDGs dan pengembangan wilayah",
+    },
+    {
+      name: "Pusat Penelitian Kemandirian Energi, Kelistrikan dan Material Maju",
+      href: "/puslit/pusat-penelitian-kemandirian-energi-kelistrikan-dan-material-maju",
+      description: "Energi dan material maju",
+    },
+    {
+      name: "Pusat Penelitian Ekonomi Kreatif, Pariwisata, dan Perpajakan Berkelanjutan",
+      href: "/puslit/pusat-penelitian-ekonomi-kreatif-pariwisata-dan-perpajakan-berkelanjutan",
+      description: "Ekonomi kreatif dan pariwisata",
+    },
+  ],
+};
 
 /**
  * Komponen utama Footer Ultra-Modern.
@@ -357,10 +362,48 @@ const Footer = () => {
 
         {/* Navigation Links */}
         <div className="max-w-screen-2xl mx-auto px-6 sm:px-8 lg:px-12 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+          {/* Main Sections Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mb-12">
             {Object.entries(footerSections).map(([key, section]) => (
               <FooterSection key={key} section={section} />
             ))}
+          </div>
+
+          {/* Dedicated Puslit Section */}
+          <div className="border-t border-white/10 pt-12">
+            <div className="space-y-6">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-white/20 to-white/10 rounded-xl flex items-center justify-center">
+                  <FaGraduationCap className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="font-display text-xl font-bold text-white">{puslitSection.title}</h3>
+              </div>
+
+              <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-4">
+                {puslitSection.links.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      to={link.href}
+                      className="group flex items-start space-x-3 text-blue-100 hover:text-white transition-all duration-200 p-3 rounded-lg hover:bg-white/5"
+                    >
+                      <span className="text-xs group-hover:translate-x-1 transition-transform duration-200 inline-block mt-1">
+                        <FaArrowRight className="w-3 h-3" />
+                      </span>
+                      <div>
+                        <div className="font-medium group-hover:text-white transition-colors duration-200">
+                          {link.name}
+                        </div>
+                        {link.description && (
+                          <div className="text-xs text-blue-200/70 group-hover:text-blue-100/70 transition-colors duration-200 mt-0.5">
+                            {link.description}
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -409,6 +452,7 @@ interface FooterSectionType {
   title: string;
   icon: any;
   links: FooterLink[];
+  colSpan?: number;
 }
 
 /**
@@ -418,15 +462,17 @@ interface FooterSectionType {
  */
 const FooterSection = ({ section }: { section: FooterSectionType }) => {
   const IconComponent = section.icon;
+  const isWide = section.colSpan === 2;
+
   return (
-    <div className="space-y-4">
+    <div className={`space-y-4 ${isWide ? "lg:col-span-2" : ""}`}>
       <div className="flex items-center space-x-2">
         <div className="w-8 h-8 bg-gradient-to-br from-white/20 to-white/10 rounded-lg flex items-center justify-center">
           <IconComponent className="w-4 h-4 text-white" />
         </div>
         <h3 className="font-display font-bold text-white">{section.title}</h3>
       </div>
-      <ul className="space-y-3">
+      <ul className={`space-y-3 ${isWide ? "grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-3 space-y-0" : ""}`}>
         {section.links.map((link) => (
           <li key={link.name}>
             {link.external ? (
