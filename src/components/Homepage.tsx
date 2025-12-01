@@ -162,7 +162,7 @@ const Homepage = () => {
       try {
         setIsLoading(true);
         // Using the Laravel API endpoint from integration docs
-        const apiBase = (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") || 
+        const apiBase = (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") ||
           (window.location.hostname === "lppm.unila.ac.id" || window.location.hostname.includes("unila.ac.id")
             ? "https://lppm.unila.ac.id/api"
             : "http://localhost:8000/api");
@@ -256,10 +256,10 @@ const Homepage = () => {
   const chartMaxValue =
     statsData && statsData.yearly_data.length > 0
       ? Math.max(
-          ...statsData.yearly_data.map((d) =>
-            Math.max(d.penelitian_blu, d.pengabdian_blu)
-          )
+        ...statsData.yearly_data.map((d) =>
+          Math.max(d.penelitian_blu, d.pengabdian_blu)
         )
+      )
       : 0;
 
   // Format date utility - handle both API formats
@@ -636,11 +636,10 @@ const Homepage = () => {
                             e.currentTarget.style.display = "none";
                             const parent = e.currentTarget.parentElement;
                             if (parent) {
-                              parent.innerHTML = `<span class="text-2xl">${
-                                fallbackEmojis[
-                                  portal.title as keyof typeof fallbackEmojis
-                                ] || "📁"
-                              }</span>`;
+                              parent.innerHTML = `<span class="text-2xl">${fallbackEmojis[
+                                portal.title as keyof typeof fallbackEmojis
+                              ] || "📁"
+                                }</span>`;
                             }
                           }}
                         />
@@ -661,7 +660,7 @@ const Homepage = () => {
                   </p>
 
                   {/* Button */}
-                  {portal.external ? (
+                  {/* {portal.external ? (
                     <a
                       href={portal.link}
                       target="_blank"
@@ -703,14 +702,14 @@ const Homepage = () => {
                         />
                       </svg>
                     </Link>
-                  )}
+                  )} */}
                 </div>
               </div>
             ))}
           </div>
 
           {/* Bottom CTA */}
-          <div className="text-center mt-16">
+          {/* <div className="text-center mt-16">
             <Link
               to="/layanan"
               className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-[#105091] via-blue-600 to-blue-700 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:scale-105 hover:-translate-y-1 backdrop-blur-sm border border-white/20"
@@ -730,7 +729,7 @@ const Homepage = () => {
                 />
               </svg>
             </Link>
-          </div>
+          </div> */}
         </div>
       </section>
 
@@ -1298,9 +1297,9 @@ const Homepage = () => {
                       <div className="flex items-center space-x-1">
                         <FaChartLine className="w-3 h-3 text-emerald-300" />
                         <span className="text-emerald-300 font-bold text-sm">
-                        {formatTrend(
-                          statsData.total_summary.growth_penelitian
-                        )}
+                          {formatTrend(
+                            statsData.total_summary.growth_penelitian
+                          )}
                         </span>
                       </div>
                     </div>
@@ -1323,9 +1322,9 @@ const Homepage = () => {
                       <div className="flex items-center space-x-1">
                         <FaChartLine className="w-3 h-3 text-blue-300" />
                         <span className="text-blue-300 font-bold text-sm">
-                        {formatTrend(
-                          statsData.total_summary.growth_pengabdian
-                        )}
+                          {formatTrend(
+                            statsData.total_summary.growth_pengabdian
+                          )}
                         </span>
                       </div>
                     </div>
@@ -1445,14 +1444,14 @@ const Homepage = () => {
                     <div className="text-2xl font-bold text-emerald-300">
                       {Math.round(
                         statsData.total_summary.total_penelitian_blu /
-                          safeYearsCount
+                        safeYearsCount
                       )}
                     </div>
                     <div className="text-sm text-blue-100">Penelitian BLU</div>
                     <div className="text-2xl font-bold text-blue-300">
                       {Math.round(
                         statsData.total_summary.total_pengabdian_blu /
-                          safeYearsCount
+                        safeYearsCount
                       )}
                     </div>
                     <div className="text-sm text-blue-100">Pengabdian BLU</div>
@@ -1464,7 +1463,7 @@ const Homepage = () => {
                   const bestYear = statsData.yearly_data.reduce(
                     (best, current) =>
                       current.penelitian_blu + current.pengabdian_blu >
-                      best.penelitian_blu + best.pengabdian_blu
+                        best.penelitian_blu + best.pengabdian_blu
                         ? current
                         : best
                   );
