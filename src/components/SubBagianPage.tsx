@@ -11,7 +11,6 @@ import {
   Star,
   Shield,
   Lightbulb,
-  Home,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -380,100 +379,104 @@ const SubBagianPage: React.FC = () => {
 
           <div className="max-w-6xl mx-auto px-4">
             {subBagianData?.pimpinan?.staff && subBagianData.pimpinan.staff.length > 0 ? (
-              <div className="relative">
-                {/* Slider Container */}
-                <div className="flex items-center justify-center gap-4 md:gap-8">
-                  <button
-                    onClick={prevSlide}
-                    className="p-2 rounded-full bg-white/80 hover:bg-white shadow-lg text-[#105091] transition-all z-10"
+              <div className="relative max-w-3xl mx-auto">
+                {/* Slider Track */}
+                <div className="overflow-hidden px-4 py-4 -mx-4">
+                  <div
+                    className="flex transition-transform duration-500 ease-in-out"
+                    style={{ transform: `translateX(-${currentSlide * 100}%)` }}
                   >
-                    <ChevronLeft className="w-6 h-6" />
-                  </button>
+                    {[subBagianData.pimpinan.ketua, ...subBagianData.pimpinan.staff].map((person, index) => (
+                      <div key={index} className="w-full flex-shrink-0 px-4">
+                        <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1 overflow-hidden border border-gray-100">
+                          {/* Top Gradient Bar */}
+                          <div className="h-2 bg-gradient-to-r from-[#105091] to-blue-600"></div>
 
-                  <div className="flex-1 overflow-hidden">
-                    <div
-                      className="flex transition-transform duration-500 ease-in-out"
-                      style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-                    >
-                      {[subBagianData.pimpinan.ketua, ...subBagianData.pimpinan.staff].map((person, index) => (
-                        <div key={index} className="w-full flex-shrink-0 px-4">
-                          <div className="max-w-md mx-auto bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
-                            {/* Top Gradient Bar */}
-                            <div className="h-1 bg-gradient-to-r from-[#105091] to-blue-600"></div>
+                          {/* Glass Effect Overlay */}
+                          <div className="absolute inset-0 bg-white/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                            {/* Glass Effect Overlay */}
-                            <div className="absolute inset-0 bg-white/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                            <div className="relative p-8 text-center">
-                              {/* Image Container */}
-                              <div className="relative mb-6">
-                                <div className="mx-auto w-48 h-48 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-1 shadow-lg transform transition-all duration-500 hover:scale-110 hover:rotate-3">
-                                  <div className="w-full h-full bg-white rounded-xl overflow-hidden">
-                                    <img
-                                      src={resolveImagePath(person.foto)}
-                                      onError={(e) => {
-                                        const target = e.currentTarget;
-                                        if (target.src !== person.placeholder) {
-                                          target.src = person.placeholder || "https://via.placeholder.com/400x400?text=No+Image";
-                                        }
-                                      }}
-                                      alt={person.nama}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  </div>
+                          <div className="relative p-8 md:p-10 text-center">
+                            {/* Image Container */}
+                            <div className="relative mb-8">
+                              <div className="mx-auto w-56 h-56 md:w-64 md:h-64 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-1 shadow-lg transform transition-all duration-500 hover:scale-105">
+                                <div className="w-full h-full bg-white rounded-xl overflow-hidden">
+                                  <img
+                                    src={resolveImagePath(person.foto)}
+                                    onError={(e) => {
+                                      const target = e.currentTarget;
+                                      if (target.src !== person.placeholder) {
+                                        target.src = person.placeholder || "https://via.placeholder.com/400x400?text=No+Image";
+                                      }
+                                    }}
+                                    alt={person.nama}
+                                    className="w-full h-full object-cover"
+                                  />
                                 </div>
-                                {/* Glow Effect */}
-                                <div className="absolute inset-0 w-32 h-32 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 blur-xl opacity-20 transition-opacity duration-500"></div>
                               </div>
+                              {/* Glow Effect */}
+                              <div className="absolute inset-0 w-40 h-40 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 blur-2xl opacity-20 transition-opacity duration-500"></div>
+                            </div>
 
-                              <h3 className="font-display text-2xl font-bold text-gray-900 mb-3 transition-colors duration-300 hover:text-[#105091]">
-                                {person.nama}
-                              </h3>
+                            <h3 className="font-display text-2xl md:text-3xl font-bold text-gray-900 mb-4 transition-colors duration-300 hover:text-[#105091]">
+                              {person.nama}
+                            </h3>
 
-                              <div className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-[#105091] to-blue-600 text-white font-semibold text-sm rounded-xl mb-3 shadow-lg">
-                                <Award className="w-4 h-4 mr-2" />
-                                {person.jabatan}
-                              </div>
+                            <div className="inline-flex items-center justify-center px-6 py-2.5 bg-gradient-to-r from-[#105091] to-blue-600 text-white font-semibold text-sm md:text-base rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                              <Award className="w-5 h-5 mr-2" />
+                              {person.jabatan}
                             </div>
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Controls Below */}
+                <div className="flex items-center justify-center gap-8 mt-8">
+                  <button
+                    onClick={prevSlide}
+                    className="p-4 rounded-full bg-white hover:bg-gray-50 shadow-lg text-[#105091] transition-all hover:scale-110 border border-gray-100 group"
+                    aria-label="Previous slide"
+                  >
+                    <ChevronLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+                  </button>
+
+                  {/* Dots Indicator */}
+                  <div className="flex justify-center gap-3">
+                    {[subBagianData.pimpinan.ketua, ...subBagianData.pimpinan.staff].map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentSlide(index)}
+                        className={`transition-all duration-300 rounded-full ${currentSlide === index ? "bg-[#105091] w-8 h-2.5" : "bg-blue-200 hover:bg-blue-300 w-2.5 h-2.5"
+                          }`}
+                        aria-label={`Go to slide ${index + 1}`}
+                      />
+                    ))}
                   </div>
 
                   <button
                     onClick={nextSlide}
-                    className="p-2 rounded-full bg-white/80 hover:bg-white shadow-lg text-[#105091] transition-all z-10"
+                    className="p-4 rounded-full bg-white hover:bg-gray-50 shadow-lg text-[#105091] transition-all hover:scale-110 border border-gray-100 group"
+                    aria-label="Next slide"
                   >
-                    <ChevronRight className="w-6 h-6" />
+                    <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                   </button>
-                </div>
-
-                {/* Dots Indicator */}
-                <div className="flex justify-center gap-2 mt-8">
-                  {[subBagianData.pimpinan.ketua, ...subBagianData.pimpinan.staff].map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentSlide(index)}
-                      className={`w-3 h-3 rounded-full transition-all duration-300 ${currentSlide === index ? "bg-[#105091] w-6" : "bg-blue-200 hover:bg-blue-300"
-                        }`}
-                    />
-                  ))}
                 </div>
               </div>
             ) : (
-              <div className="max-w-2xl mx-auto">
-                <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
+              <div className="max-w-3xl mx-auto px-4">
+                <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1 overflow-hidden border border-gray-100">
                   {/* Top Gradient Bar */}
-                  <div className="h-1 bg-gradient-to-r from-[#105091] to-blue-600"></div>
+                  <div className="h-2 bg-gradient-to-r from-[#105091] to-blue-600"></div>
 
                   {/* Glass Effect Overlay */}
                   <div className="absolute inset-0 bg-white/70 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                  <div className="relative p-8 text-center">
+                  <div className="relative p-8 md:p-10 text-center">
                     {/* Image Container */}
-                    <div className="relative mb-6">
-                      <div className="mx-auto w-48 h-48 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-1 shadow-lg transform transition-all duration-500 hover:scale-110 hover:rotate-3">
+                    <div className="relative mb-8">
+                      <div className="mx-auto w-56 h-56 md:w-64 md:h-64 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-1 shadow-lg transform transition-all duration-500 hover:scale-105">
                         <div className="w-full h-full bg-white rounded-xl overflow-hidden">
                           <img
                             src={resolveImagePath(subBagianData?.pimpinan?.ketua?.foto)}
@@ -490,15 +493,15 @@ const SubBagianPage: React.FC = () => {
                         </div>
                       </div>
                       {/* Glow Effect */}
-                      <div className="absolute inset-0 w-32 h-32 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 blur-xl opacity-20 transition-opacity duration-500"></div>
+                      <div className="absolute inset-0 w-40 h-40 mx-auto rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 blur-2xl opacity-20 transition-opacity duration-500"></div>
                     </div>
 
-                    <h3 className="font-display text-2xl font-bold text-gray-900 mb-3 transition-colors duration-300 hover:text-[#105091]">
+                    <h3 className="font-display text-2xl md:text-3xl font-bold text-gray-900 mb-4 transition-colors duration-300 hover:text-[#105091]">
                       {subBagianData?.pimpinan?.ketua?.nama}
                     </h3>
 
-                    <div className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-[#105091] to-blue-600 text-white font-semibold text-sm rounded-xl mb-3 shadow-lg">
-                      <Award className="w-4 h-4 mr-2" />
+                    <div className="inline-flex items-center justify-center px-6 py-2.5 bg-gradient-to-r from-[#105091] to-blue-600 text-white font-semibold text-sm md:text-base rounded-xl shadow-md hover:shadow-lg transition-shadow">
+                      <Award className="w-5 h-5 mr-2" />
                       {subBagianData?.pimpinan?.ketua?.jabatan}
                     </div>
                   </div>
