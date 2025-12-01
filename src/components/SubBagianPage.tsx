@@ -92,6 +92,20 @@ const SubBagianPage: React.FC = () => {
     setCurrentSlide((prev) => (prev - 1 + totalMembers) % totalMembers);
   };
 
+  // Auto-slide effect
+  useEffect(() => {
+    if (!subBagianData?.pimpinan) return;
+    const totalMembers = 1 + (subBagianData.pimpinan.staff?.length || 0);
+
+    if (totalMembers <= 1) return; // Don't auto-slide if only one member
+
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % totalMembers);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [subBagianData]);
+
   // Helper function to resolve image paths (handle subfolder deployment)
   const resolveImagePath = (path: string): string => {
     if (!path) return "";
@@ -715,8 +729,8 @@ const SubBagianPage: React.FC = () => {
                     {/* Top Gradient Bar */}
                     <div
                       className={`h-1 bg-gradient-to-r ${index % 2 === 0
-                          ? "from-[#105091] to-blue-600"
-                          : "from-blue-600 to-indigo-600"
+                        ? "from-[#105091] to-blue-600"
+                        : "from-blue-600 to-indigo-600"
                         }`}
                     ></div>
 
@@ -727,15 +741,15 @@ const SubBagianPage: React.FC = () => {
                       <div className="flex items-start gap-4">
                         <div
                           className={`w-10 h-10 rounded-xl bg-gradient-to-br ${index % 2 === 0
-                              ? "from-[#105091] to-blue-600"
-                              : "from-blue-600 to-indigo-600"
+                            ? "from-[#105091] to-blue-600"
+                            : "from-blue-600 to-indigo-600"
                             } p-1 shadow-lg transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-3`}
                         >
                           <div className="w-full h-full bg-white rounded-lg flex items-center justify-center">
                             <span
                               className={`font-bold text-sm ${index % 2 === 0
-                                  ? "text-[#105091]"
-                                  : "text-blue-600"
+                                ? "text-[#105091]"
+                                : "text-blue-600"
                                 }`}
                             >
                               {index + 1}
