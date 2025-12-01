@@ -11,6 +11,7 @@ import {
   FaSearch,
   FaFilter,
 } from "react-icons/fa";
+import { API_BASE_URL } from "../config/api";
 
 // Types for News API
 interface NewsItem {
@@ -36,27 +37,51 @@ interface PaginationData {
   per_page: number;
 }
 
+const CATEGORIES = [
+  "Pengumuman",
+  "Workshop",
+  "Seminar",
+  "Kerjasama",
+  "Prestasi",
+  "Jurnal",
+  "Berita",
+];
+
 const BeritaPage = () => {
   const [newsData, setNewsData] = useState<NewsItem[]>([]);
   const [pagination, setPagination] = useState<PaginationData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Reset page to 1 when filters (search or category) change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearchTerm, selectedCategory]);
 
   // Fetch news data with pagination and filters
   useEffect(() => {
-    const fetchNews = async (page: number = 1) => {
+    const fetchNews = async () => {
       try {
         setIsLoading(true);
-        const apiBase = (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") || 
-          (window.location.hostname === "lppm.unila.ac.id" || window.location.hostname.includes("unila.ac.id")
-            ? "https://lppm.unila.ac.id/api"
-            : "http://localhost:8000/api");
-        let url = `${apiBase}/posts?page=${page}&limit=12`;
+        setError(null);
 
-        if (searchTerm) {
-          url += `&keyword=${encodeURIComponent(searchTerm)}`;
+        let url = `${API_BASE_URL}/posts?page=${currentPage}&limit=12`;
+
+        if (debouncedSearchTerm) {
+          url += `&keyword=${encodeURIComponent(debouncedSearchTerm)}`;
         }
 
         if (selectedCategory) {
@@ -76,39 +101,47 @@ const BeritaPage = () => {
         console.error("Error fetching news:", err);
         setError("Gagal memuat berita. Silakan coba lagi nanti.");
 
-        // Fallback mock data
-        setNewsData([
-          {
-            id: 1,
-            title: "Pengumuman Hibah Penelitian 2024",
-            slug: "pengumuman-hibah-penelitian-2024",
-            date: "15 Nov 2024",
-            category: "Pengumuman",
-            excerpt: "LPPM Universitas Lampung membuka pendaftaran hibah penelitian untuk tahun akademik 2024/2025.",
-            thumbnail: undefined,
-          },
-          {
-            id: 2,
-            title: "Workshop Penulisan Proposal Pengabdian",
-            slug: "workshop-penulisan-proposal-pengabdian",
-            date: "14 Nov 2024",
-            category: "Workshop",
-            excerpt: "Ikuti workshop intensif penulisan proposal pengabdian kepada masyarakat yang akan diselenggarakan bulan depan.",
-            thumbnail: undefined,
-          },
-        ]);
+        // Fallback mock data only if we're in development and API fails AND no data has been loaded yet
+        if (import.meta.env.DEV && newsData.length === 0) {
+          setNewsData([
+            {
+              id: 1,
+              title: "Pengumuman Hibah Penelitian 2024",
+              slug: "pengumuman-hibah-penelitian-2024",
+              date: "15 Nov 2024",
+              category: "Pengumuman",
+              excerpt: "LPPM Universitas Lampung membuka pendaftaran hibah penelitian untuk tahun akademik 2024/2025.",
+              thumbnail: undefined,
+            },
+            {
+              id: 2,
+              title: "Workshop Penulisan Proposal Pengabdian",
+              slug: "workshop-penulisan-proposal-pengabdian",
+              date: "14 Nov 2024",
+              category: "Workshop",
+              excerpt: "Ikuti workshop intensif penulisan proposal pengabdian kepada masyarakat yang akan diselenggarakan bulan depan.",
+              thumbnail: undefined,
+            },
+          ]);
+          setPagination({
+            total: 2,
+            current_page: 1,
+            last_page: 1,
+            per_page: 12
+          });
+        }
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchNews();
-  }, [searchTerm, selectedCategory]);
+  }, [currentPage, debouncedSearchTerm, selectedCategory]);
 
-  // Handle pagination
-  const handlePageChange = (page: number) => {
+
+  const onPageChange = (page: number) => {
     if (page >= 1 && pagination && page <= pagination.last_page) {
-      // This will trigger the useEffect to fetch new data
+      setCurrentPage(page);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
@@ -144,12 +177,40 @@ const BeritaPage = () => {
       Kerjasama: "from-orange-500 to-orange-600",
       Prestasi: "from-yellow-500 to-yellow-600",
       Jurnal: "from-red-500 to-red-600",
+      Berita: "from-indigo-500 to-indigo-600",
     };
     return colors[category] || "from-gray-500 to-gray-600";
   };
 
-  // Extract unique categories for filter
-  const categories = [...new Set(newsData.map(news => news.category))];
+  // Generate pagination numbers with ellipses
+  const getPageNumbers = () => {
+    if (!pagination) return [];
+    const current = pagination.current_page;
+    const last = pagination.last_page;
+    const delta = 1; // Number of pages to show around the current page
+    const range = [];
+    const rangeWithDots: (number | string)[] = [];
+    let l;
+
+    for (let i = 1; i <= last; i++) {
+      if (i === 1 || i === last || (i >= current - delta && i <= current + delta)) {
+        range.push(i);
+      }
+    }
+
+    for (let i of range) {
+      if (l) {
+        if (i - l === 2) {
+          rangeWithDots.push(l + 1);
+        } else if (i - l !== 1) {
+          rangeWithDots.push('...');
+        }
+      }
+      rangeWithDots.push(i);
+      l = i;
+    }
+    return rangeWithDots;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-indigo-50/30">
@@ -184,7 +245,7 @@ const BeritaPage = () => {
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-8">
           <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
             {/* Search */}
-            <div className="relative flex-1 max-w-md">
+            <div className="relative flex-1 max-w-md w-full">
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
                 type="text"
@@ -196,15 +257,15 @@ const BeritaPage = () => {
             </div>
 
             {/* Category Filter */}
-            <div className="flex items-center gap-2">
-              <FaFilter className="text-gray-600 w-5 h-5" />
+            <div className="flex items-center gap-2 w-full lg:w-auto">
+              <FaFilter className="text-gray-600 w-5 h-5 hidden sm:block" />
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#105091] focus:border-transparent bg-white"
+                className="w-full lg:w-auto px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#105091] focus:border-transparent bg-white"
               >
                 <option value="">Semua Kategori</option>
-                {categories.map((category) => (
+                {CATEGORIES.map((category) => (
                   <option key={category} value={category}>
                     {category}
                   </option>
@@ -228,7 +289,7 @@ const BeritaPage = () => {
           {/* Loading State */}
           {isLoading && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item) => (
+              {[1, 2, 3, 4, 5, 6].map((item) => (
                 <div
                   key={item}
                   className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse"
@@ -358,78 +419,54 @@ const BeritaPage = () => {
             </div>
           )}
 
-          {/* Empty State */}
-          {!isLoading && !error && newsData.length === 0 && (
-            <div className="text-center py-16">
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-6">
-                <FaNewspaper className="w-10 h-10 text-gray-400" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                Tidak Ada Berita Ditemukan
-              </h3>
-              <p className="text-gray-500 mb-6">
-                {searchTerm || selectedCategory
-                  ? "Tidak ada berita yang sesuai dengan kriteria pencarian Anda."
-                  : "Belum ada berita atau pengumuman yang tersedia saat ini."}
-              </p>
-              {(searchTerm || selectedCategory) && (
-                <button
-                  onClick={() => {
-                    setSearchTerm("");
-                    setSelectedCategory("");
-                  }}
-                  className="inline-flex items-center px-6 py-3 bg-[#105091] text-white font-semibold rounded-xl hover:bg-[#0a3b6d] transition-colors duration-200"
-                >
-                  Reset Filter
-                </button>
-              )}
-            </div>
-          )}
-
           {/* Pagination */}
           {!isLoading && !error && pagination && pagination.last_page > 1 && (
             <div className="flex justify-center items-center space-x-2">
               <button
-                onClick={() => handlePageChange(pagination.current_page - 1)}
+                onClick={() => onPageChange(pagination.current_page - 1)}
                 disabled={pagination.current_page <= 1}
-                className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
-                  pagination.current_page <= 1
+                className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${pagination.current_page <= 1
                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                     : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#105091] hover:text-[#105091]"
-                }`}
+                  }`}
               >
                 <FaChevronLeft className="w-4 h-4 mr-2" />
                 Previous
               </button>
 
               {/* Page Numbers */}
-              {Array.from({ length: Math.min(5, pagination.last_page) }, (_, i) => {
-                const pageNumber = i + 1;
-                const isActive = pageNumber === pagination.current_page;
+              {getPageNumbers().map((page, index) => {
+                const isCurrent = page === pagination.current_page;
+
+                if (page === '...') {
+                  return (
+                    <span key={`dots-${index}`} className="px-4 py-2 text-gray-500">
+                      ...
+                    </span>
+                  );
+                }
 
                 return (
                   <button
-                    key={pageNumber}
-                    onClick={() => handlePageChange(pageNumber)}
-                    className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
-                      isActive
+                    key={page}
+                    onClick={() => onPageChange(page as number)}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${isCurrent
                         ? "bg-[#105091] text-white"
                         : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#105091] hover:text-[#105091]"
-                    }`}
+                      }`}
                   >
-                    {pageNumber}
+                    {page}
                   </button>
                 );
               })}
 
               <button
-                onClick={() => handlePageChange(pagination.current_page + 1)}
+                onClick={() => onPageChange(pagination.current_page + 1)}
                 disabled={pagination.current_page >= pagination.last_page}
-                className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
-                  pagination.current_page >= pagination.last_page
+                className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${pagination.current_page >= pagination.last_page
                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                     : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#105091] hover:text-[#105091]"
-                }`}
+                  }`}
               >
                 Next
                 <FaChevronRight className="w-4 h-4 ml-2" />
