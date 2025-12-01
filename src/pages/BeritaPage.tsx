@@ -37,16 +37,6 @@ interface PaginationData {
   per_page: number;
 }
 
-const CATEGORIES = [
-  "Pengumuman",
-  "Workshop",
-  "Seminar",
-  "Kerjasama",
-  "Prestasi",
-  "Jurnal",
-  "Berita",
-];
-
 const BeritaPage = () => {
   const [newsData, setNewsData] = useState<NewsItem[]>([]);
   const [pagination, setPagination] = useState<PaginationData | null>(null);
@@ -56,6 +46,30 @@ const BeritaPage = () => {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [categories, setCategories] = useState<string[]>([]);
+
+  // Fetch categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/posts/categories`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.data && Array.isArray(data.data)) {
+            // We use slugs for the value
+            setCategories(data.data.map((cat: any) => cat.slug));
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch categories", err);
+        // Fallback
+        setCategories([
+          "pengumuman", "workshop", "seminar", "kerjasama", "prestasi", "jurnal", "berita"
+        ]);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   // Debounce search term
   useEffect(() => {
@@ -179,6 +193,7 @@ const BeritaPage = () => {
       Jurnal: "from-red-500 to-red-600",
       Berita: "from-indigo-500 to-indigo-600",
     };
+    // Default fallback
     return colors[category] || "from-gray-500 to-gray-600";
   };
 
@@ -262,12 +277,12 @@ const BeritaPage = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full lg:w-auto px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#105091] focus:border-transparent bg-white"
+                className="w-full lg:w-auto px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#105091] focus:border-transparent bg-white capitalize"
               >
                 <option value="">Semua Kategori</option>
-                {CATEGORIES.map((category) => (
+                {categories.map((category) => (
                   <option key={category} value={category}>
-                    {category}
+                    {category.replace(/-/g, ' ')}
                   </option>
                 ))}
               </select>
