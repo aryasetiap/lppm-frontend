@@ -70,10 +70,21 @@ const SubBagianPage: React.FC = () => {
 
   // Helper function to resolve image paths (handle subfolder deployment)
   const resolveImagePath = (path: string): string => {
-    if (!path) return path;
-    // If path starts with /, it's relative to root, need to add /app prefix
-    if (path.startsWith('/') && !path.startsWith('//') && !path.startsWith('/http')) {
-      return '/app' + path;
+    if (!path) return "";
+    // If path is a full URL, return it as is
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    // If path starts with /, it's relative to root, need to add /app prefix if not already there
+    // and if we are not in dev mode (where / is root) - but here we assume /app is always needed based on previous context
+    // or better yet, use import.meta.env.BASE_URL
+    if (path.startsWith('/')) {
+       const baseUrl = import.meta.env.BASE_URL;
+       // Remove leading slash from path to avoid double slashes if baseUrl ends with slash
+       const cleanPath = path.substring(1);
+       // Ensure baseUrl ends with slash
+       const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+       return cleanBaseUrl + cleanPath;
     }
     return path;
   };
@@ -229,7 +240,7 @@ const SubBagianPage: React.FC = () => {
               {getCategoryDisplayName(category || "")}
             </span>
             <span className="text-white/60">/</span>
-            <span className="text-white font-medium">{subBagianData.nama}</span>
+            <span className="text-white font-medium">{subBagianData?.nama}</span>
           </nav>
         </div>
 
@@ -249,18 +260,18 @@ const SubBagianPage: React.FC = () => {
 
             <h1 className="font-display text-4xl lg:text-6xl font-bold leading-tight mb-6">
               <span className="bg-gradient-to-r from-white via-blue-100 to-indigo-100 bg-clip-text text-transparent">
-                {subBagianData.nama}
+                {subBagianData?.nama}
               </span>
             </h1>
 
             <div className="mb-8">
               <p className="font-display text-xl lg:text-2xl font-light text-blue-100">
-                {subBagianData.singkatan}
+                {subBagianData?.singkatan}
               </p>
             </div>
 
             <p className="font-body text-base lg:text-lg text-blue-50/90 leading-relaxed max-w-2xl mx-auto mb-12">
-              {subBagianData.profile_singkat}
+              {subBagianData?.profile_singkat}
             </p>
 
             {/* Feature Pills */}
@@ -325,7 +336,7 @@ const SubBagianPage: React.FC = () => {
             </h2>
             <p className="font-body text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
               Kepemimpinan yang berdedikasi untuk mengemban amanah dalam
-              mengembangkan {subBagianData.nama.toLowerCase()}.
+              mengembangkan {subBagianData?.nama?.toLowerCase()}.
             </p>
           </div>
 
@@ -343,12 +354,15 @@ const SubBagianPage: React.FC = () => {
                   <div className="mx-auto w-48 h-48 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-1 shadow-lg transform transition-all duration-500 hover:scale-110 hover:rotate-3">
                     <div className="w-full h-full bg-white rounded-xl overflow-hidden">
                       <img
-                        src={resolveImagePath(subBagianData.pimpinan.ketua.foto)}
+                        src={resolveImagePath(subBagianData?.pimpinan?.ketua?.foto)}
                         onError={(e) => {
-                          e.currentTarget.src =
-                            subBagianData.pimpinan.ketua.placeholder;
+                          const target = e.currentTarget;
+                          // Prevent infinite loop if placeholder also fails
+                          if (target.src !== subBagianData?.pimpinan?.ketua?.placeholder) {
+                              target.src = subBagianData?.pimpinan?.ketua?.placeholder || "https://via.placeholder.com/400x400?text=No+Image";
+                          }
                         }}
-                        alt={subBagianData.pimpinan.ketua.nama}
+                        alt={subBagianData?.pimpinan?.ketua?.nama}
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -358,12 +372,12 @@ const SubBagianPage: React.FC = () => {
                 </div>
 
                 <h3 className="font-display text-2xl font-bold text-gray-900 mb-3 transition-colors duration-300 hover:text-[#105091]">
-                  {subBagianData.pimpinan.ketua.nama}
+                  {subBagianData?.pimpinan?.ketua?.nama}
                 </h3>
 
                 <div className="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-[#105091] to-blue-600 text-white font-semibold text-sm rounded-xl mb-3 shadow-lg">
                   <Award className="w-4 h-4 mr-2" />
-                  {subBagianData.pimpinan.ketua.jabatan}
+                  {subBagianData?.pimpinan?.ketua?.jabatan}
                 </div>
 
                 {/* <div className="inline-flex items-center justify-center px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
@@ -390,10 +404,10 @@ const SubBagianPage: React.FC = () => {
               <Star className="w-8 h-8 text-white" />
             </div>
             <h2 className="font-display text-4xl lg:text-5xl font-bold bg-gradient-to-r from-[#105091] to-blue-600 bg-clip-text text-transparent mb-6">
-              Profil {subBagianData.nama}
+              Profil {subBagianData?.nama}
             </h2>
             <p className="font-body text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              Visi, misi, dan keunggulan {subBagianData.nama} dalam mendukung
+              Visi, misi, dan keunggulan {subBagianData?.nama} dalam mendukung
               keunggulan LPPM Universitas Lampung.
             </p>
           </div>
@@ -417,7 +431,7 @@ const SubBagianPage: React.FC = () => {
                           Visi
                         </h3>
                         <p className="font-body text-gray-700 leading-relaxed">
-                          {subBagianData.profil.visi}
+                          {subBagianData?.profil?.visi}
                         </p>
                       </div>
                     </div>
@@ -441,7 +455,7 @@ const SubBagianPage: React.FC = () => {
                           Misi
                         </h3>
                         <ul className="space-y-2">
-                          {subBagianData.profil.misi.map((item, index) => (
+                          {subBagianData?.profil?.misi?.map((item, index) => (
                             <li
                               key={index}
                               className="font-body text-gray-700 leading-relaxed flex items-start gap-2"
@@ -583,14 +597,14 @@ const SubBagianPage: React.FC = () => {
               Tugas & Fungsi
             </h2>
             <p className="font-body text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              Peran dan tanggung jawab {subBagianData.nama} dalam mendukung
+              Peran dan tanggung jawab {subBagianData?.nama} dalam mendukung
               pencapaian visi dan misi LPPM Universitas Lampung.
             </p>
           </div>
 
           <div className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-1 gap-6">
-              {subBagianData.tugas_fungsi.map((item, index) => (
+              {subBagianData?.tugas_fungsi?.map((item, index) => (
                 <div key={index} className="group relative">
                   <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden border border-gray-100">
                     {/* Top Gradient Bar */}
@@ -665,7 +679,7 @@ const SubBagianPage: React.FC = () => {
               Struktur Organisasi
             </h2>
             <p className="font-body text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-              Struktur organisasi {subBagianData.nama} yang menggambarkan
+              Struktur organisasi {subBagianData?.nama} yang menggambarkan
               hierarki dan hubungan kerja antar unit dalam mencapai tujuan
               lembaga.
             </p>
@@ -683,19 +697,21 @@ const SubBagianPage: React.FC = () => {
                 <div className="relative group">
                   <div className="aspect-video bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl shadow-lg overflow-hidden">
                     <img
-                      src={resolveImagePath(subBagianData.struktur_organisasi.gambar_struktur)}
+                      src={resolveImagePath(subBagianData?.struktur_organisasi?.gambar_struktur)}
                       onError={(e) => {
-                        e.currentTarget.src =
-                          subBagianData.struktur_organisasi.gambar_placeholder;
+                        const target = e.currentTarget;
+                        if (target.src !== subBagianData?.struktur_organisasi?.gambar_placeholder) {
+                           target.src = subBagianData?.struktur_organisasi?.gambar_placeholder || "https://via.placeholder.com/1200x800?text=No+Image";
+                        }
                       }}
-                      alt={`Struktur Organisasi ${subBagianData.nama}`}
+                      alt={`Struktur Organisasi ${subBagianData?.nama}`}
                       className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
 
                   {/* Floating Badge */}
                   <div className="absolute top-4 right-4 bg-gradient-to-r from-[#105091] to-indigo-600 text-white text-xs font-bold px-3 py-2 rounded-full shadow-lg animate-pulse backdrop-blur-sm border border-white/20">
-                    Struktur {subBagianData.singkatan}
+                    Struktur {subBagianData?.singkatan}
                   </div>
                 </div>
               </div>
