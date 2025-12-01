@@ -13,9 +13,13 @@ interface DownloadItem {
   title: string;
   excerpt: string;
   slug: string;
-  updated_at: string;
-  download_url: string;
-  permalink: string;
+  updated_at?: string;
+  date?: string;
+  download_url?: string;
+  url?: string;
+  permalink?: string;
+  type?: string;
+  mime?: string;
 }
 
 interface PosApCategory {
@@ -40,6 +44,14 @@ const PosApDownloadsPage = () => {
   );
 
   const copy = useMemo(() => {
+    if (category === "dokumen") {
+      return {
+        title: "Arsip Dokumen",
+        description: "Kumpulan dokumen, surat keputusan, dan berkas penting lainnya.",
+        badge: "DOKUMEN",
+      };
+    }
+
     if (activeCategory) {
       return {
         title: `Download ${activeCategory.name}`,
@@ -56,6 +68,11 @@ const PosApDownloadsPage = () => {
   }, [activeCategory, category]);
 
   const ensureValidCategory = (list: PosApCategory[]) => {
+    if (category === "dokumen") {
+      setCategoriesReady(true);
+      return;
+    }
+
     if (list.length === 0) {
       setCategoriesReady(true);
       return;
@@ -103,9 +120,13 @@ const PosApDownloadsPage = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(
-        `${LARAVEL_API_BASE}/pos-ap/downloads?category=${category}`
-      );
+
+      let url = `${LARAVEL_API_BASE}/pos-ap/downloads?category=${category}`;
+      if (category === "dokumen") {
+        url = `${LARAVEL_API_BASE}/documents`;
+      }
+
+      const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error("Gagal memuat data POS-AP");
@@ -115,7 +136,7 @@ const PosApDownloadsPage = () => {
       setItems(payload.data || []);
     } catch (err) {
       console.error(err);
-      setError("Tidak dapat memuat data POS-AP. Coba muat ulang.");
+      setError("Tidak dapat memuat data. Coba muat ulang.");
     } finally {
       setLoading(false);
     }
@@ -152,7 +173,7 @@ const PosApDownloadsPage = () => {
         <div className="space-y-4">
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-blue-100 text-sm uppercase tracking-widest">
             <FileText className="w-4 h-4" />
-            POS-AP
+            {category === "dokumen" ? "ARSIP DOKUMEN" : "POS-AP"}
           </span>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold">
             {copy.title}
@@ -230,20 +251,25 @@ const PosApDownloadsPage = () => {
                 key={item.id}
                 className="bg-white/5 border border-white/10 rounded-3xl p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:bg-white/10 transition"
               >
-                <div>
+                <div className="w-full md:w-4/6">
                   <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
                   <p className="text-blue-100/80 text-sm mb-2 line-clamp-2">{item.excerpt}</p>
                   <p className="text-xs text-blue-100/60">
-                    Diperbarui: {new Date(item.updated_at).toLocaleDateString("id-ID", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })}
+                    {item.date ? `Tanggal: ${new Date(item.date).toLocaleDateString("id-ID", {
+                      day: "numeric", month: "long", year: "numeric"
+                    })}` : `Diperbarui: ${new Date(item.updated_at || "").toLocaleDateString("id-ID", {
+                      day: "numeric", month: "long", year: "numeric"
+                    })}`}
+                    {item.type && (
+                      <span className="ml-3 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white/10 text-xs uppercase">
+                        {item.type}
+                      </span>
+                    )}
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <a
-                    href={item.download_url}
+                    href={item.download_url || item.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-blue-600 text-white font-semibold shadow-lg hover:shadow-2xl transition"
@@ -251,14 +277,16 @@ const PosApDownloadsPage = () => {
                     <DownloadIcon className="w-4 h-4" />
                     Download
                   </a>
-                  <a
-                    href={item.permalink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl border border-white/20 text-white/80 hover:bg-white/10 transition"
-                  >
-                    Detail
-                  </a>
+                  {item.permalink && (
+                    <a
+                      href={item.permalink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl border border-white/20 text-white/80 hover:bg-white/10 transition"
+                    >
+                      Detail
+                    </a>
+                  )}
                 </div>
               </div>
             ))}
