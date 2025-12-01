@@ -42,7 +42,7 @@ const BeritaDetailPage = () => {
 
       try {
         setIsLoading(true);
-        const apiBase = (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") || 
+        const apiBase = (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") ||
           (window.location.hostname === "lppm.unila.ac.id" || window.location.hostname.includes("unila.ac.id")
             ? "https://lppm.unila.ac.id/api"
             : "http://localhost:8000/api");
@@ -51,7 +51,7 @@ const BeritaDetailPage = () => {
         let newsItem = null;
         let page = 1;
         const maxPages = 10; // Limit search to first 10 pages to avoid infinite loop
-        
+
         while (!newsItem && page <= maxPages) {
           const listResponse = await fetch(`${apiBase}/posts?page=${page}&limit=12`);
 
@@ -61,14 +61,14 @@ const BeritaDetailPage = () => {
 
           const listData = await listResponse.json();
           newsItem = listData.data?.find((item: any) => item.slug === slug);
-          
+
           if (newsItem) break;
-          
+
           // If no more pages, stop searching
           if (!listData.pagination || page >= listData.pagination.last_page) {
             break;
           }
-          
+
           page++;
         }
 
@@ -278,7 +278,7 @@ const BeritaDetailPage = () => {
       )}
 
       {/* Breadcrumb */}
-      <div className="bg-white border-b border-gray-200">
+      {/* <div className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-8 py-4">
           <nav className="flex items-center space-x-2 text-sm">
             <Link
@@ -300,7 +300,7 @@ const BeritaDetailPage = () => {
             </span>
           </nav>
         </div>
-      </div>
+      </div> */}
 
       {/* Article Content */}
       <article className="py-12">
@@ -359,7 +359,7 @@ const BeritaDetailPage = () => {
           {/* Article Body */}
           <div className="prose prose-lg max-w-none">
             <div
-              className="bg-white rounded-2xl shadow-lg p-8 lg:p-12 text-gray-800 leading-relaxed prose-headings:text-gray-900 prose-headings:font-bold prose-p:mb-4 prose-p:leading-relaxed prose-ul:pl-6 prose-ol:pl-6 prose-li:mb-2 prose-strong:text-gray-900 prose-a:text-[#105091] prose-a:underline prose-a:font-medium hover:prose-a:text-[#0a3b6d] prose-blockquote:border-l-4 prose-blockquote:border-[#105091] prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:bg-gray-50 prose-blockquote:py-4 prose-blockquote:rounded-lg"
+              className="bg-white rounded-2xl shadow-lg p-6 md:p-8 lg:p-12 text-gray-800 leading-relaxed prose-headings:text-gray-900 prose-headings:font-bold prose-p:mb-4 prose-p:leading-relaxed prose-ul:pl-6 prose-ol:pl-6 prose-li:mb-2 prose-strong:text-gray-900 prose-a:text-[#105091] prose-a:underline prose-a:font-medium hover:prose-a:text-[#0a3b6d] prose-blockquote:border-l-4 prose-blockquote:border-[#105091] prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:bg-gray-50 prose-blockquote:py-4 prose-blockquote:rounded-lg"
               dangerouslySetInnerHTML={{ __html: newsData.content }}
             />
           </div>

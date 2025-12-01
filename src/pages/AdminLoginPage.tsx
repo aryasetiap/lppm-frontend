@@ -103,15 +103,15 @@ const AdminLoginPage = () => {
             </ul> */}
           </div>
 
-          <div className="bg-white/10 backdrop-blur-2xl rounded-3xl border border-white/20 p-8 shadow-2xl">
+          <div className="bg-white/10 backdrop-blur-2xl rounded-3xl border border-white/20 p-6 md:p-8 shadow-2xl">
             <div className="flex items-center justify-between mb-8">
               <div>
-              <div className="text-sm uppercase tracking-widest text-blue-100 mb-2">
-                Selamat Datang Kembali
-              </div>
+                <div className="text-sm uppercase tracking-widest text-blue-100 mb-2">
+                  Selamat Datang Kembali
+                </div>
                 <h2 className="text-3xl font-display font-semibold">Masuk Admin</h2>
                 <p className="text-blue-200 text-sm mt-2">
-                Gunakan akun admin yang terdaftar.
+                  Gunakan akun admin yang terdaftar.
                 </p>
               </div>
               <div className="w-12 h-12 bg-gradient-to-br from-[#105091] to-blue-500 rounded-2xl flex items-center justify-center shadow-lg">

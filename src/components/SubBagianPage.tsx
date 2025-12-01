@@ -264,7 +264,7 @@ const SubBagianPage: React.FC = () => {
         </div>
 
         {/* Breadcrumb Navigation */}
-        <div className="absolute top-8 left-6 right-6 z-10">
+        {/* <div className="absolute top-8 left-6 right-6 z-10">
           <nav className="flex items-center space-x-2 text-sm">
             <button
               onClick={() => navigate("/")}
@@ -280,7 +280,7 @@ const SubBagianPage: React.FC = () => {
             <span className="text-white/60">/</span>
             <span className="text-white font-medium">{subBagianData?.nama}</span>
           </nav>
-        </div>
+        </div> */}
 
         {/* Hero Content */}
         <div className="relative container mx-auto px-6 h-full flex items-center">

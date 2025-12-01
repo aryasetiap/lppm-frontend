@@ -333,7 +333,7 @@ const PosApDownloadsPage = () => {
 
             {/* Pagination Controls */}
             {category === "dokumen" && totalPages > 1 && (
-              <div className="flex justify-center items-center gap-4 mt-8 pt-4 border-t border-white/10">
+              <div className="flex flex-wrap justify-center items-center gap-4 mt-8 pt-4 border-t border-white/10">
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}

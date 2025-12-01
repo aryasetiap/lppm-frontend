@@ -436,13 +436,13 @@ const BeritaPage = () => {
 
           {/* Pagination */}
           {!isLoading && !error && pagination && pagination.last_page > 1 && (
-            <div className="flex justify-center items-center space-x-2">
+            <div className="flex flex-wrap justify-center items-center gap-2">
               <button
                 onClick={() => onPageChange(pagination.current_page - 1)}
                 disabled={pagination.current_page <= 1}
                 className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${pagination.current_page <= 1
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#105091] hover:text-[#105091]"
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#105091] hover:text-[#105091]"
                   }`}
               >
                 <FaChevronLeft className="w-4 h-4 mr-2" />
@@ -466,8 +466,8 @@ const BeritaPage = () => {
                     key={page}
                     onClick={() => onPageChange(page as number)}
                     className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${isCurrent
-                        ? "bg-[#105091] text-white"
-                        : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#105091] hover:text-[#105091]"
+                      ? "bg-[#105091] text-white"
+                      : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#105091] hover:text-[#105091]"
                       }`}
                   >
                     {page}
@@ -479,8 +479,8 @@ const BeritaPage = () => {
                 onClick={() => onPageChange(pagination.current_page + 1)}
                 disabled={pagination.current_page >= pagination.last_page}
                 className={`flex items-center px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${pagination.current_page >= pagination.last_page
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#105091] hover:text-[#105091]"
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#105091] hover:text-[#105091]"
                   }`}
               >
                 Next

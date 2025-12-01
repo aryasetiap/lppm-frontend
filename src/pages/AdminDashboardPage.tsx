@@ -66,11 +66,11 @@ const AdminDashboardPage = () => {
         <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
             <div>
-            <p className="text-xs uppercase tracking-[0.4em] text-blue-100">
-              Dashboard Admin
-            </p>
-            <h1 className="text-2xl font-display font-bold">LPPM Control Center</h1>
-          </div>
+              <p className="text-xs uppercase tracking-[0.4em] text-blue-100">
+                Dashboard Admin
+              </p>
+              <h1 className="text-2xl font-display font-bold">LPPM Control Center</h1>
+            </div>
           </div>
           <div className="flex flex-wrap items-center gap-4">
             <div className="text-left md:text-right">
@@ -109,10 +109,10 @@ const AdminDashboardPage = () => {
               <span className="font-semibold text-white">
                 {stats
                   ? new Date(stats.updatedAt).toLocaleDateString("id-ID", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })
                   : "-"}
               </span>
             </div>
@@ -201,7 +201,7 @@ const AdminDashboardPage = () => {
                 >
                   <div className="flex items-center justify-between">
                     <p className="font-semibold">{item.title}</p>
-                    <span className="text-xs font-semibold text-blue-200 uppercase">
+                    <span className="text-xs font-semibold text-blue-200 uppercase flex-shrink-0 ml-2">
                       {item.status}
                     </span>
                   </div>
