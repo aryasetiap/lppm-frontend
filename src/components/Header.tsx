@@ -196,19 +196,19 @@ const navLinks: NavLink[] = [
     ],
   },
   {
-    name: "POS-AP",
+    name: "Arsip",
     type: "dropdown",
     icon: Globe,
     items: [
       {
-        name: "Download",
-        href: "/pos-ap/download",
-        description: "Unduhan berkas POS-AP",
+        name: "POS-AP",
+        href: "/arsip/pos-ap",
+        description: "Unduh berkas POS-AP",
       },
       {
-        name: "Dokumen",
-        href: "/pos-ap/dokumen",
-        description: "Dokumen pedoman POS-AP",
+        name: "Arsip Lainnya",
+        href: "/arsip/dokumen",
+        description: "Dokumen pedoman Arsip Lainnya",
       },
     ],
   },

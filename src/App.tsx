@@ -10,7 +10,7 @@ import BeritaDetailPage from "./pages/BeritaDetailPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminDataEditorPage from "./pages/AdminDataEditorPage";
-import PosApDownloadsPage from "./pages/PosApDownloadsPage";
+import ArsipPage from "./pages/ArsipPage";
 import { adminAuth } from "./utils/adminAuth";
 
 
@@ -47,8 +47,8 @@ function App() {
                 </AdminRoute>
               }
             />
-            <Route path="/pos-ap" element={<PosApDownloadsPage />} />
-            <Route path="/pos-ap/:category" element={<PosApDownloadsPage />} />
+            <Route path="/arsip" element={<ArsipPage />} />
+            <Route path="/arsip/:category" element={<ArsipPage />} />
             <Route path="/:category/:slug" element={<SubBagianPage />} />
             <Route path="*" element={<Homepage />} />
           </Routes>

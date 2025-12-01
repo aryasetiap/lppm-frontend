@@ -62,12 +62,12 @@ const PosApDownloadsPage = () => {
     }
 
     if (!category) {
-      navigate(`/pos-ap/${list[0].slug}`, { replace: true });
+      navigate(`/arsip/${list[0].slug}`, { replace: true });
       return;
     }
 
-    if (!list.some((cat) => cat.slug === category)) {
-      navigate(`/pos-ap/${list[0].slug}`, { replace: true });
+    if (category !== "pos-ap" && !list.some((cat) => cat.slug === category)) {
+      navigate(`/arsip/${list[0].slug}`, { replace: true });
       return;
     }
 
@@ -171,12 +171,11 @@ const PosApDownloadsPage = () => {
               return (
                 <button
                   key={cat.slug}
-                  onClick={() => navigate(`/pos-ap/${cat.slug}`)}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl border transition ${
-                    isActive
-                      ? "bg-white/20 border-white/40 text-white"
-                      : "bg-white/5 border-white/15 text-blue-100 hover:bg-white/10"
-                  }`}
+                  onClick={() => navigate(`/arsip/${cat.slug}`)}
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl border transition ${isActive
+                    ? "bg-white/20 border-white/40 text-white"
+                    : "bg-white/5 border-white/15 text-blue-100 hover:bg-white/10"
+                    }`}
                 >
                   <span>{cat.name}</span>
                   <span className="text-xs text-blue-100/60">({cat.count})</span>
