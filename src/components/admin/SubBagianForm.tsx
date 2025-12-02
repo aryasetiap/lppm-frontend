@@ -85,7 +85,35 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
 
   const currentCategoryItems = safeData.sub_bagian[selectedCategory] || {};
   const itemSlugs = Object.keys(currentCategoryItems);
-  const selectedItem = selectedItemSlug ? currentCategoryItems[selectedItemSlug] : null;
+  const selectedItemRaw = selectedItemSlug ? currentCategoryItems[selectedItemSlug] : null;
+
+  // Sanitize item to ensure arrays exist
+  const selectedItem: SubBagianItem | null = selectedItemRaw ? {
+    ...selectedItemRaw,
+    profil: {
+      ...selectedItemRaw.profil,
+      visi: selectedItemRaw.profil?.visi || "",
+      misi: selectedItemRaw.profil?.misi || [],
+      program_unggulan: selectedItemRaw.profil?.program_unggulan || [],
+      prestasi: selectedItemRaw.profil?.prestasi || [],
+      keunggulan: selectedItemRaw.profil?.keunggulan || [],
+    },
+    tugas_fungsi: selectedItemRaw.tugas_fungsi || [],
+    pimpinan: {
+      ketua: selectedItemRaw.pimpinan?.ketua || {
+        nama: "",
+        foto: "",
+        placeholder: "",
+        jabatan: "",
+        periode: "",
+      },
+      sekretaris: selectedItemRaw.pimpinan?.sekretaris,
+    },
+    struktur_organisasi: selectedItemRaw.struktur_organisasi || {
+      gambar_struktur: "",
+      gambar_placeholder: "",
+    }
+  } : null;
 
   const updateMetadata = (field: string, value: string) => {
     const newData = { ...safeData };
@@ -267,11 +295,10 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
                     setSelectedCategory(cat);
                     setSelectedItemSlug(null);
                   }}
-                  className={`text-left px-4 py-3 rounded-xl transition-colors ${
-                    selectedCategory === cat
+                  className={`text-left px-4 py-3 rounded-xl transition-colors ${selectedCategory === cat
                       ? "bg-blue-500/20 border border-blue-400/40 text-white"
                       : "bg-white/5 border border-white/10 text-blue-100 hover:bg-white/10"
-                  }`}
+                    }`}
                 >
                   <div className="font-semibold">{cat.toUpperCase()}</div>
                   <div className="text-xs text-blue-200">
@@ -303,11 +330,10 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
                   return (
                     <div
                       key={slug}
-                      className={`p-3 rounded-xl cursor-pointer transition-colors ${
-                        selectedItemSlug === slug
+                      className={`p-3 rounded-xl cursor-pointer transition-colors ${selectedItemSlug === slug
                           ? "bg-blue-500/20 border border-blue-400/40"
                           : "bg-white/5 border border-white/10 hover:bg-white/10"
-                      }`}
+                        }`}
                       onClick={() => {
                         setSelectedItemSlug(slug);
                       }}
