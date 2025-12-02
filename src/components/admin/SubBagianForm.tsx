@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import { FaBuilding, FaUser, FaEye, FaList, FaTrophy, FaStar, FaTrash, FaPlus, FaEdit } from "react-icons/fa";
 
+interface StaffMember {
+  nama: string;
+  foto: string;
+  placeholder: string;
+  jabatan: string;
+  periode: string;
+}
+
 interface Pimpinan {
   ketua?: {
     nama: string;
@@ -16,6 +24,7 @@ interface Pimpinan {
     jabatan: string;
     periode: string;
   };
+  staff?: StaffMember[];
 }
 
 interface Profil {
@@ -108,6 +117,7 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
         periode: "",
       },
       sekretaris: selectedItemRaw.pimpinan?.sekretaris,
+      staff: selectedItemRaw.pimpinan?.staff || [],
     },
     struktur_organisasi: selectedItemRaw.struktur_organisasi || {
       gambar_struktur: "",
@@ -151,15 +161,47 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
     updateItem(selectedItemSlug, item);
   };
 
-  const updateArrayItem = (path: string[], index: number, value: string) => {
+  const updateArrayItem = (path: string[], index: number, value: any) => {
     if (!selectedItemSlug) return;
     const newData = { ...safeData };
     const item = { ...newData.sub_bagian[selectedCategory]![selectedItemSlug] };
+
+    // Navigate to the array
     let current: any = item;
-    for (const key of path) {
-      current = current[key];
+    // If path includes index (e.g. ["pimpinan", "staff", "0", "nama"])
+    // We need to handle this differently or simplify the call signature.
+    // Let's assume path points to the array itself for simple arrays (string[]),
+    // OR path points to the property inside the array item if we pass index.
+
+    // Actually, let's make a specific handler for staff updates to be safe and clean
+    // But to keep it generic:
+
+    // Case 1: Simple array of strings (e.g. misi) -> path=["profil", "misi"], index=0, value="new string"
+    // Case 2: Array of objects (e.g. staff) -> path=["pimpinan", "staff", "0", "nama"], index=0 (redundant), value="new name"
+
+    // Let's stick to the existing usage for simple arrays and add a new helper for staff/objects if needed.
+    // The existing usage: updateArrayItem(["profil", "misi"], index, e.target.value)
+
+    // For staff, I used: updateArrayItem(["pimpinan", "staff", index.toString(), "nama"], index, e.target.value)
+    // This requires logic to handle the path traversal correctly.
+
+    if (path.length > 2 && !isNaN(parseInt(path[path.length - 2]))) {
+      // Deep update inside array item
+      // path: ["pimpinan", "staff", "0", "nama"]
+      let ptr: any = item;
+      for (let i = 0; i < path.length - 1; i++) {
+        if (!ptr[path[i]]) ptr[path[i]] = {}; // Should not happen for array index but safety
+        ptr = ptr[path[i]];
+      }
+      ptr[path[path.length - 1]] = value;
+    } else {
+      // Simple array update
+      for (const key of path) {
+        current = current[key];
+      }
+      current[index] = value;
     }
-    current[index] = value;
+
     updateItem(selectedItemSlug, item);
   };
 
@@ -296,8 +338,8 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
                     setSelectedItemSlug(null);
                   }}
                   className={`text-left px-4 py-3 rounded-xl transition-colors ${selectedCategory === cat
-                      ? "bg-blue-500/20 border border-blue-400/40 text-white"
-                      : "bg-white/5 border border-white/10 text-blue-100 hover:bg-white/10"
+                    ? "bg-blue-500/20 border border-blue-400/40 text-white"
+                    : "bg-white/5 border border-white/10 text-blue-100 hover:bg-white/10"
                     }`}
                 >
                   <div className="font-semibold">{cat.toUpperCase()}</div>
@@ -331,8 +373,8 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
                     <div
                       key={slug}
                       className={`p-3 rounded-xl cursor-pointer transition-colors ${selectedItemSlug === slug
-                          ? "bg-blue-500/20 border border-blue-400/40"
-                          : "bg-white/5 border border-white/10 hover:bg-white/10"
+                        ? "bg-blue-500/20 border border-blue-400/40"
+                        : "bg-white/5 border border-white/10 hover:bg-white/10"
                         }`}
                       onClick={() => {
                         setSelectedItemSlug(slug);
@@ -434,6 +476,19 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
                         }
                         className="w-full bg-[#0b1f3d] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
                       />
+                      <div className="mt-2">
+                        <label className="block text-xs font-medium text-blue-100 mb-1">
+                          Foto URL
+                        </label>
+                        <input
+                          type="text"
+                          value={selectedItem.pimpinan.ketua.foto}
+                          onChange={(e) =>
+                            updateItemField(["pimpinan", "ketua", "foto"], e.target.value)
+                          }
+                          className="w-full bg-[#0b1f3d] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
+                        />
+                      </div>
                       <div className="grid grid-cols-2 gap-2 mt-2">
                         <input
                           type="text"
@@ -456,6 +511,92 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
                       </div>
                     </div>
                   )}
+
+                  {/* Staff Section */}
+                  <div className="mt-6 border-t border-white/10 pt-4">
+                    <h5 className="font-semibold mb-3 text-sm text-blue-100">Staff / Anggota</h5>
+                    <div className="space-y-4">
+                      {selectedItem.pimpinan.staff?.map((staff, index) => (
+                        <div key={index} className="bg-black/20 rounded-lg p-3 border border-white/5">
+                          <div className="flex justify-between items-start mb-2">
+                            <span className="text-xs font-bold text-blue-200">Staff #{index + 1}</span>
+                            <button
+                              onClick={() => removeArrayItem(["pimpinan", "staff"], index)}
+                              className="text-red-400 hover:text-red-300 text-xs"
+                            >
+                              <FaTrash />
+                            </button>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-xs text-blue-300 mb-1">Nama</label>
+                              <input
+                                type="text"
+                                value={staff.nama}
+                                onChange={(e) =>
+                                  updateArrayItem(["pimpinan", "staff", index.toString(), "nama"], index, e.target.value)
+                                }
+                                className="w-full bg-[#0b1f3d] border border-white/10 rounded px-2 py-1 text-white text-xs"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs text-blue-300 mb-1">Jabatan</label>
+                              <input
+                                type="text"
+                                value={staff.jabatan}
+                                onChange={(e) =>
+                                  updateArrayItem(["pimpinan", "staff", index.toString(), "jabatan"], index, e.target.value)
+                                }
+                                className="w-full bg-[#0b1f3d] border border-white/10 rounded px-2 py-1 text-white text-xs"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs text-blue-300 mb-1">Foto URL</label>
+                              <input
+                                type="text"
+                                value={staff.foto}
+                                onChange={(e) =>
+                                  updateArrayItem(["pimpinan", "staff", index.toString(), "foto"], index, e.target.value)
+                                }
+                                className="w-full bg-[#0b1f3d] border border-white/10 rounded px-2 py-1 text-white text-xs"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs text-blue-300 mb-1">Periode</label>
+                              <input
+                                type="text"
+                                value={staff.periode}
+                                onChange={(e) =>
+                                  updateArrayItem(["pimpinan", "staff", index.toString(), "periode"], index, e.target.value)
+                                }
+                                className="w-full bg-[#0b1f3d] border border-white/10 rounded px-2 py-1 text-white text-xs"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => {
+                          const newStaff: StaffMember = {
+                            nama: "",
+                            foto: "",
+                            placeholder: "https://via.placeholder.com/400x400",
+                            jabatan: "Staff",
+                            periode: "",
+                          };
+                          if (!selectedItemSlug) return;
+                          const newData = { ...safeData };
+                          const item = { ...newData.sub_bagian[selectedCategory]![selectedItemSlug] };
+                          if (!item.pimpinan.staff) item.pimpinan.staff = [];
+                          item.pimpinan.staff.push(newStaff);
+                          updateItem(selectedItemSlug, item);
+                        }}
+                        className="w-full py-2 bg-blue-500/20 border border-blue-400/40 rounded-lg text-blue-200 hover:bg-blue-500/30 text-sm flex items-center justify-center gap-2"
+                      >
+                        <FaPlus /> Tambah Staff
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </section>
 
