@@ -136,15 +136,21 @@ const Homepage = () => {
     const fetchStatistics = async () => {
       try {
         setStatsLoading(true);
-        // Fetch from local JSON file
-        const response = await fetch(`${import.meta.env.BASE_URL}data/statistics.json`);
+        // Determine Backend URL
+        const apiBase = (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") ||
+          (window.location.hostname === "lppm.unila.ac.id" || window.location.hostname.includes("unila.ac.id")
+            ? "https://lppm.unila.ac.id/api"
+            : "http://localhost:8000/api");
+
+        // Fetch from Backend API (CORS handled by Laravel)
+        const response = await fetch(`${apiBase}/content/statistics`);
 
         if (!response.ok) {
           throw new Error("Failed to fetch statistics data");
         }
 
-        const data = await response.json();
-        setStatsData(data);
+        const responseData = await response.json();
+        setStatsData(responseData.data); // Unwrap API response
       } catch (err) {
         console.error("Error fetching statistics:", err);
         setStatsError("Failed to load statistics data.");

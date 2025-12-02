@@ -9,6 +9,7 @@ import {
   FaFileAlt,
   FaSignOutAlt,
   FaSync,
+  FaArrowRight,
 } from "react-icons/fa";
 import { adminAuth } from "../utils/adminAuth";
 
@@ -32,11 +33,21 @@ const AdminDashboardPage = () => {
     const loadStats = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${import.meta.env.BASE_URL}data/statistics.json`);
+        // Determine Backend URL
+        const apiBase = (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") ||
+          (window.location.hostname === "lppm.unila.ac.id" || window.location.hostname.includes("unila.ac.id")
+            ? "https://lppm.unila.ac.id/api"
+            : "http://localhost:8000/api");
+
+        // Fetch from Backend API
+        const response = await fetch(`${apiBase}/content/statistics`);
+
         if (!response.ok) {
           throw new Error("Tidak dapat memuat data statistik.");
         }
-        const data = await response.json();
+        const responseData = await response.json();
+        const data = responseData.data; // Unwrap API response
+
         setStats({
           totalPenelitian: data.total_summary.total_penelitian_blu,
           totalPengabdian: data.total_summary.total_pengabdian_blu,
@@ -172,84 +183,64 @@ const AdminDashboardPage = () => {
           )}
         </section>
 
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white/10 border border-white/10 rounded-3xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-display font-semibold">
-                Agenda Pengelolaan
-              </h3>
-              <span className="text-sm text-blue-200">Prioritas mingguan</span>
-            </div>
-            <div className="space-y-4">
-              {[
-                {
-                  title: "Review proposal penelitian BLU terbaru",
-                  status: "Dalam proses",
-                },
-                {
-                  title: "Kurasi data pengabdian & unggulan desa binaan",
-                  status: "Menunggu",
-                },
-                {
-                  title: "Validasi paten & HKI yang masuk periode ini",
-                  status: "Prioritas",
-                },
-              ].map((item) => (
-                <div
-                  key={item.title}
-                  className="bg-white/5 border border-white/10 rounded-2xl p-4"
-                >
-                  <div className="flex items-center justify-between">
-                    <p className="font-semibold">{item.title}</p>
-                    <span className="text-xs font-semibold text-blue-200 uppercase flex-shrink-0 ml-2">
-                      {item.status}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
+        <section>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-display font-semibold">
+              Kelola Data & Konten
+            </h3>
+            <p className="text-sm text-blue-200">
+              Pilih data yang ingin Anda perbarui
+            </p>
           </div>
 
-          <div className="bg-white/10 border border-white/10 rounded-3xl p-6">
-            <h3 className="text-xl font-display font-semibold mb-4">
-              Tindakan Cepat
-            </h3>
-            <div className="space-y-3">
-              {[
-                { title: "Kelola Konten JSON", icon: FaFileAlt, link: "/admin/content" },
-                { title: "Kelola Pengguna Backend", icon: FaUsersCog, link: null },
-                { title: "Sinkronisasi Statistik (coming soon)", icon: FaSync, link: null },
-              ].map((action) => {
-                const Icon = action.icon;
-                if (action.link) {
-                  return (
-                    <Link
-                      key={action.title}
-                      to={action.link}
-                      className="w-full flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl px-4 py-3 hover:bg-white/15 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Icon className="w-4 h-4 text-blue-200" />
-                        <span className="text-sm font-semibold">{action.title}</span>
-                      </div>
-                      <span className="text-xs text-blue-200">Buka</span>
-                    </Link>
-                  );
-                }
-                return (
-                  <button
-                    key={action.title}
-                    className="w-full flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl px-4 py-3 opacity-70 cursor-not-allowed"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Icon className="w-4 h-4 text-blue-200" />
-                      <span className="text-sm font-semibold">{action.title}</span>
-                    </div>
-                    <span className="text-xs text-blue-200">Segera</span>
-                  </button>
-                );
-              })}
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Link
+              to="/admin/content?tab=profile"
+              className="group bg-white/10 border border-white/20 rounded-3xl p-6 hover:bg-white/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                <FaFileAlt className="w-7 h-7 text-white" />
+              </div>
+              <h4 className="text-lg font-bold mb-2">Profil LPPM</h4>
+              <p className="text-sm text-blue-100 mb-4">
+                Update visi misi, struktur organisasi, dan pimpinan.
+              </p>
+              <span className="inline-flex items-center text-sm font-semibold text-blue-300 group-hover:text-white transition-colors">
+                Edit Data <FaArrowRight className="ml-2 w-3 h-3" />
+              </span>
+            </Link>
+
+            <Link
+              to="/admin/content?tab=statistics"
+              className="group bg-white/10 border border-white/20 rounded-3xl p-6 hover:bg-white/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                <FaChartBar className="w-7 h-7 text-white" />
+              </div>
+              <h4 className="text-lg font-bold mb-2">Statistik</h4>
+              <p className="text-sm text-blue-100 mb-4">
+                Update data penelitian, pengabdian, dan HKI tahunan.
+              </p>
+              <span className="inline-flex items-center text-sm font-semibold text-emerald-300 group-hover:text-white transition-colors">
+                Edit Data <FaArrowRight className="ml-2 w-3 h-3" />
+              </span>
+            </Link>
+
+            <Link
+              to="/admin/content?tab=subbagian"
+              className="group bg-white/10 border border-white/20 rounded-3xl p-6 hover:bg-white/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                <FaUsersCog className="w-7 h-7 text-white" />
+              </div>
+              <h4 className="text-lg font-bold mb-2">Sub Bagian & Unit</h4>
+              <p className="text-sm text-blue-100 mb-4">
+                Kelola data PUI, Puslit, dan unit administrasi.
+              </p>
+              <span className="inline-flex items-center text-sm font-semibold text-purple-300 group-hover:text-white transition-colors">
+                Edit Data <FaArrowRight className="ml-2 w-3 h-3" />
+              </span>
+            </Link>
           </div>
         </section>
       </main>

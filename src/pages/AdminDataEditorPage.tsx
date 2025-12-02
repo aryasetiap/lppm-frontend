@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   FaDatabase,
   FaFileCode,
@@ -279,7 +279,8 @@ const StatisticsQuickEditor = ({
 const AdminDataEditorPage = () => {
   const navigate = useNavigate();
   const token = adminAuth.getToken();
-  const [selectedId, setSelectedId] = useState(DATASETS[0].id);
+  const [searchParams] = useSearchParams();
+  const [selectedId, setSelectedId] = useState(searchParams.get("tab") || DATASETS[0].id);
   const [rawContent, setRawContent] = useState("");
   const [parsedData, setParsedData] = useState<any>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -304,15 +305,16 @@ const AdminDataEditorPage = () => {
         {
           headers: token
             ? {
-                Authorization: `Bearer ${token}`,
-              }
+              Authorization: `Bearer ${token}`,
+            }
             : undefined,
         }
       );
 
       let jsonData;
       if (response.ok) {
-        jsonData = await response.json();
+        const apiResponse = await response.json();
+        jsonData = apiResponse.data; // Unwrap API response
       } else {
         // fallback to local JSON (read-only)
         const fallbackRes = await fetch(selectedDataset.fallback);
@@ -334,6 +336,13 @@ const AdminDataEditorPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDataset?.id]);
 
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab && DATASETS.find((d) => d.id === tab)) {
+      setSelectedId(tab);
+    }
+  }, [searchParams]);
+
   const handleSave = async () => {
     if (!selectedDataset) return;
     if (!token) {
@@ -348,7 +357,7 @@ const AdminDataEditorPage = () => {
 
       // Gunakan parsedData jika ada (dari form), atau parse rawContent (dari JSON editor)
       const dataToSave = parsedData || JSON.parse(rawContent);
-      
+
       const response = await fetch(
         `${LARAVEL_API_BASE}${selectedDataset.apiPath}`,
         {
@@ -419,11 +428,10 @@ const AdminDataEditorPage = () => {
             <button
               key={dataset.id}
               onClick={() => setSelectedId(dataset.id)}
-              className={`text-left bg-white/5 border rounded-2xl p-4 transition-all ${
-                selectedId === dataset.id
-                  ? "border-blue-400/60 bg-white/10 shadow-lg"
-                  : "border-white/10 hover:border-white/30"
-              }`}
+              className={`text-left bg-white/5 border rounded-2xl p-4 transition-all ${selectedId === dataset.id
+                ? "border-blue-400/60 bg-white/10 shadow-lg"
+                : "border-white/10 hover:border-white/30"
+                }`}
             >
               <div className="flex items-center gap-3 mb-2">
                 <FaDatabase className="text-blue-200" />
