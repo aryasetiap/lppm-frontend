@@ -96,10 +96,10 @@ interface StatisticsData {
     total_pengabdian_blu: number;
     total_paten: number;
     total_haki: number;
-    growth_penelitian: number;
-    growth_pengabdian: number;
-    growth_paten: number;
-    growth_haki: number;
+    growth_penelitian: number | null;
+    growth_pengabdian: number | null;
+    growth_paten: number | null;
+    growth_haki: number | null;
   };
   quarterly_data: {
     quarter: string;
@@ -294,8 +294,10 @@ const Homepage = () => {
     return Math.ceil(words / wordsPerMinute);
   };
 
-  const formatTrend = (value: number) =>
-    `${value >= 0 ? "+" : ""}${value.toFixed(1)}%`;
+  const formatTrend = (value: number | null | undefined) => {
+    if (value == null) return "0%";
+    return `${value >= 0 ? "+" : ""}${value.toFixed(1)}%`;
+  };
 
   // Category colors
   const getCategoryColor = (category: string) => {
