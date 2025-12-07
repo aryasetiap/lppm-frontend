@@ -126,14 +126,50 @@ const BeritaDetailPage = () => {
   const formatNewsContent = (content: string) => {
     if (!content) return "";
 
+    let processed = content;
+
+    // 0. Handle Links: Convert http/https text to clickable links
+    // Fix: Use a regex that ignores existing HTML tags and attributes
+    // Strategy: Match (<a ...>...</a>) OR (<...>) OR (url)
+    const urlRegex = /(<a\b[^>]*>[\s\S]*?<\/a>)|(<[^>]+>)|(https?:\/\/[^\s"<]+)/gi;
+    processed = processed.replace(urlRegex, (match, anchorTag, otherTag, url) => {
+      // 1. Handle existing anchor tags: Inject our specific styling
+      if (anchorTag) {
+        // Check if it already has a style attribute (simple check)
+        // If it doesn't have style, inject it. If it does, we append to it (simplified for reliability)
+        if (!anchorTag.includes('style=')) {
+          return anchorTag.replace('<a', '<a style="color: #105091 !important; text-decoration: underline;"');
+        }
+        // If it already has style, try to insert our properties
+        return anchorTag.replace('style="', 'style="color: #105091 !important; text-decoration: underline; ');
+      }
+
+      // 2. Handle other HTML tags: Ignore
+      if (otherTag) return match;
+
+      // 3. Handle plain URLs: Convert to links
+      if (url) {
+        if (url.includes("wp-content/uploads")) {
+          return url; // Return plain text for assets
+        }
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color: #105091 !important; text-decoration: underline;">${url}</a>`;
+      }
+      return match;
+    });
+
     // 1. Fix inline lists (e.g., " 1. Item one 2. Item two")
-    // This regex looks for a digit + dot + space that is preceded by a space or start of line
-    let processed = content.replace(/(\s|^)(\d+\.)(\s)/g, (_match, _p1, p2, p3) => {
+    // Fix: Limit to 1-2 digits (\d{1,2}) to avoid matching years like "2025."
+    // Also ensures it's likely a list item
+    processed = processed.replace(/(\s|^)(\d{1,2}\.)(\s)/g, (_match, _p1, p2, p3) => {
       return `<br/><br/><strong>${p2}</strong>${p3}`;
     });
 
     // 2. Fix lists that might be stuck to previous text (e.g. "text: 1. Item")
-    processed = processed.replace(/(:)(\s+)(\d+\.)/g, ':<br/><br/><strong>$3</strong>');
+    processed = processed.replace(/(:)(\s+)(\d{1,2}\.)/g, ':<br/><br/><strong>$3</strong>');
+
+    // 3. Removed: automatic newline to br conversion which breaks HTML structure
+    // processed = processed.replace(/\n\n/g, '<br/><br/>');
+    // processed = processed.replace(/\n/g, '<br/>');
 
     return processed;
   };
