@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
 import Homepage from "./components/Homepage";
 import ProfilePage from "./components/ProfilePage";
 import SubBagianPage from "./components/SubBagianPage";
@@ -22,6 +23,7 @@ const AdminRoute = ({ children }: { children: ReactNode }) => {
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-grow">
