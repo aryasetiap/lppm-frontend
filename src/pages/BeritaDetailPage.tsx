@@ -1,27 +1,45 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
-  FaNewspaper,
   FaCalendarAlt,
   FaTag,
   FaUser,
   FaArrowLeft,
   FaShare,
   FaClock,
-  FaExternalLinkAlt,
+  FaNewspaper,
+  FaFacebook,
+  FaTwitter,
+  FaLinkedin,
+  FaWhatsapp,
 } from "react-icons/fa";
 
-// Types for News API
+// Types corresponding to the new API response
+interface RelatedPost {
+  title: string;
+  slug: string;
+  date: string;
+  image: string;
+}
+
+interface RecentPost {
+  title: string;
+  slug: string;
+  date: string;
+}
+
 interface NewsDetail {
   id: number;
   title: string;
   slug: string;
   date: string;
-  category: string;
+  author: string;
+  categories: { name: string; slug: string }[];
+  tags: { name: string; slug: string }[];
   image?: string;
   content: string;
-  author?: string;
-  published_at?: string;
+  related_posts: RelatedPost[];
+  recent_posts: RecentPost[];
 }
 
 const BeritaDetailPage = () => {
@@ -31,7 +49,6 @@ const BeritaDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch news detail by slug (will need to find by slug from API)
   useEffect(() => {
     const fetchNewsDetail = async () => {
       if (!slug) {
@@ -42,159 +59,87 @@ const BeritaDetailPage = () => {
 
       try {
         setIsLoading(true);
+        // Use the new slug-based endpoint
         const apiBase = (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") ||
           (window.location.hostname === "lppm.unila.ac.id" || window.location.hostname.includes("unila.ac.id")
             ? "https://lppm.unila.ac.id/api"
             : "http://localhost:8000/api");
-        // First, try to find the news by slug from the list endpoint
-        // Fetch multiple pages to find the post by slug (since backend doesn't support search by slug)
-        let newsItem = null;
-        let page = 1;
-        const maxPages = 10; // Limit search to first 10 pages to avoid infinite loop
 
-        while (!newsItem && page <= maxPages) {
-          const listResponse = await fetch(`${apiBase}/posts?page=${page}&limit=12`);
+        const response = await fetch(`${apiBase}/posts/slug/${slug}`);
 
-          if (!listResponse.ok) {
-            throw new Error("Failed to fetch news");
-          }
-
-          const listData = await listResponse.json();
-          newsItem = listData.data?.find((item: any) => item.slug === slug);
-
-          if (newsItem) break;
-
-          // If no more pages, stop searching
-          if (!listData.pagination || page >= listData.pagination.last_page) {
-            break;
-          }
-
-          page++;
-        }
-
-        if (!newsItem) {
+        if (!response.ok) {
           throw new Error("Berita tidak ditemukan");
         }
 
-        // Then fetch the full details using the ID
-        const detailResponse = await fetch(`${apiBase}/posts/${newsItem.id}`);
-
-        if (!detailResponse.ok) {
-          throw new Error("Failed to fetch news details");
-        }
-
-        const detailData = await detailResponse.json();
-        setNewsData(detailData.data);
+        const json = await response.json();
+        setNewsData(json.data);
       } catch (err) {
         console.error("Error fetching news detail:", err);
         setError("Gagal memuat detail berita. Berita mungkin tidak ditemukan atau telah dihapus.");
-
-        // Fallback mock data for development
-        if (slug === "pengumuman-hibah-penelitian-2024") {
-          setNewsData({
-            id: 1,
-            title: "Pengumuman Hibah Penelitian 2024",
-            slug: "pengumuman-hibah-penelitian-2024",
-            date: "15 November 2024",
-            category: "Pengumuman",
-            content: `
-              <p><strong>Bandar Lampung</strong> - LPPM Universitas Lampung dengan bangga mengumumkan pembukaan pendaftaran hibah penelitian untuk tahun akademik 2024/2025. Program ini bertujuan untuk mendorong peningkatan kualitas dan kuantitas penelitian di lingkungan Universitas Lampung.</p>
-
-              <h3>Persyaratan Umum</h3>
-              <ul>
-                <li>Dosen tetap Universitas Lampung</li>
-                <li>Memiliki NIDN yang aktif</li>
-                <li>Tidak sedang dalam masa cuti atau tugas belajar</li>
-                <li>Menyerahkan proposal penelitian yang sesuai dengan tema prioritas</li>
-              </ul>
-
-              <h3>Tema Prioritas Penelitian</h3>
-              <ol>
-                <li>Energi Terbarukan dan Konservasi Energi</li>
-                <li>Ketahanan Pangan dan Pertanian Modern</li>
-                <li>Kesehatan dan Obat Herbal</li>
-                <li>Teknologi Informasi dan Transformasi Digital</li>
-                <li>Lingkungan dan Perubahan Iklim</li>
-              </ol>
-
-              <h3>Jadwal Penting</h3>
-              <ul>
-                <li><strong>Pengumuman Pembukaan:</strong> 15 November 2024</li>
-                <li><strong>Batas Pendaftaran:</strong> 31 Desember 2024</li>
-                <li><strong>Evaluasi Proposal:</strong> 1-15 Januari 2025</li>
-                <li><strong>Pengumuman Lolos Seleksi:</strong> 20 Januari 2025</li>
-              </ul>
-
-              <p>Untuk informasi lebih lanjut, silakan hubungi Sekretariat LPPM Universitas Lampung atau kunjungi website resmi kami.</p>
-            `,
-            author: "Admin LPPM",
-          });
-        }
       } finally {
         setIsLoading(false);
+        // Scroll to top when slug changes
+        window.scrollTo(0, 0);
       }
     };
 
     fetchNewsDetail();
   }, [slug]);
 
-  // Format date utility
-  const formatDate = (dateString: string) => {
-    // If date is already formatted like "Wednesday, 05 November 2025", return as-is
-    if (dateString.includes(',')) {
-      return dateString;
-    }
+  // Handle Share functionality
+  const handleShare = async (platform?: string) => {
+    if (!newsData) return;
+    const url = window.location.href;
+    const text = `${newsData.title} - LPPM Universitas Lampung`;
 
-    try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) {
-        return dateString;
+    if (platform) {
+      let shareUrl = "";
+      switch (platform) {
+        case "facebook":
+          shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+          break;
+        case "twitter":
+          shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+          break;
+        case "linkedin":
+          shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(newsData.title)}`;
+          break;
+        case "whatsapp":
+          shareUrl = `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`;
+          break;
       }
-      return date.toLocaleDateString("id-ID", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      });
-    } catch {
-      return dateString;
-    }
-  };
-
-  // Share functionality
-  const handleShare = async () => {
-    if (navigator.share && newsData) {
-      try {
-        await navigator.share({
-          title: newsData.title,
-          text: `${newsData.title} - LPPM Universitas Lampung`,
-          url: window.location.href,
-        });
-      } catch (err) {
-        console.log("Share cancelled or failed");
-      }
+      if (shareUrl) window.open(shareUrl, "_blank");
     } else {
-      // Fallback: Copy to clipboard
-      navigator.clipboard.writeText(window.location.href);
-      alert("Link berita disalin ke clipboard!");
+      // Native Share or Copy
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: newsData.title, text: text, url: url });
+        } catch (err) { console.log("Share cancelled"); }
+      } else {
+        navigator.clipboard.writeText(url);
+        alert("Link berita disalin ke clipboard!");
+      }
     }
   };
 
-  // Loading State
+  // Loading Skeleton
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-slate-100">
-        <div className="animate-pulse">
-          {/* Hero Placeholder */}
-          <div className="h-64 bg-gradient-to-br from-gray-200 to-gray-300"></div>
-          <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12">
-            <div className="h-8 bg-gray-200 rounded mb-4 w-3/4"></div>
-            <div className="h-6 bg-gray-200 rounded mb-8 w-1/2"></div>
-            <div className="space-y-4">
+      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="lg:col-span-2 space-y-6 animate-pulse">
+            <div className="h-96 bg-gray-200 rounded-xl"></div>
+            <div className="h-10 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+            <div className="space-y-4 pt-8">
               <div className="h-4 bg-gray-200 rounded w-full"></div>
               <div className="h-4 bg-gray-200 rounded w-full"></div>
-              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+              <div className="h-4 bg-gray-200 rounded w-full"></div>
             </div>
+          </div>
+          <div className="hidden lg:block space-y-8 animate-pulse">
+            <div className="h-64 bg-gray-200 rounded-xl"></div>
+            <div className="h-64 bg-gray-200 rounded-xl"></div>
           </div>
         </div>
       </div>
@@ -204,199 +149,189 @@ const BeritaDetailPage = () => {
   // Error State
   if (error || !newsData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-slate-100 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div className="text-center max-w-md">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-red-100 rounded-full mb-6">
             <FaNewspaper className="w-10 h-10 text-red-600" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Berita Tidak Ditemukan
-          </h1>
-          <p className="text-gray-600 mb-8">
-            {error || "Berita yang Anda cari tidak ditemukan atau telah dihapus."}
-          </p>
-          <div className="space-y-4">
-            <Link
-              to="/berita"
-              className="inline-flex items-center px-6 py-3 bg-[#105091] text-white font-semibold rounded-xl hover:bg-[#0a3b6d] transition-colors duration-200"
-            >
-              <FaArrowLeft className="w-4 h-4 mr-2" />
-              Kembali ke Daftar Berita
-            </Link>
-            <button
-              onClick={() => navigate(-1)}
-              className="block mx-auto text-[#105091] hover:text-[#0a3b6d] font-medium"
-            >
-              Kembali ke Halaman Sebelumnya
-            </button>
-          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Berita Tidak Ditemukan</h1>
+          <p className="text-gray-600 mb-8">{error}</p>
+          <button onClick={() => navigate("/berita")} className="px-6 py-3 bg-[#105091] text-white rounded-xl hover:bg-[#0a3b6d] transition-colors">
+            Kembali ke Daftar Berita
+          </button>
         </div>
       </div>
     );
   }
 
-  // Get category color
-  const getCategoryColor = (category: string) => {
-    const colors: { [key: string]: string } = {
-      Pengumuman: "from-blue-500 to-blue-600",
-      Workshop: "from-purple-500 to-purple-600",
-      Seminar: "from-green-500 to-green-600",
-      Kerjasama: "from-orange-500 to-orange-600",
-      Prestasi: "from-yellow-500 to-yellow-600",
-      Jurnal: "from-red-500 to-red-600",
-    };
-    return colors[category] || "from-gray-500 to-gray-600";
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-slate-100">
-      {/* Hero Image Section */}
-      {newsData.image && (
-        <div className="relative h-64 lg:h-96 overflow-hidden">
-          <img
-            src={newsData.image}
-            alt={newsData.title}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              e.currentTarget.style.display = 'none';
-              const parent = e.currentTarget.parentElement;
-              if (parent) {
-                parent.className = "relative h-64 lg:h-96 overflow-hidden bg-gradient-to-br from-[#105091] to-blue-900";
-                parent.innerHTML = `
-                  <div class="absolute inset-0 flex items-center justify-center">
-                    <svg class="w-24 h-24 text-white/20" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd" />
-                      <path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z" />
-                    </svg>
-                  </div>
-                `;
-              }
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-        </div>
-      )}
-
-      {/* Breadcrumb */}
-      {/* <div className="bg-white border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-8 py-4">
-          <nav className="flex items-center space-x-2 text-sm">
-            <Link
-              to="/"
-              className="text-gray-500 hover:text-[#105091] transition-colors duration-200"
-            >
-              Beranda
-            </Link>
-            <span className="text-gray-400">/</span>
-            <Link
-              to="/berita"
-              className="text-gray-500 hover:text-[#105091] transition-colors duration-200"
-            >
-              Berita
-            </Link>
-            <span className="text-gray-400">/</span>
-            <span className="text-gray-900 font-medium truncate">
-              {newsData.title}
-            </span>
-          </nav>
-        </div>
-      </div> */}
-
-      {/* Article Content */}
-      <article className="py-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-8">
-          {/* Article Header */}
-          <header className="mb-10">
-            {/* Category and Share */}
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center space-x-4">
-                <span
-                  className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold text-white bg-gradient-to-r ${getCategoryColor(
-                    newsData.category
-                  )} shadow-lg`}
-                >
+    <div className="min-h-screen bg-[#F8FAFC]">
+      {/* Hero Section with Title & Meta */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16 mt-16">
+          <div className="">
+            {/* Category Badge */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              {newsData.categories.map((cat, idx) => (
+                <span key={idx} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold text-[#105091] bg-blue-50 border border-blue-100">
                   <FaTag className="w-3 h-3 mr-2" />
-                  {newsData.category}
+                  {cat.name}
                 </span>
-              </div>
-
-              <button
-                onClick={handleShare}
-                className="flex items-center space-x-2 text-gray-600 hover:text-[#105091] transition-colors duration-200"
-                title="Bagikan berita"
-              >
-                <FaShare className="w-5 h-5" />
-                <span className="hidden sm:inline font-medium">Bagikan</span>
-              </button>
+              ))}
             </div>
 
-            {/* Title */}
-            <h1 className="font-display text-3xl lg:text-5xl font-bold text-gray-900 leading-tight mb-6">
+            <h1 className="font-display text-3xl lg:text-5xl font-bold text-gray-900 leading-tight mb-6 w-full">
               {newsData.title}
             </h1>
 
-            {/* Article Meta */}
-            <div className="flex flex-wrap items-center gap-6 text-gray-600">
-              {newsData.author && (
-                <div className="flex items-center">
-                  <FaUser className="w-4 h-4 mr-2" />
-                  <span>{newsData.author}</span>
+            <div className="flex flex-wrap items-center gap-6 text-gray-500 text-sm md:text-base">
+              <div className="flex items-center">
+                <FaUser className="w-4 h-4 mr-2 text-gray-400" />
+                <span className="font-medium text-gray-700">{newsData.author}</span>
+              </div>
+              <div className="flex items-center">
+                <FaCalendarAlt className="w-4 h-4 mr-2 text-gray-400" />
+                <span>{newsData.date}</span>
+              </div>
+              <div className="flex items-center">
+                <FaClock className="w-4 h-4 mr-2 text-gray-400" />
+                <span>3 min read</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          {/* Main Content Column */}
+          <div className="lg:col-span-8">
+            <article className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              {/* Featured Image */}
+              {newsData.image && (
+                <div className="relative aspect-video w-full overflow-hidden">
+                  <img
+                    src={newsData.image}
+                    alt={newsData.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement?.classList.add('bg-gray-200');
+                    }}
+                  />
                 </div>
               )}
 
-              <div className="flex items-center">
-                <FaCalendarAlt className="w-4 h-4 mr-2" />
-                <span>{formatDate(newsData.date)}</span>
+              {/* Content Body */}
+              <div className="p-6 md:p-10">
+                <div
+                  className="news-content prose prose-lg max-w-none text-gray-700 text-justify
+                    prose-headings:font-bold prose-headings:text-gray-900 
+                    prose-a:text-[#105091] prose-a:no-underline hover:prose-a:underline
+                    prose-img:rounded-xl prose-img:shadow-md prose-img:mx-auto
+                    prose-strong:font-bold prose-strong:text-gray-900
+                    prose-p:mb-6
+                    prose-ul:list-disc prose-ul:pl-6 prose-ul:mb-4
+                    prose-ol:list-decimal prose-ol:pl-6 prose-ol:mb-4
+                    prose-li:mb-2
+                    prose-blockquote:border-l-4 prose-blockquote:border-[#105091] prose-blockquote:bg-gray-50 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:not-italic"
+                  dangerouslySetInnerHTML={{ __html: newsData.content }}
+                />
+
+                {/* Tags */}
+                {newsData.tags.length > 0 && (
+                  <div className="mt-10 pt-8 border-t border-gray-100">
+                    <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Tags</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {newsData.tags.map((tag, idx) => (
+                        <Link key={idx} to={`/berita?tag=${tag.slug}`} className="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg hover:bg-[#105091] hover:text-white transition-colors text-sm">
+                          #{tag.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
-              <div className="flex items-center">
-                <FaClock className="w-4 h-4 mr-2" />
-                <span>5 menit baca</span>
+              {/* Share Footer */}
+              <div className="bg-gray-50 px-6 md:px-10 py-6 border-t border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4">
+                <span className="font-semibold text-gray-700">Bagikan artikel ini:</span>
+                <div className="flex gap-3">
+                  <button onClick={() => handleShare('facebook')} className="p-2.5 bg-[#1877F2] text-white rounded-full hover:opacity-90 transition"><FaFacebook /></button>
+                  <button onClick={() => handleShare('twitter')} className="p-2.5 bg-[#1DA1F2] text-white rounded-full hover:opacity-90 transition"><FaTwitter /></button>
+                  <button onClick={() => handleShare('linkedin')} className="p-2.5 bg-[#0A66C2] text-white rounded-full hover:opacity-90 transition"><FaLinkedin /></button>
+                  <button onClick={() => handleShare('whatsapp')} className="p-2.5 bg-[#25D366] text-white rounded-full hover:opacity-90 transition"><FaWhatsapp /></button>
+                  <button onClick={() => handleShare()} className="p-2.5 bg-gray-600 text-white rounded-full hover:opacity-90 transition ml-2"><FaShare /></button>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          {/* Sidebar Column */}
+          <aside className="lg:col-span-4 space-y-8">
+            {/* Recent Posts Widget */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-3">Berita Terbaru</h3>
+              <div className="space-y-6">
+                {newsData.recent_posts.map((post, idx) => (
+                  <Link key={idx} to={`/berita/${post.slug}`} className="group flex gap-4 items-start">
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-gray-800 group-hover:text-[#105091] transition-colors leading-snug mb-1">
+                        {post.title}
+                      </h4>
+                      <span className="text-xs text-gray-400 block">{post.date}</span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              <Link to="/berita" className="mt-6 inline-flex items-center text-sm font-semibold text-[#105091] hover:text-[#0a3b6d]">
+                Lihat Semua Berita <FaArrowLeft className="ml-2 rotate-180" />
+              </Link>
+            </div>
+
+            {/* Quick Links / CTA Widget */}
+            <div className="bg-gradient-to-br from-[#105091] to-[#0a3b6d] rounded-2xl shadow-lg p-6 text-white relative overflow-hidden">
+              <div className="relative z-10">
+                <h3 className="text-xl font-bold mb-3">Punya Pertanyaan?</h3>
+                <p className="text-blue-100 text-sm mb-6">Hubungi kami untuk informasi lebih lanjut mengenai penelitian dan pengabdian.</p>
+                <a href="https://wa.me/628123456789" target="_blank" rel="noreferrer" className="inline-flex items-center px-4 py-2 bg-white text-[#105091] rounded-lg font-bold text-sm hover:bg-gray-100 transition shadow-sm">
+                  <FaWhatsapp className="mr-2" /> Hubungi Kami
+                </a>
+              </div>
+              {/* Decorative circles */}
+              <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+            </div>
+          </aside>
+
+          {/* Related Posts */}
+          {newsData.related_posts.length > 0 && (
+            <div className="mt-12 lg:col-span-12">
+              <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <span className="w-1.5 h-8 bg-[#105091] rounded-full mr-3"></span>
+                Berita Terkait
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {newsData.related_posts.map((post, idx) => (
+                  <Link key={idx} to={`/berita/${post.slug}`} className="group bg-white rounded-xl shadow-sm hover:shadow-md border border-gray-100 overflow-hidden transition-all duration-300">
+                    <div className="h-48 overflow-hidden">
+                      <img src={post.image} alt={post.title} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" />
+                    </div>
+                    <div className="p-5">
+                      <div className="flex items-center text-xs text-gray-500 mb-2">
+                        <FaCalendarAlt className="mr-1.5" /> {post.date}
+                      </div>
+                      <h4 className="font-bold text-gray-900 group-hover:text-[#105091] transition-colors line-clamp-2">
+                        {post.title}
+                      </h4>
+                    </div>
+                  </Link>
+                ))}
               </div>
             </div>
-          </header>
-
-          {/* Article Body */}
-          <div className="prose prose-lg max-w-none">
-            <div
-              className="bg-white rounded-2xl shadow-lg p-6 md:p-8 lg:p-12 text-gray-800 leading-relaxed prose-headings:text-gray-900 prose-headings:font-bold prose-p:mb-4 prose-p:leading-relaxed prose-ul:pl-6 prose-ol:pl-6 prose-li:mb-2 prose-strong:text-gray-900 prose-a:text-[#105091] prose-a:underline prose-a:font-medium hover:prose-a:text-[#0a3b6d] prose-blockquote:border-l-4 prose-blockquote:border-[#105091] prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:bg-gray-50 prose-blockquote:py-4 prose-blockquote:rounded-lg"
-              dangerouslySetInnerHTML={{ __html: newsData.content }}
-            />
-          </div>
-
-          {/* Back to List */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <Link
-              to="/berita"
-              className="inline-flex items-center px-6 py-3 bg-[#105091] text-white font-semibold rounded-xl hover:bg-[#0a3b6d] transition-colors duration-200 shadow-lg"
-            >
-              <FaArrowLeft className="w-4 h-4 mr-2" />
-              Kembali ke Daftar Berita
-            </Link>
-          </div>
+          )}
         </div>
-      </article>
-
-      {/* Related News Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-8">
-          <h2 className="font-display text-2xl font-bold text-gray-900 mb-8">
-            Berita Terkait
-          </h2>
-          <div className="text-center py-12">
-            <p className="text-gray-600 mb-4">
-              Fitur berita terkait akan segera hadir
-            </p>
-            <Link
-              to="/berita"
-              className="inline-flex items-center text-[#105091] font-semibold hover:text-[#0a3b6d] transition-colors duration-200"
-            >
-              Lihat Semua Berita
-              <FaExternalLinkAlt className="w-4 h-4 ml-2" />
-            </Link>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
   );
 };

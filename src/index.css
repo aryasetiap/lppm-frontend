@@ -137,6 +137,7 @@ body {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 .line-clamp-3 {
@@ -144,4 +145,56 @@ body {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+/* News Detail Content Styling */
+.news-content p {
+  margin-bottom: 1.5rem !important;
+  line-height: 1.8;
+}
+
+.news-content img {
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem !important;
+  margin-bottom: 2rem !important;
+}
+
+.news-content h1, 
+.news-content h2, 
+.news-content h3, 
+.news-content h4 {
+  color: #111827;
+  font-weight: 700;
+  margin-top: 2.5rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.news-content ul, 
+.news-content ol {
+  margin-bottom: 1.5rem !important;
+  padding-left: 1.5rem;
+}
+
+.news-content li {
+  margin-bottom: 0.5rem;
+}
+
+.news-content strong {
+  font-weight: 700;
+  color: #111827;
+}
+
+.news-content blockquote {
+  border-left: 4px solid #105091;
+  background-color: #f9fafb;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1.5rem !important;
+  font-style: italic;
 }
