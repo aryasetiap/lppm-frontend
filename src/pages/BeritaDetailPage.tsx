@@ -122,6 +122,22 @@ const BeritaDetailPage = () => {
     }
   };
 
+  // Helper to process content and fix formatting issues
+  const formatNewsContent = (content: string) => {
+    if (!content) return "";
+
+    // 1. Fix inline lists (e.g., " 1. Item one 2. Item two")
+    // This regex looks for a digit + dot + space that is preceded by a space or start of line
+    let processed = content.replace(/(\s|^)(\d+\.)(\s)/g, (_match, _p1, p2, p3) => {
+      return `<br/><br/><strong>${p2}</strong>${p3}`;
+    });
+
+    // 2. Fix lists that might be stuck to previous text (e.g. "text: 1. Item")
+    processed = processed.replace(/(:)(\s+)(\d+\.)/g, ':<br/><br/><strong>$3</strong>');
+
+    return processed;
+  };
+
   // Loading Skeleton
   if (isLoading) {
     return (
@@ -235,7 +251,7 @@ const BeritaDetailPage = () => {
                     prose-ol:list-decimal prose-ol:pl-6 prose-ol:mb-4
                     prose-li:mb-2
                     prose-blockquote:border-l-4 prose-blockquote:border-[#105091] prose-blockquote:bg-gray-50 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:not-italic"
-                  dangerouslySetInnerHTML={{ __html: newsData.content }}
+                  dangerouslySetInnerHTML={{ __html: formatNewsContent(newsData.content) }}
                 />
 
                 {/* Tags */}
