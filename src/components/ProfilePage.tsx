@@ -51,12 +51,18 @@ const ProfilePage: React.FC = () => {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Helper function to resolve image paths (handle subfolder deployment)
+  // Helper function to resolve image paths (handle deployment base URL)
   const resolveImagePath = (path: string): string => {
     if (!path) return path;
-    // If path starts with /, it's relative to root, need to add /app prefix
-    if (path.startsWith('/') && !path.startsWith('//') && !path.startsWith('/http')) {
-      return '/app' + path;
+    // If full URL, return as-is
+    if (path.startsWith("http://") || path.startsWith("https://")) {
+      return path;
+    }
+    // If starts with /, prefix with Vite base URL (which is '/' in production)
+    if (path.startsWith("/") && !path.startsWith("//")) {
+      const baseUrl = import.meta.env.BASE_URL || "/";
+      const cleanBase = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
+      return `${cleanBase}${path}`;
     }
     return path;
   };

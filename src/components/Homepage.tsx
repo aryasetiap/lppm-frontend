@@ -1468,13 +1468,18 @@ const Homepage = () => {
 
                 {/* Best Year */}
                 {(() => {
-                  const bestYear = statsData.yearly_data.reduce(
-                    (best, current) =>
-                      current.penelitian_blu + current.pengabdian_blu >
-                        best.penelitian_blu + best.pengabdian_blu
-                        ? current
-                        : best
+                  if (!statsData.yearly_data || statsData.yearly_data.length === 0) {
+                    // Jika belum ada data tahunan, jangan render kartu "Tahun Terbaik"
+                    return null;
+                  }
+
+                  const bestYear = statsData.yearly_data.reduce((best, current) =>
+                    current.penelitian_blu + current.pengabdian_blu >
+                    best.penelitian_blu + best.pengabdian_blu
+                      ? current
+                      : best
                   );
+
                   return (
                     <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 text-center">
                       <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-400/20 to-green-400/20 rounded-2xl mb-4 border border-emerald-400/30">

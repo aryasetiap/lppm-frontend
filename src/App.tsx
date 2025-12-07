@@ -21,7 +21,7 @@ const AdminRoute = ({ children }: { children: ReactNode }) => {
 
 function App() {
   return (
-    <Router basename="/app">
+    <Router>
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-grow">
