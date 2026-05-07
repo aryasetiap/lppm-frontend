@@ -493,7 +493,7 @@ const Homepage = () => {
 
                     {/* Floating Badge */}
                     <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-xs font-bold px-3 py-2 rounded-full shadow-lg animate-pulse backdrop-blur-sm border border-white/20">
-                      2025
+                      2026
                     </div>
                   </div>
 

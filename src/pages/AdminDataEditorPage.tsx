@@ -278,7 +278,6 @@ const StatisticsQuickEditor = ({
 
 const AdminDataEditorPage = () => {
   const navigate = useNavigate();
-  const token = adminAuth.getToken();
   const [searchParams] = useSearchParams();
   const [selectedId, setSelectedId] = useState(searchParams.get("tab") || DATASETS[0].id);
   const [rawContent, setRawContent] = useState("");
@@ -295,6 +294,13 @@ const AdminDataEditorPage = () => {
 
   const fetchDataset = async () => {
     if (!selectedDataset) return;
+    const token = adminAuth.getToken();
+    if (!token) {
+      adminAuth.logout();
+      navigate("/admin/login");
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setStatusMessage(null);
@@ -312,7 +318,11 @@ const AdminDataEditorPage = () => {
       );
 
       let jsonData;
-      if (response.ok) {
+      if (response.status === 401) {
+        adminAuth.logout();
+        navigate("/admin/login");
+        return;
+      } else if (response.ok) {
         const apiResponse = await response.json();
         jsonData = apiResponse.data; // Unwrap API response
       } else {
@@ -345,8 +355,11 @@ const AdminDataEditorPage = () => {
 
   const handleSave = async () => {
     if (!selectedDataset) return;
+    const token = adminAuth.getToken();
     if (!token) {
       setError("Token admin tidak ditemukan. Silakan login ulang.");
+      adminAuth.logout();
+      navigate("/admin/login");
       return;
     }
 
@@ -371,11 +384,16 @@ const AdminDataEditorPage = () => {
       );
 
       if (!response.ok) {
+        if (response.status === 401) {
+          adminAuth.logout();
+          navigate("/admin/login");
+          return;
+        }
         const body = await response.json().catch(() => null);
         throw new Error(body?.message || "Gagal menyimpan data.");
       }
 
-      setStatusMessage("Berhasil menyimpan perubahan ke backend. File JSON telah diupdate.");
+      setStatusMessage("Berhasil menyimpan perubahan ke backend database.");
       // Refresh data setelah save
       setTimeout(() => fetchDataset(), 1000);
     } catch (err) {
@@ -397,10 +415,10 @@ const AdminDataEditorPage = () => {
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.4em] text-blue-100">
-                Admin • Konten JSON
+                Admin • Konten Database
               </p>
               <h1 className="text-2xl font-display font-bold">
-                Editor Data Statik LPPM
+                Editor Data LPPM
               </h1>
             </div>
             <div className="flex items-center gap-3 flex-wrap">
@@ -460,7 +478,7 @@ const AdminDataEditorPage = () => {
                 Edit {selectedDataset?.title}
               </h2>
               <p className="text-sm text-blue-100">
-                Pastikan format JSON valid sebelum menyimpan ke backend Laravel.
+                Perubahan disimpan ke database melalui backend Laravel.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">

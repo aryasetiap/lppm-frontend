@@ -14,6 +14,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import { API_BASE_URL } from "../config/api";
 
 interface PimpinanData {
   ketua: {
@@ -112,6 +113,11 @@ const SubBagianPage: React.FC = () => {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;
     }
+    // Uploaded images are served by backend app (not Vite dev server).
+    if (path.startsWith("/images/uploads/")) {
+      const apiOrigin = API_BASE_URL.replace(/\/api$/, "");
+      return `${apiOrigin}${path}`;
+    }
     // If path starts with /, it's relative to root, need to add /app prefix if not already there
     // and if we are not in dev mode (where / is root) - but here we assume /app is always needed based on previous context
     // or better yet, use import.meta.env.BASE_URL
@@ -129,11 +135,12 @@ const SubBagianPage: React.FC = () => {
   useEffect(() => {
     const loadSubBagianData = async () => {
       try {
-        const response = await fetch(`${import.meta.env.BASE_URL}data/sub-bagian-lppm.json`);
+        const response = await fetch(`${API_BASE_URL}/content/sub-bagian`);
         if (!response.ok) {
           throw new Error("Gagal memuat data sub bagian");
         }
-        const data: SubBagianResponse = await response.json();
+        const payload = await response.json();
+        const data: SubBagianResponse = payload.data;
 
         // Find the sub bagian data based on category and slug
         const categoryData = data.sub_bagian[category || ""];
@@ -143,8 +150,25 @@ const SubBagianPage: React.FC = () => {
           setError("Sub bagian tidak ditemukan");
         }
       } catch (err) {
-        console.error("Error loading sub bagian data:", err);
-        setError("Gagal memuat data sub bagian");
+        console.error("Error loading sub bagian API:", err);
+        // Fallback ke file statis agar halaman tetap bisa diakses saat API bermasalah.
+        try {
+          const fallbackResponse = await fetch(`${import.meta.env.BASE_URL}data/sub-bagian-lppm.json`);
+          if (!fallbackResponse.ok) {
+            throw new Error("Fallback data tidak tersedia");
+          }
+          const fallbackData: SubBagianResponse = await fallbackResponse.json();
+          const categoryData = fallbackData.sub_bagian[category || ""];
+          if (categoryData && categoryData[slug || ""]) {
+            setSubBagianData(categoryData[slug || ""]);
+            setError(null);
+          } else {
+            setError("Sub bagian tidak ditemukan");
+          }
+        } catch (fallbackErr) {
+          console.error("Error loading sub bagian fallback:", fallbackErr);
+          setError("Gagal memuat data sub bagian");
+        }
       } finally {
         setLoading(false);
       }

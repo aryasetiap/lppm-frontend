@@ -338,10 +338,10 @@ const Footer = () => {
                         <div>
                           <h5 className="font-semibold text-white">Email</h5>
                           <a
-                            href="mailto:lppm@unila.ac.id"
+                            href="mailto:lppm@kpa.unila.ac.id"
                             className="text-blue-100 text-sm hover:text-white transition-colors duration-200 mt-1 block"
                           >
-                            lppm@unila.ac.id
+                            lppm@kpa.unila.ac.id
                           </a>
                         </div>
                       </div>

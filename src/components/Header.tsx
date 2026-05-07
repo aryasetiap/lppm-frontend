@@ -217,6 +217,11 @@ const navLinks: NavLink[] = [
         href: "/arsip/dokumen",
         description: "Dokumen pedoman Arsip Lainnya",
       },
+      {
+        name: "Dokumen Penunjang",
+        href: "/arsip/dokumen-penunjang",
+        description: "Kumpulan dokumen penunjang penelitian dan pengabdian",
+      },
     ],
   },
 ];

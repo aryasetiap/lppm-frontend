@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Download as DownloadIcon, FileText, RefreshCw, Search, ChevronLeft, ChevronRight } from "lucide-react";
 
 const LARAVEL_API_BASE =
@@ -28,9 +28,29 @@ interface PosApCategory {
   count: number;
 }
 
+const SUPPORT_DOC_CATEGORIES = [
+  { slug: "peraturan-rektor-dan-renstra", name: "Peraturan Rektor dan Dokumen Renstra" },
+  { slug: "surat-keputusan", name: "Surat Keputusan" },
+  { slug: "sk-penerima-hibah", name: "SK Penerima Hibah" },
+  { slug: "sk-tim-reviewer", name: "SK Tim Reviewer" },
+  { slug: "sk-panitia", name: "SK Panitia" },
+  { slug: "panduan-penelitian-dan-pkm", name: "Panduan Penelitian dan PKM" },
+  { slug: "data-penelitian-pkm-buku-dan-hki", name: "Data Penelitian, PKM, Buku dan HKI" },
+  { slug: "dokumen-pendukung-lainnya", name: "Dokumen Pendukung Lainnya" },
+  { slug: "dokumen-spmi-penelitian-dan-pengabdian", name: "Dokumen SPMI Penelitian dan Pengabdian" },
+];
+
+const SK_SECTION_SLUGS = ["sk-penerima-hibah", "sk-tim-reviewer", "sk-panitia"];
+
+const MAIN_SUPPORT_DOC_CATEGORIES = SUPPORT_DOC_CATEGORIES.filter(
+  (section) => !SK_SECTION_SLUGS.includes(section.slug)
+);
+
 const PosApDownloadsPage = () => {
   const navigate = useNavigate();
   const { category } = useParams<{ category?: string }>();
+  const [searchParams] = useSearchParams();
+  const selectedSection = searchParams.get("bagian") || "";
   const [items, setItems] = useState<DownloadItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -49,12 +69,33 @@ const PosApDownloadsPage = () => {
     [categories, category]
   );
 
+  const isSuratKeputusanGroupActive = useMemo(
+    () => selectedSection === "surat-keputusan" || SK_SECTION_SLUGS.includes(selectedSection),
+    [selectedSection]
+  );
+
+  const visibleMainSections = useMemo(() => {
+    if (isSuratKeputusanGroupActive) {
+      return MAIN_SUPPORT_DOC_CATEGORIES.filter((section) => section.slug === "surat-keputusan");
+    }
+    return MAIN_SUPPORT_DOC_CATEGORIES;
+  }, [isSuratKeputusanGroupActive]);
+
   const copy = useMemo(() => {
+    if (category === "dokumen-penunjang") {
+      const section = SUPPORT_DOC_CATEGORIES.find((it) => it.slug === selectedSection);
+      return {
+        title: section ? section.name : "Dokumen Penunjang",
+        description: "Kumpulan dokumen penunjang penelitian dan pengabdian yang terbagi per bagian.",
+        badge: section ? section.name : "DOKUMEN PENUNJANG",
+      };
+    }
+
     if (category === "dokumen") {
       return {
-        title: "Arsip Dokumen",
+        title: "Arsip Lainnya",
         description: "Kumpulan dokumen, surat keputusan, dan berkas penting lainnya.",
-        badge: "DOKUMEN",
+        badge: "ARSIP LAINNYA",
       };
     }
 
@@ -71,9 +112,18 @@ const PosApDownloadsPage = () => {
       description: "Kumpulan berkas POS-AP terbaru yang siap diunduh.",
       badge: category ? category.toUpperCase() : "POS-AP",
     };
-  }, [activeCategory, category]);
+  }, [activeCategory, category, selectedSection]);
 
   const ensureValidCategory = (list: PosApCategory[]) => {
+    if (category === "dokumen-penunjang") {
+      if (!selectedSection) {
+        navigate(`/arsip/dokumen-penunjang?bagian=${SUPPORT_DOC_CATEGORIES[0].slug}`, { replace: true });
+        return;
+      }
+      setCategoriesReady(true);
+      return;
+    }
+
     if (category === "dokumen") {
       setCategoriesReady(true);
       return;
@@ -128,7 +178,17 @@ const PosApDownloadsPage = () => {
       setError(null);
 
       let url = `${LARAVEL_API_BASE}/pos-ap/downloads?category=${category}`;
-      if (category === "dokumen") {
+      if (category === "dokumen-penunjang") {
+        url = `${LARAVEL_API_BASE}/documents?page=${page}&limit=10`;
+        const effectiveSection = selectedSection || SUPPORT_DOC_CATEGORIES[0].slug;
+        const validSection = SUPPORT_DOC_CATEGORIES.some((it) => it.slug === effectiveSection);
+        if (validSection) {
+          url += `&category=${encodeURIComponent(effectiveSection)}`;
+        }
+        if (debouncedSearch) {
+          url += `&search=${encodeURIComponent(debouncedSearch)}`;
+        }
+      } else if (category === "dokumen") {
         url = `${LARAVEL_API_BASE}/documents?page=${page}&limit=10`;
         if (debouncedSearch) {
           url += `&search=${encodeURIComponent(debouncedSearch)}`;
@@ -144,7 +204,7 @@ const PosApDownloadsPage = () => {
       const payload = await response.json();
       setItems(payload.data || []);
 
-      if (category === "dokumen" && payload.meta?.pagination) {
+      if ((category === "dokumen-penunjang" || category === "dokumen") && payload.meta?.pagination) {
         setTotalPages(payload.meta.pagination.last_page);
       }
     } catch (err) {
@@ -172,7 +232,7 @@ const PosApDownloadsPage = () => {
     if (!categoriesReady) return;
     fetchDownloads();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, categoriesReady, page, debouncedSearch]);
+  }, [category, categoriesReady, page, debouncedSearch, selectedSection]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#091f43] via-blue-900 to-slate-950 text-white">
@@ -186,7 +246,9 @@ const PosApDownloadsPage = () => {
             Kembali ke Beranda
           </Link>
           <span>/</span>
-          <span className="font-semibold">POS-AP</span>
+          <span className="font-semibold">
+            {category === "dokumen-penunjang" ? "Dokumen Penunjang" : category === "dokumen" ? "Arsip Lainnya" : "POS-AP"}
+          </span>
           <span>/</span>
           <span className="uppercase tracking-wide">{copy.badge}</span>
         </div>
@@ -194,7 +256,7 @@ const PosApDownloadsPage = () => {
         <div className="space-y-4">
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-blue-100 text-sm uppercase tracking-widest">
             <FileText className="w-4 h-4" />
-            {category === "dokumen" ? "ARSIP DOKUMEN" : "POS-AP"}
+            {category === "dokumen-penunjang" ? "DOKUMEN PENUNJANG" : category === "dokumen" ? "ARSIP LAINNYA" : "POS-AP"}
           </span>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold">
             {copy.title}
@@ -206,8 +268,8 @@ const PosApDownloadsPage = () => {
           <p className="mt-4 text-sm text-red-200">{categoriesError}</p>
         )}
 
-        {/* Hide categories if in 'dokumen' mode */}
-        {category !== "dokumen" && categories.length > 0 && (
+        {/* Hide POS-AP categories in dokumen mode */}
+        {category !== "dokumen-penunjang" && category !== "dokumen" && categories.length > 0 && (
           <div className="mt-8 flex flex-wrap gap-3">
             {categories.map((cat) => {
               const isActive = cat.slug === category;
@@ -228,8 +290,58 @@ const PosApDownloadsPage = () => {
           </div>
         )}
 
+        {category === "dokumen-penunjang" && (
+          <div className="mt-8 space-y-3">
+            <div className="flex flex-wrap gap-3">
+              {visibleMainSections.map((section) => {
+                const isActive = section.slug === "surat-keputusan"
+                  ? isSuratKeputusanGroupActive
+                  : selectedSection === section.slug || (!selectedSection && section.slug === "peraturan-rektor-dan-renstra");
+                return (
+                  <button
+                    key={section.slug}
+                    onClick={() => navigate(`/arsip/dokumen-penunjang?bagian=${section.slug}`)}
+                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl border transition ${isActive
+                      ? "bg-white/20 border-white/40 text-white"
+                      : "bg-white/5 border-white/15 text-blue-100 hover:bg-white/10"
+                      }`}
+                  >
+                    <span>{section.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {isSuratKeputusanGroupActive && (
+              <div className="flex flex-wrap gap-3 pl-2">
+                {SUPPORT_DOC_CATEGORIES.filter((section) => SK_SECTION_SLUGS.includes(section.slug)).map((section) => {
+                  const isActive = selectedSection === section.slug;
+                  return (
+                    <button
+                      key={section.slug}
+                      onClick={() => navigate(`/arsip/dokumen-penunjang?bagian=${section.slug}`)}
+                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl border transition ${isActive
+                        ? "bg-white/25 border-white/50 text-white"
+                        : "bg-white/5 border-white/15 text-blue-100 hover:bg-white/10"
+                        }`}
+                    >
+                      <span>{section.name}</span>
+                    </button>
+                  );
+                })}
+                <button
+                  onClick={() => navigate("/arsip/dokumen-penunjang?bagian=peraturan-rektor-dan-renstra")}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl border border-white/15 bg-white/5 text-blue-100 hover:bg-white/10 transition"
+                >
+                  Kategori Lainnya
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Search Bar for Dokumen */}
-        {category === "dokumen" && (
+        {(category === "dokumen-penunjang" || category === "dokumen") && (
           <div className="mt-8 max-w-xl">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -332,7 +444,7 @@ const PosApDownloadsPage = () => {
             ))}
 
             {/* Pagination Controls */}
-            {category === "dokumen" && totalPages > 1 && (
+            {(category === "dokumen-penunjang" || category === "dokumen") && totalPages > 1 && (
               <div className="flex flex-wrap justify-center items-center gap-4 mt-8 pt-4 border-t border-white/10">
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}

@@ -9,6 +9,7 @@ import {
   Star,
   Lightbulb,
 } from "lucide-react";
+import { API_BASE_URL } from "../config/api";
 
 interface ProfileData {
   metadata: {
@@ -58,6 +59,11 @@ const ProfilePage: React.FC = () => {
     if (path.startsWith("http://") || path.startsWith("https://")) {
       return path;
     }
+    // Uploaded images live on backend public path; use API origin.
+    if (path.startsWith("/images/uploads/")) {
+      const apiOrigin = API_BASE_URL.replace(/\/api$/, "");
+      return `${apiOrigin}${path}`;
+    }
     // If starts with /, prefix with Vite base URL (which is '/' in production)
     if (path.startsWith("/") && !path.startsWith("//")) {
       const baseUrl = import.meta.env.BASE_URL || "/";
@@ -70,11 +76,22 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     const loadProfileData = async () => {
       try {
-        const response = await fetch(`${import.meta.env.BASE_URL}data/profile-lppm.json`);
-        const data = await response.json();
-        setProfileData(data);
+        const response = await fetch(`${API_BASE_URL}/content/profile`);
+        if (!response.ok) {
+          throw new Error("Gagal memuat profile dari API");
+        }
+        const apiPayload = await response.json();
+        setProfileData(apiPayload.data);
       } catch (error) {
-        console.error("Error loading profile data:", error);
+        console.error("Error loading profile API:", error);
+        // Fallback ke file statis agar halaman tetap bisa dibuka saat API bermasalah.
+        try {
+          const fallbackResponse = await fetch(`${import.meta.env.BASE_URL}data/profile-lppm.json`);
+          const fallbackData = await fallbackResponse.json();
+          setProfileData(fallbackData);
+        } catch (fallbackError) {
+          console.error("Error loading profile fallback:", fallbackError);
+        }
       } finally {
         setLoading(false);
       }

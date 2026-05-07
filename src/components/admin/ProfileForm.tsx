@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaUser, FaEye, FaList, FaBuilding, FaFileCode } from "react-icons/fa";
+import { API_BASE_URL } from "../../config/api";
+import { adminAuth } from "../../utils/adminAuth";
 
 interface ProfileData {
   metadata: {
@@ -45,6 +47,12 @@ interface ProfileFormProps {
 
 const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
   const [formData, setFormData] = useState<ProfileData | null>(data);
+  const [uploadingField, setUploadingField] = useState<string | null>(null);
+
+  const getNextItemId = (items: Array<{ id: number }>): number => {
+    if (items.length === 0) return 1;
+    return Math.max(...items.map((entry) => Number(entry.id) || 0)) + 1;
+  };
 
   useEffect(() => {
     setFormData(data);
@@ -138,6 +146,47 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
     onChange(newData);
   };
 
+  const handleImageUpload = async (path: string[], file: File | null, folder: string) => {
+    if (!file) return;
+    const token = adminAuth.getToken();
+    if (!token) {
+      alert("Sesi admin tidak ditemukan. Silakan login ulang.");
+      return;
+    }
+
+    try {
+      setUploadingField(path.join("."));
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("folder", folder);
+
+      const response = await fetch(`${API_BASE_URL}/admin/upload-image`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Upload gagal");
+      }
+
+      const payload = await response.json();
+      const imagePath = payload?.data?.path;
+      if (!imagePath) {
+        throw new Error("Path gambar tidak ditemukan");
+      }
+
+      updateField(path, imagePath);
+    } catch (error) {
+      console.error("Upload image error:", error);
+      alert("Gagal upload gambar. Coba lagi ya adek.");
+    } finally {
+      setUploadingField(null);
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Metadata */}
@@ -216,6 +265,17 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
                 }
                 className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
               />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) =>
+                  handleImageUpload(["pimpinan", "kepala_lppm", "foto"], e.target.files?.[0] ?? null, "pimpinan")
+                }
+                className="mt-2 block w-full text-sm text-blue-100 file:mr-4 file:rounded-lg file:border-0 file:bg-emerald-500/20 file:px-3 file:py-2 file:text-emerald-200 hover:file:bg-emerald-500/30"
+              />
+              {uploadingField === "pimpinan.kepala_lppm.foto" && (
+                <p className="mt-1 text-xs text-emerald-300">Uploading gambar...</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-blue-100 mb-2">
@@ -273,6 +333,17 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
                 }
                 className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
               />
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) =>
+                  handleImageUpload(["pimpinan", "sekretaris_lppm", "foto"], e.target.files?.[0] ?? null, "pimpinan")
+                }
+                className="mt-2 block w-full text-sm text-blue-100 file:mr-4 file:rounded-lg file:border-0 file:bg-emerald-500/20 file:px-3 file:py-2 file:text-emerald-200 hover:file:bg-emerald-500/30"
+              />
+              {uploadingField === "pimpinan.sekretaris_lppm.foto" && (
+                <p className="mt-1 text-xs text-emerald-300">Uploading gambar...</p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-blue-100 mb-2">
@@ -326,7 +397,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
               Misi
             </label>
             {safeData.visi_misi.misi.map((item, index) => (
-              <div key={item.id} className="flex gap-2 mb-2">
+              <div key={`${item.id}-${index}`} className="flex gap-2 mb-2">
                 <input
                   type="text"
                   value={item.item}
@@ -349,7 +420,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
             <button
               onClick={() =>
                 addArrayItem(["visi_misi", "misi"], {
-                  id: safeData.visi_misi.misi.length + 1,
+                  id: getNextItemId(safeData.visi_misi.misi),
                   item: "",
                 })
               }
@@ -371,7 +442,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
           <div>
             <h4 className="font-medium text-blue-200 mb-3">Tugas</h4>
             {safeData.tugas_fungsi.tugas.map((item, index) => (
-              <div key={item.id} className="flex gap-2 mb-2">
+              <div key={`${item.id}-${index}`} className="flex gap-2 mb-2">
                 <input
                   type="text"
                   value={item.item}
@@ -394,7 +465,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
             <button
               onClick={() =>
                 addArrayItem(["tugas_fungsi", "tugas"], {
-                  id: safeData.tugas_fungsi.tugas.length + 1,
+                  id: getNextItemId(safeData.tugas_fungsi.tugas),
                   item: "",
                 })
               }
@@ -408,7 +479,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
           <div>
             <h4 className="font-medium text-blue-200 mb-3">Fungsi</h4>
             {safeData.tugas_fungsi.fungsi.map((item, index) => (
-              <div key={item.id} className="flex gap-2 mb-2">
+              <div key={`${item.id}-${index}`} className="flex gap-2 mb-2">
                 <input
                   type="text"
                   value={item.item}
@@ -431,7 +502,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
             <button
               onClick={() =>
                 addArrayItem(["tugas_fungsi", "fungsi"], {
-                  id: safeData.tugas_fungsi.fungsi.length + 1,
+                  id: getNextItemId(safeData.tugas_fungsi.fungsi),
                   item: "",
                 })
               }
@@ -461,6 +532,17 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
               }
               className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
             />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) =>
+                handleImageUpload(["struktur_organisasi", "gambar_struktur"], e.target.files?.[0] ?? null, "struktur")
+              }
+              className="mt-2 block w-full text-sm text-blue-100 file:mr-4 file:rounded-lg file:border-0 file:bg-emerald-500/20 file:px-3 file:py-2 file:text-emerald-200 hover:file:bg-emerald-500/30"
+            />
+            {uploadingField === "struktur_organisasi.gambar_struktur" && (
+              <p className="mt-1 text-xs text-emerald-300">Uploading gambar...</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-blue-100 mb-2">

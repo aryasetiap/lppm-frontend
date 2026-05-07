@@ -16,8 +16,8 @@ import { adminAuth } from "./utils/adminAuth";
 
 
 const AdminRoute = ({ children }: { children: ReactNode }) => {
-  const token = adminAuth.getToken();
-  return token ? <>{children}</> : <Navigate to="/admin/login" replace />;
+  const isValid = adminAuth.hasValidToken();
+  return isValid ? <>{children}</> : <Navigate to="/admin/login" replace />;
 };
 
 function App() {

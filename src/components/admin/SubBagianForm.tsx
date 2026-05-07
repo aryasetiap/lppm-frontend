@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaBuilding, FaUser, FaEye, FaList, FaTrophy, FaStar, FaTrash, FaPlus, FaEdit } from "react-icons/fa";
+import { API_BASE_URL } from "../../config/api";
+import { adminAuth } from "../../utils/adminAuth";
 
 interface StaffMember {
   nama: string;
@@ -71,6 +73,7 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
   const [formData, setFormData] = useState<SubBagianData | null>(data);
   const [selectedCategory, setSelectedCategory] = useState<"pui" | "puslit" | "administrasi">("pui");
   const [selectedItemSlug, setSelectedItemSlug] = useState<string | null>(null);
+  const [uploadingField, setUploadingField] = useState<string | null>(null);
 
   useEffect(() => {
     setFormData(data);
@@ -266,6 +269,47 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
     setFormData(newData);
     onChange(newData);
     setSelectedItemSlug(newSlug);
+  };
+
+  const handleImageUpload = async (path: string[], file: File | null, folder: string) => {
+    if (!file || !selectedItemSlug) return;
+    const token = adminAuth.getToken();
+    if (!token) {
+      alert("Sesi admin tidak ditemukan. Silakan login ulang.");
+      return;
+    }
+
+    try {
+      setUploadingField(path.join("."));
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("folder", folder);
+
+      const response = await fetch(`${API_BASE_URL}/admin/upload-image`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Upload gagal");
+      }
+
+      const payload = await response.json();
+      const imagePath = payload?.data?.path;
+      if (!imagePath) {
+        throw new Error("Path gambar tidak ditemukan");
+      }
+
+      updateItemField(path, imagePath);
+    } catch (error) {
+      console.error("Upload image error:", error);
+      alert("Gagal upload gambar. Coba lagi ya adek.");
+    } finally {
+      setUploadingField(null);
+    }
   };
 
   const deleteItem = (slug: string) => {
@@ -488,6 +532,17 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
                           }
                           className="w-full bg-[#0b1f3d] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
                         />
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) =>
+                            handleImageUpload(["pimpinan", "ketua", "foto"], e.target.files?.[0] ?? null, "pimpinan")
+                          }
+                          className="mt-2 block w-full text-xs text-blue-100 file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-500/20 file:px-3 file:py-1.5 file:text-emerald-200 hover:file:bg-emerald-500/30"
+                        />
+                        {uploadingField === "pimpinan.ketua.foto" && (
+                          <p className="mt-1 text-xs text-emerald-300">Uploading gambar...</p>
+                        )}
                       </div>
                       <div className="grid grid-cols-2 gap-2 mt-2">
                         <input
@@ -560,6 +615,17 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
                                 }
                                 className="w-full bg-[#0b1f3d] border border-white/10 rounded px-2 py-1 text-white text-xs"
                               />
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) =>
+                                  handleImageUpload(["pimpinan", "staff", index.toString(), "foto"], e.target.files?.[0] ?? null, "pimpinan")
+                                }
+                                className="mt-1 block w-full text-[11px] text-blue-100 file:mr-2 file:rounded-md file:border-0 file:bg-emerald-500/20 file:px-2 file:py-1 file:text-emerald-200 hover:file:bg-emerald-500/30"
+                              />
+                              {uploadingField === `pimpinan.staff.${index}.foto` && (
+                                <p className="mt-1 text-[11px] text-emerald-300">Uploading...</p>
+                              )}
                             </div>
                             <div>
                               <label className="block text-xs text-blue-300 mb-1">Periode</label>
@@ -734,6 +800,17 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
                       }
                       className="w-full bg-[#0b1f3d] border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
                     />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) =>
+                        handleImageUpload(["struktur_organisasi", "gambar_struktur"], e.target.files?.[0] ?? null, "struktur")
+                      }
+                      className="mt-2 block w-full text-xs text-blue-100 file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-500/20 file:px-3 file:py-1.5 file:text-emerald-200 hover:file:bg-emerald-500/30"
+                    />
+                    {uploadingField === "struktur_organisasi.gambar_struktur" && (
+                      <p className="mt-1 text-xs text-emerald-300">Uploading gambar...</p>
+                    )}
                   </div>
                 </div>
               </section>
