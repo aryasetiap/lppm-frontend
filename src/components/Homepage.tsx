@@ -9,7 +9,6 @@ import {
   FaNewspaper,
   FaChartBar,
   FaChartLine,
-  FaProjectDiagram,
   FaTrophy,
   FaRocket,
   FaLightbulb,
@@ -96,6 +95,7 @@ interface StatisticsData {
     total_pengabdian_blu: number;
     total_paten: number;
     total_haki: number;
+    total_merek?: number;
     growth_penelitian: number | null;
     growth_pengabdian: number | null;
     growth_paten: number | null;
@@ -256,14 +256,11 @@ const Homepage = () => {
   }, []);
 
   const yearsCount = statsData?.yearly_data.length ?? 0;
-  const safeYearsCount = yearsCount > 0 ? yearsCount : 1;
-  const yearsRangeLabel =
-    yearsCount > 0 ? `${yearsCount} Tahun Terakhir` : "Periode Terbaru";
   const chartMaxValue =
     statsData && statsData.yearly_data.length > 0
       ? Math.max(
-        ...statsData.yearly_data.map((d) =>
-          Math.max(d.penelitian_blu, d.pengabdian_blu)
+        ...statsData.yearly_data.map(
+          (d) => d.penelitian_blu + d.pengabdian_blu
         )
       )
       : 0;
@@ -298,11 +295,6 @@ const Homepage = () => {
     const wordsPerMinute = 200;
     const words = content.split(" ").length;
     return Math.ceil(words / wordsPerMinute);
-  };
-
-  const formatTrend = (value: number | null | undefined) => {
-    if (value == null) return "0%";
-    return `${value >= 0 ? "+" : ""}${value.toFixed(1)}%`;
   };
 
   // Category colors
@@ -1042,9 +1034,9 @@ const Homepage = () => {
               Infografis Statistik
             </h2>
             <p className="font-body text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
-              Data dan statistik terkini kegiatan penelitian BLU, pengabdian
-              BLU, serta paten dan HKI LPPM Universitas Lampung dalam enam tahun
-              terakhir (periode 2020-2025).
+              Data dan statistik terkini Hak Cipta, Merek, Paten, serta
+              kinerja penelitian dan pengabdian LPPM Universitas Lampung
+              periode 2021-2025.
             </p>
             {statsData && (
               <p className="text-blue-200 text-sm mt-4">
@@ -1088,55 +1080,37 @@ const Homepage = () => {
           {!statsLoading && !statsError && statsData && (
             <>
               {/* Summary Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
                 {[
                   {
-                    title: "Total Penelitian BLU",
-                    value:
-                      statsData.total_summary.total_penelitian_blu.toLocaleString(
-                        "id-ID"
-                      ),
-                    subtitle: yearsRangeLabel,
-                    icon: FaProjectDiagram,
-                    color: "from-emerald-400 to-emerald-600",
-                    trend: formatTrend(
-                      statsData.total_summary.growth_penelitian
-                    ),
-                  },
-                  {
-                    title: "Total Pengabdian BLU",
-                    value:
-                      statsData.total_summary.total_pengabdian_blu.toLocaleString(
-                        "id-ID"
-                      ),
-                    subtitle: yearsRangeLabel,
-                    icon: FaHandsHelping,
-                    color: "from-blue-400 to-blue-600",
-                    trend: formatTrend(
-                      statsData.total_summary.growth_pengabdian
-                    ),
-                  },
-                  {
-                    title: "Total Paten",
-                    value:
-                      statsData.total_summary.total_paten.toLocaleString(
-                        "id-ID"
-                      ),
-                    subtitle: yearsRangeLabel,
-                    icon: FaTrophy,
-                    color: "from-purple-400 to-purple-600",
-                    trend: formatTrend(statsData.total_summary.growth_paten),
-                  },
-                  {
-                    title: "Total HKI",
+                    title: "Hak Cipta",
                     value:
                       statsData.total_summary.total_haki.toLocaleString(
                         "id-ID"
                       ),
-                    subtitle: yearsRangeLabel,
+                    subtitle: "Total terdaftar",
                     icon: FaAward,
                     color: "from-orange-400 to-orange-600",
-                    trend: formatTrend(statsData.total_summary.growth_haki),
+                  },
+                  {
+                    title: "Merek",
+                    value:
+                      (statsData.total_summary.total_merek ?? 2).toLocaleString(
+                        "id-ID"
+                      ),
+                    subtitle: "Total terdaftar",
+                    icon: FaTag,
+                    color: "from-blue-400 to-blue-600",
+                  },
+                  {
+                    title: "Paten",
+                    value:
+                      statsData.total_summary.total_paten.toLocaleString(
+                        "id-ID"
+                      ),
+                    subtitle: "Total terdaftar",
+                    icon: FaTrophy,
+                    color: "from-purple-400 to-purple-600",
                   },
                 ].map((stat, index) => {
                   const IconComponent = stat.icon;
@@ -1165,14 +1139,7 @@ const Homepage = () => {
                         {stat.title}
                       </div>
 
-                      {/* Trend */}
-                      <div className="flex items-center justify-between">
-                        <span className="inline-flex items-center text-emerald-300 font-semibold text-sm">
-                          <FaChartLine className="w-3 h-3 mr-1" />
-                          {stat.trend}
-                        </span>
-                        <span className="text-blue-200 text-xs">growth</span>
-                      </div>
+                      <div className={`h-1.5 rounded-full bg-gradient-to-r ${stat.color}`}></div>
                     </div>
                   );
                 })}
@@ -1191,7 +1158,7 @@ const Homepage = () => {
                         Tren Kinerja{" "}
                         {yearsCount > 0 ? `${yearsCount} Tahun` : "Multitahun"}
                       </h3>
-                      <p className="text-blue-200 text-sm mt-2">Perkembangan Penelitian, Pengabdian, dan HKI</p>
+                      <p className="text-blue-200 text-sm mt-2">Gabungan Penelitian dan Pengabdian per tahun</p>
                     </div>
                   </div>
 
@@ -1217,8 +1184,9 @@ const Homepage = () => {
                     <div className="relative h-full flex items-end justify-around px-4">
                       {statsData.yearly_data.map((yearData, index) => {
                         const maxValue = chartMaxValue || 1;
-                        const penelitianHeight = (yearData.penelitian_blu / maxValue) * 240; // 240px is max height
-                        const pengabdianHeight = (yearData.pengabdian_blu / maxValue) * 240;
+                        const combinedTotal =
+                          yearData.penelitian_blu + yearData.pengabdian_blu;
+                        const combinedHeight = (combinedTotal / maxValue) * 240; // 240px is max height
 
                         return (
                           <div key={yearData.year} className="flex flex-col items-center flex-1 max-w-[80px]">
@@ -1228,44 +1196,26 @@ const Homepage = () => {
                             </div>
 
                             {/* Bars Container */}
-                            <div className="relative h-56 w-full flex justify-center items-end gap-1">
-                              {/* Penelitian Bar */}
+                            <div className="relative h-56 w-full flex justify-center items-end">
                               <div
-                                className="w-6 bg-gradient-to-t from-emerald-600 via-emerald-500 to-emerald-400 rounded-t-lg transition-all duration-1000 ease-out hover:from-emerald-500 hover:to-emerald-300 group relative cursor-pointer shadow-lg"
+                                className="w-10 bg-gradient-to-t from-emerald-600 via-cyan-500 to-blue-400 rounded-t-lg transition-all duration-1000 ease-out hover:from-emerald-500 hover:to-blue-300 group relative cursor-pointer shadow-lg"
                                 style={{
-                                  height: `${penelitianHeight}px`,
+                                  height: `${combinedHeight}px`,
                                   transform: 'translateY(20px)',
                                   opacity: 0,
                                   minHeight: "4px",
                                   animation: `fadeInUp 0.8s ease-out ${index * 100}ms forwards`
                                 }}
                               >
-                                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-emerald-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-10 shadow-lg">
-                                  {yearData.penelitian_blu}
-                                </div>
-                              </div>
-
-                              {/* Pengabdian Bar */}
-                              <div
-                                className="w-6 bg-gradient-to-t from-blue-600 via-blue-500 to-blue-400 rounded-t-lg transition-all duration-1000 ease-out hover:from-blue-500 hover:to-blue-300 group relative cursor-pointer shadow-lg"
-                                style={{
-                                  height: `${pengabdianHeight}px`,
-                                  transform: 'translateY(20px)',
-                                  opacity: 0,
-                                  minHeight: "4px",
-                                  animation: `fadeInUp 0.8s ease-out ${index * 100 + 50}ms forwards`
-                                }}
-                              >
                                 <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-10 shadow-lg">
-                                  {yearData.pengabdian_blu}
+                                  {combinedTotal}
                                 </div>
                               </div>
                             </div>
 
                             {/* Values Display */}
-                            <div className="flex gap-2 mt-2 text-xs">
-                              <div className="text-emerald-300 font-medium">{yearData.penelitian_blu}</div>
-                              <div className="text-blue-300 font-medium">{yearData.pengabdian_blu}</div>
+                            <div className="mt-2 text-xs">
+                              <div className="text-blue-300 font-medium">{combinedTotal}</div>
                             </div>
                           </div>
                         );
@@ -1276,89 +1226,8 @@ const Homepage = () => {
                   {/* Legend */}
                   <div className="flex justify-center gap-8 mt-8">
                     <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 bg-gradient-to-t from-emerald-500 to-emerald-400 rounded-lg"></div>
-                      <span className="text-white font-medium">Penelitian BLU</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 bg-gradient-to-t from-blue-500 to-blue-400 rounded-lg"></div>
-                      <span className="text-white font-medium">Pengabdian BLU</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Three Key Metrics Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  {/* Total Research Output */}
-                  <div className="bg-gradient-to-br from-emerald-500/20 via-emerald-500/10 to-transparent rounded-3xl p-8 border border-emerald-400/30 hover:border-emerald-400/50 transition-all duration-300 hover:scale-105">
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
-                        <FaProjectDiagram className="w-8 h-8 text-white" />
-                      </div>
-                      <div className="text-3xl font-bold text-emerald-300">
-                        {statsData.total_summary.total_penelitian_blu.toLocaleString("id-ID")}
-                      </div>
-                    </div>
-                    <h4 className="font-display text-xl font-bold text-white mb-2">Total Penelitian</h4>
-                    <p className="text-emerald-100 text-sm mb-4">{yearsRangeLabel}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-emerald-200 text-xs">Growth</span>
-                      <div className="flex items-center space-x-1">
-                        <FaChartLine className="w-3 h-3 text-emerald-300" />
-                        <span className="text-emerald-300 font-bold text-sm">
-                          {formatTrend(
-                            statsData.total_summary.growth_penelitian
-                          )}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Community Service */}
-                  <div className="bg-gradient-to-br from-blue-500/20 via-blue-500/10 to-transparent rounded-3xl p-8 border border-blue-400/30 hover:border-blue-400/50 transition-all duration-300 hover:scale-105">
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-                        <FaHandsHelping className="w-8 h-8 text-white" />
-                      </div>
-                      <div className="text-3xl font-bold text-blue-300">
-                        {statsData.total_summary.total_pengabdian_blu.toLocaleString("id-ID")}
-                      </div>
-                    </div>
-                    <h4 className="font-display text-xl font-bold text-white mb-2">Total Pengabdian</h4>
-                    <p className="text-blue-100 text-sm mb-4">{yearsRangeLabel}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-blue-200 text-xs">Growth</span>
-                      <div className="flex items-center space-x-1">
-                        <FaChartLine className="w-3 h-3 text-blue-300" />
-                        <span className="text-blue-300 font-bold text-sm">
-                          {formatTrend(
-                            statsData.total_summary.growth_pengabdian
-                          )}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Intellectual Property */}
-                  <div className="bg-gradient-to-br from-purple-500/20 via-purple-500/10 to-transparent rounded-3xl p-8 border border-purple-400/30 hover:border-purple-400/50 transition-all duration-300 hover:scale-105">
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                        <FaTrophy className="w-8 h-8 text-white" />
-                      </div>
-                      <div className="text-3xl font-bold text-purple-300">
-                        {statsData.total_summary.total_paten + statsData.total_summary.total_haki}
-                      </div>
-                    </div>
-                    <h4 className="font-display text-xl font-bold text-white mb-2">Portfolio HKI</h4>
-                    <p className="text-purple-100 text-sm mb-4">Total Paten & HKI</p>
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="bg-white/10 rounded-lg p-2 text-center">
-                        <div className="font-bold text-purple-300">{statsData.total_summary.total_paten}</div>
-                        <div className="text-purple-200">Paten</div>
-                      </div>
-                      <div className="bg-white/10 rounded-lg p-2 text-center">
-                        <div className="font-bold text-purple-300">{statsData.total_summary.total_haki}</div>
-                        <div className="text-purple-200">HKI</div>
-                      </div>
+                      <div className="w-6 h-6 bg-gradient-to-t from-emerald-500 to-blue-400 rounded-lg"></div>
+                      <span className="text-white font-medium">Penelitian & Pengabdian</span>
                     </div>
                   </div>
                 </div>
@@ -1367,7 +1236,7 @@ const Homepage = () => {
                 <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
                   <div className="text-center mb-8">
                     <h3 className="font-display text-2xl font-bold text-white mb-2">
-                      Kinerja Kuartalan 2024
+                      Kinerja Kuartalan
                     </h3>
                     <p className="text-blue-200 text-sm">Tren penelitian dan pengabdian per kuartal</p>
                   </div>
@@ -1375,9 +1244,9 @@ const Homepage = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Quarterly Research */}
                     <div>
-                      <h4 className="font-semibold text-emerald-300 mb-4 text-center">Penelitian BLU</h4>
+                      <h4 className="font-semibold text-emerald-300 mb-4 text-center">Penelitian</h4>
                       <div className="space-y-4">
-                        {statsData.quarterly_data.map((quarter, index) => {
+                        {statsData.quarterly_data.map((quarter) => {
                           const maxResearch = Math.max(...statsData.quarterly_data.map(q => q.penelitian_blu));
                           const widthPercentage = (quarter.penelitian_blu / maxResearch) * 100;
 
@@ -1392,9 +1261,6 @@ const Homepage = () => {
                                   className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-1000 ease-out hover:from-emerald-400 hover:to-emerald-300"
                                   style={{
                                     width: `${widthPercentage}%`,
-                                    animationDelay: `${index * 100}ms`,
-                                    animation: "slideInWidth 1s ease-out forwards",
-                                    opacity: 0
                                   }}
                                 ></div>
                               </div>
@@ -1406,9 +1272,9 @@ const Homepage = () => {
 
                     {/* Quarterly Service */}
                     <div>
-                      <h4 className="font-semibold text-blue-300 mb-4 text-center">Pengabdian BLU</h4>
+                      <h4 className="font-semibold text-blue-300 mb-4 text-center">Pengabdian</h4>
                       <div className="space-y-4">
-                        {statsData.quarterly_data.map((quarter, index) => {
+                        {statsData.quarterly_data.map((quarter) => {
                           const maxService = Math.max(...statsData.quarterly_data.map(q => q.pengabdian_blu));
                           const widthPercentage = (quarter.pengabdian_blu / maxService) * 100;
 
@@ -1423,9 +1289,6 @@ const Homepage = () => {
                                   className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full transition-all duration-1000 ease-out hover:from-blue-400 hover:to-blue-300"
                                   style={{
                                     width: `${widthPercentage}%`,
-                                    animationDelay: `${index * 100 + 200}ms`,
-                                    animation: "slideInWidth 1s ease-out forwards",
-                                    opacity: 0
                                   }}
                                 ></div>
                               </div>
@@ -1438,86 +1301,6 @@ const Homepage = () => {
                 </div>
               </div>
 
-              {/* Summary Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-                {/* Average per Year */}
-                <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-yellow-400/20 to-orange-400/20 rounded-2xl mb-4 border border-yellow-400/30">
-                    <FaChartLine className="w-8 h-8 text-yellow-300" />
-                  </div>
-                  <h3 className="font-display text-lg font-bold text-white mb-2">
-                    Rata-rata per Tahun
-                  </h3>
-                  <div className="space-y-2">
-                    <div className="text-2xl font-bold text-emerald-300">
-                      {Math.round(
-                        statsData.total_summary.total_penelitian_blu /
-                        safeYearsCount
-                      )}
-                    </div>
-                    <div className="text-sm text-blue-100">Penelitian BLU</div>
-                    <div className="text-2xl font-bold text-blue-300">
-                      {Math.round(
-                        statsData.total_summary.total_pengabdian_blu /
-                        safeYearsCount
-                      )}
-                    </div>
-                    <div className="text-sm text-blue-100">Pengabdian BLU</div>
-                  </div>
-                </div>
-
-                {/* Best Year */}
-                {(() => {
-                  if (!statsData.yearly_data || statsData.yearly_data.length === 0) {
-                    // Jika belum ada data tahunan, jangan render kartu "Tahun Terbaik"
-                    return null;
-                  }
-
-                  const bestYear = statsData.yearly_data.reduce((best, current) =>
-                    current.penelitian_blu + current.pengabdian_blu >
-                    best.penelitian_blu + best.pengabdian_blu
-                      ? current
-                      : best
-                  );
-
-                  return (
-                    <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 text-center">
-                      <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-400/20 to-green-400/20 rounded-2xl mb-4 border border-emerald-400/30">
-                        <FaTrophy className="w-8 h-8 text-emerald-300" />
-                      </div>
-                      <h3 className="font-display text-lg font-bold text-white mb-2">
-                        Tahun Terbaik
-                      </h3>
-                      <div className="text-3xl font-bold text-emerald-300 mb-2">
-                        {bestYear.year}
-                      </div>
-                      <div className="text-sm text-blue-100">
-                        Total{" "}
-                        {bestYear.penelitian_blu + bestYear.pengabdian_blu}{" "}
-                        Proyek
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Total HKI Portfolio */}
-                <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-2xl mb-4 border border-purple-400/30">
-                    <FaAward className="w-8 h-8 text-purple-300" />
-                  </div>
-                  <h3 className="font-display text-lg font-bold text-white mb-2">
-                    Portfolio HKI
-                  </h3>
-                  <div className="text-3xl font-bold text-purple-300 mb-2">
-                    {statsData.total_summary.total_paten +
-                      statsData.total_summary.total_haki}
-                  </div>
-                  <div className="text-sm text-blue-100">
-                    {statsData.total_summary.total_paten} Paten +{" "}
-                    {statsData.total_summary.total_haki} HKI
-                  </div>
-                </div>
-              </div>
             </>
           )}
         </div>
