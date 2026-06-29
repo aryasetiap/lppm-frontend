@@ -70,7 +70,7 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
       growth_haki: 0,
     },
     metadata: formData.metadata || {
-      last_updated: new Date().toISOString().split('T')[0],
+      last_updated: new Date().toISOString().split("T")[0],
       data_source: "LPPM Unila Database",
       description: "",
     },
@@ -89,14 +89,18 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
 
   const updateYearlyData = (index: number, field: string, value: any) => {
     const newData = { ...safeData };
-    newData.yearly_data[index] = { ...newData.yearly_data[index], [field]: value };
+    newData.yearly_data[index] = {
+      ...newData.yearly_data[index],
+      [field]: value,
+    };
     setFormData(newData);
     onChange(newData);
   };
 
   const addYearlyData = () => {
     const newData = { ...safeData };
-    const lastYear = newData.yearly_data[newData.yearly_data.length - 1]?.year || 2024;
+    const lastYear =
+      newData.yearly_data[newData.yearly_data.length - 1]?.year || 2024;
     newData.yearly_data.push({
       year: lastYear + 1,
       penelitian_blu: 0,
@@ -117,7 +121,10 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
 
   const updateQuarterlyData = (index: number, field: string, value: any) => {
     const newData = { ...safeData };
-    newData.quarterly_data[index] = { ...newData.quarterly_data[index], [field]: value };
+    newData.quarterly_data[index] = {
+      ...newData.quarterly_data[index],
+      [field]: value,
+    };
     setFormData(newData);
     onChange(newData);
   };
@@ -155,7 +162,9 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
             <input
               type="text"
               value={safeData.metadata.last_updated}
-              onChange={(e) => updateField(["metadata", "last_updated"], e.target.value)}
+              onChange={(e) =>
+                updateField(["metadata", "last_updated"], e.target.value)
+              }
               className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
             />
           </div>
@@ -165,7 +174,9 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
             </label>
             <textarea
               value={safeData.metadata.description}
-              onChange={(e) => updateField(["metadata", "description"], e.target.value)}
+              onChange={(e) =>
+                updateField(["metadata", "description"], e.target.value)
+              }
               className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
               rows={2}
             />
@@ -226,7 +237,7 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
                       updateYearlyData(
                         index,
                         "penelitian_blu",
-                        parseInt(e.target.value) || 0
+                        parseInt(e.target.value) || 0,
                       )
                     }
                     className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
@@ -243,7 +254,7 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
                       updateYearlyData(
                         index,
                         "pengabdian_blu",
-                        parseInt(e.target.value) || 0
+                        parseInt(e.target.value) || 0,
                       )
                     }
                     className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
@@ -257,7 +268,11 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
                     type="number"
                     value={year.paten}
                     onChange={(e) =>
-                      updateYearlyData(index, "paten", parseInt(e.target.value) || 0)
+                      updateYearlyData(
+                        index,
+                        "paten",
+                        parseInt(e.target.value) || 0,
+                      )
                     }
                     className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
                   />
@@ -270,7 +285,11 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
                     type="number"
                     value={year.haki}
                     onChange={(e) =>
-                      updateYearlyData(index, "haki", parseInt(e.target.value) || 0)
+                      updateYearlyData(
+                        index,
+                        "haki",
+                        parseInt(e.target.value) || 0,
+                      )
                     }
                     className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
                   />
@@ -287,7 +306,8 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
                         onChange={(e) =>
                           updateYearlyData(index, "pengabdian_breakdown", {
                             ...year.pengabdian_breakdown,
-                            diseminasi_hasil_riset: parseInt(e.target.value) || 0,
+                            diseminasi_hasil_riset:
+                              parseInt(e.target.value) || 0,
                           })
                         }
                         className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
@@ -347,7 +367,7 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
               onChange={(e) =>
                 updateField(
                   ["total_summary", "total_penelitian_blu"],
-                  parseInt(e.target.value) || 0
+                  parseInt(e.target.value) || 0,
                 )
               }
               className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
@@ -363,7 +383,7 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
               onChange={(e) =>
                 updateField(
                   ["total_summary", "total_pengabdian_blu"],
-                  parseInt(e.target.value) || 0
+                  parseInt(e.target.value) || 0,
                 )
               }
               className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
@@ -379,7 +399,7 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
               onChange={(e) =>
                 updateField(
                   ["total_summary", "total_paten"],
-                  parseInt(e.target.value) || 0
+                  parseInt(e.target.value) || 0,
                 )
               }
               className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
@@ -395,7 +415,7 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
               onChange={(e) =>
                 updateField(
                   ["total_summary", "total_haki"],
-                  parseInt(e.target.value) || 0
+                  parseInt(e.target.value) || 0,
                 )
               }
               className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
@@ -412,7 +432,7 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
               onChange={(e) =>
                 updateField(
                   ["total_summary", "growth_penelitian"],
-                  parseFloat(e.target.value) || 0
+                  parseFloat(e.target.value) || 0,
                 )
               }
               className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
@@ -429,7 +449,7 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
               onChange={(e) =>
                 updateField(
                   ["total_summary", "growth_pengabdian"],
-                  parseFloat(e.target.value) || 0
+                  parseFloat(e.target.value) || 0,
                 )
               }
               className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
@@ -446,7 +466,7 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
               onChange={(e) =>
                 updateField(
                   ["total_summary", "growth_paten"],
-                  parseFloat(e.target.value) || 0
+                  parseFloat(e.target.value) || 0,
                 )
               }
               className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
@@ -463,7 +483,7 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
               onChange={(e) =>
                 updateField(
                   ["total_summary", "growth_haki"],
-                  parseFloat(e.target.value) || 0
+                  parseFloat(e.target.value) || 0,
                 )
               }
               className="w-full bg-[#0b1f3d] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
@@ -475,7 +495,7 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
       {/* Quarterly Data */}
       <section className="bg-white/5 border border-white/10 rounded-2xl p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">Data Kuartalan</h3>
+          <h3 className="text-lg font-semibold">Data Kuartalan 2026</h3>
           <button
             onClick={addQuarterlyData}
             className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/20 border border-emerald-400/40 rounded-xl text-emerald-200 hover:bg-emerald-500/30"
@@ -523,7 +543,7 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
                       updateQuarterlyData(
                         index,
                         "penelitian_blu",
-                        parseInt(e.target.value) || 0
+                        parseInt(e.target.value) || 0,
                       )
                     }
                     className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
@@ -540,7 +560,7 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
                       updateQuarterlyData(
                         index,
                         "pengabdian_blu",
-                        parseInt(e.target.value) || 0
+                        parseInt(e.target.value) || 0,
                       )
                     }
                     className="w-full bg-black/20 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
@@ -556,4 +576,3 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
 };
 
 export default StatisticsForm;
-
