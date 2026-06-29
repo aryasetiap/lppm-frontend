@@ -15,7 +15,7 @@ import {
   FaGlobe,
   FaAward,
 } from "react-icons/fa";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 // Add custom styles for animations
 const customStyles = `
@@ -111,8 +111,8 @@ interface StatisticsData {
 const Homepage = () => {
   // Inject custom styles
   useEffect(() => {
-    const styleSheet = document.createElement('style');
-    styleSheet.type = 'text/css';
+    const styleSheet = document.createElement("style");
+    styleSheet.type = "text/css";
     styleSheet.innerText = customStyles;
     document.head.appendChild(styleSheet);
 
@@ -137,8 +137,13 @@ const Homepage = () => {
       try {
         setStatsLoading(true);
         // Determine Backend URL
-        const apiBase = (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") ||
-          (window.location.hostname === "lppm.unila.ac.id" || window.location.hostname.includes("unila.ac.id")
+        const apiBase =
+          (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(
+            /\/$/,
+            "",
+          ) ||
+          (window.location.hostname === "lppm.unila.ac.id" ||
+          window.location.hostname.includes("unila.ac.id")
             ? "https://lppm.unila.ac.id/api"
             : "http://localhost:8000/api");
 
@@ -168,8 +173,13 @@ const Homepage = () => {
       try {
         setIsLoading(true);
         // Using the Laravel API endpoint from integration docs
-        const apiBase = (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") ||
-          (window.location.hostname === "lppm.unila.ac.id" || window.location.hostname.includes("unila.ac.id")
+        const apiBase =
+          (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(
+            /\/$/,
+            "",
+          ) ||
+          (window.location.hostname === "lppm.unila.ac.id" ||
+          window.location.hostname.includes("unila.ac.id")
             ? "https://lppm.unila.ac.id/api"
             : "http://localhost:8000/api");
         const response = await fetch(`${apiBase}/posts?limit=6`);
@@ -259,16 +269,41 @@ const Homepage = () => {
   const chartMaxValue =
     statsData && statsData.yearly_data.length > 0
       ? Math.max(
-        ...statsData.yearly_data.map(
-          (d) => Math.max(d.penelitian_blu, d.pengabdian_blu)
+          ...statsData.yearly_data.map((d) =>
+            Math.max(d.penelitian_blu, d.pengabdian_blu),
+          ),
         )
-      )
       : 0;
+  const latestYearData = useMemo(() => {
+    if (!statsData?.yearly_data.length) {
+      return null;
+    }
+
+    return statsData.yearly_data.reduce((latest, current) =>
+      current.year > latest.year ? current : latest,
+    );
+  }, [statsData]);
+  const statsPreview = [
+    {
+      value: latestYearData?.penelitian_blu.toLocaleString("id-ID") ?? "-",
+      label: "Penelitian",
+    },
+    {
+      value: latestYearData?.pengabdian_blu.toLocaleString("id-ID") ?? "-",
+      label: "Pengabdian",
+    },
+    {
+      value: latestYearData
+        ? (latestYearData.haki + latestYearData.paten).toLocaleString("id-ID")
+        : "-",
+      label: "HKI/Paten",
+    },
+  ];
 
   // Format date utility - handle both API formats
   const formatDate = (dateString: string) => {
     // If date is already formatted like "05 Nov 2025", return as-is
-    if (dateString.includes(' ')) {
+    if (dateString.includes(" ")) {
       return dateString;
     }
 
@@ -454,7 +489,7 @@ const Homepage = () => {
                       className="w-full h-80 lg:h-96 object-cover transition-transform duration-700 group-hover:scale-110"
                       onError={(e) => {
                         // Fallback to gradient background if image fails
-                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.style.display = "none";
                         const parent = e.currentTarget.parentElement;
                         if (parent) {
                           parent.innerHTML = `
@@ -485,17 +520,13 @@ const Homepage = () => {
 
                     {/* Floating Badge */}
                     <div className="absolute top-4 right-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-xs font-bold px-3 py-2 rounded-full shadow-lg animate-pulse backdrop-blur-sm border border-white/20">
-                      2026
+                      {latestYearData?.year ?? new Date().getFullYear()}
                     </div>
                   </div>
 
                   {/* Stats Preview */}
                   <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-white/10">
-                    {[
-                      { value: "834", label: "Penelitian" },
-                      { value: "474", label: "Pengabdian" },
-                      { value: "91", label: "HKI/Paten" },
-                    ].map((stat, index) => (
+                    {statsPreview.map((stat, index) => (
                       <div key={index} className="text-center">
                         <div className="text-lg font-bold text-white">
                           {stat.value}
@@ -636,10 +667,11 @@ const Homepage = () => {
                             e.currentTarget.style.display = "none";
                             const parent = e.currentTarget.parentElement;
                             if (parent) {
-                              parent.innerHTML = `<span class="text-2xl">${fallbackEmojis[
-                                portal.title as keyof typeof fallbackEmojis
-                              ] || "📁"
-                                }</span>`;
+                              parent.innerHTML = `<span class="text-2xl">${
+                                fallbackEmojis[
+                                  portal.title as keyof typeof fallbackEmojis
+                                ] || "📁"
+                              }</span>`;
                             }
                           }}
                         />
@@ -797,11 +829,13 @@ const Homepage = () => {
                   style={{
                     animationDelay: `${index * 100}ms`,
                     animation: "fadeInUp 0.8s ease-out forwards",
-                    opacity: 0
+                    opacity: 0,
                   }}
                 >
                   {/* Gradient Border Top */}
-                  <div className={`h-1 bg-gradient-to-r ${getCategoryColor(news.category)} opacity-80`}></div>
+                  <div
+                    className={`h-1 bg-gradient-to-r ${getCategoryColor(news.category)} opacity-80`}
+                  ></div>
 
                   {/* Image Section with Modern Design */}
                   <div className="relative h-56 overflow-hidden">
@@ -822,10 +856,10 @@ const Homepage = () => {
                         className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:brightness-110"
                         onError={(e) => {
                           // Enhanced fallback to gradient if image fails
-                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.style.display = "none";
                           const parent = e.currentTarget.parentElement;
                           if (parent) {
-                            const fallbackDiv = document.createElement('div');
+                            const fallbackDiv = document.createElement("div");
                             fallbackDiv.className = `h-full bg-gradient-to-br ${getCategoryColor(news.category)} flex items-center justify-center relative`;
                             fallbackDiv.innerHTML = `
                               <div class="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
@@ -844,7 +878,7 @@ const Homepage = () => {
                     ) : (
                       <div
                         className={`h-full bg-gradient-to-br ${getCategoryColor(
-                          news.category
+                          news.category,
                         )} flex items-center justify-center relative`}
                       >
                         {/* Overlay Pattern */}
@@ -855,7 +889,9 @@ const Homepage = () => {
                           <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center mx-auto mb-3 border border-white/30">
                             <FaNewspaper className="w-10 h-10 text-white/80" />
                           </div>
-                          <p className="text-white/90 text-sm font-semibold">{news.category}</p>
+                          <p className="text-white/90 text-sm font-semibold">
+                            {news.category}
+                          </p>
                         </div>
                       </div>
                     )}
@@ -864,9 +900,13 @@ const Homepage = () => {
                     <div className="absolute top-4 left-4 z-20">
                       <div className="relative group/badge">
                         {/* Glow Effect */}
-                        <div className={`absolute inset-0 bg-gradient-to-r ${getCategoryColor(news.category)} blur-lg opacity-50 group-hover/badge:opacity-70 transition-opacity duration-300`}></div>
+                        <div
+                          className={`absolute inset-0 bg-gradient-to-r ${getCategoryColor(news.category)} blur-lg opacity-50 group-hover/badge:opacity-70 transition-opacity duration-300`}
+                        ></div>
 
-                        <span className={`relative inline-flex items-center px-4 py-2 rounded-full text-xs font-bold text-white bg-gradient-to-r ${getCategoryColor(news.category)} shadow-lg backdrop-blur-sm border border-white/20`}>
+                        <span
+                          className={`relative inline-flex items-center px-4 py-2 rounded-full text-xs font-bold text-white bg-gradient-to-r ${getCategoryColor(news.category)} shadow-lg backdrop-blur-sm border border-white/20`}
+                        >
                           <FaTag className="w-3 h-3 mr-1.5" />
                           {news.category}
                         </span>
@@ -947,7 +987,9 @@ const Homepage = () => {
                         to={`/berita/${news.slug}`}
                         className="group/btn inline-flex items-center text-[#105091] font-semibold hover:text-[#0a3b6d] transition-all duration-300"
                       >
-                        <span className="text-sm font-bold">Baca Selengkapnya</span>
+                        <span className="text-sm font-bold">
+                          Baca Selengkapnya
+                        </span>
                         <div className="ml-2 flex items-center justify-center w-8 h-8 bg-[#105091]/10 rounded-full group-hover/btn:bg-[#105091]/20 transition-all duration-300">
                           <FaArrowRight className="w-4 h-4 transform transition-transform duration-300 group-hover/btn:translate-x-1" />
                         </div>
@@ -962,7 +1004,9 @@ const Homepage = () => {
                   </div>
 
                   {/* Bottom Accent Border */}
-                  <div className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r ${getCategoryColor(news.category)} opacity-60 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left`}></div>
+                  <div
+                    className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r ${getCategoryColor(news.category)} opacity-60 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 origin-left`}
+                  ></div>
                 </article>
               ))}
             </div>
@@ -1034,9 +1078,9 @@ const Homepage = () => {
               Infografis Statistik
             </h2>
             <p className="font-body text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
-              Data dan statistik terkini Hak Cipta, Merek, Paten, serta
-              kinerja penelitian dan pengabdian LPPM Universitas Lampung
-              periode 2021-2025.
+              Data dan statistik terkini Hak Cipta, Merek, Paten, serta kinerja
+              penelitian dan pengabdian LPPM Universitas Lampung periode
+              2021-2026.
             </p>
             {statsData && (
               <p className="text-blue-200 text-sm mt-4">
@@ -1047,7 +1091,7 @@ const Homepage = () => {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
-                  }
+                  },
                 )}
               </p>
             )}
@@ -1086,7 +1130,7 @@ const Homepage = () => {
                     title: "Hak Cipta",
                     value:
                       statsData.total_summary.total_haki.toLocaleString(
-                        "id-ID"
+                        "id-ID",
                       ),
                     subtitle: "Total terdaftar",
                     icon: FaAward,
@@ -1094,10 +1138,9 @@ const Homepage = () => {
                   },
                   {
                     title: "Merek",
-                    value:
-                      (statsData.total_summary.total_merek ?? 2).toLocaleString(
-                        "id-ID"
-                      ),
+                    value: (
+                      statsData.total_summary.total_merek ?? 2
+                    ).toLocaleString("id-ID"),
                     subtitle: "Total terdaftar",
                     icon: FaTag,
                     color: "from-blue-400 to-blue-600",
@@ -1106,7 +1149,7 @@ const Homepage = () => {
                     title: "Paten",
                     value:
                       statsData.total_summary.total_paten.toLocaleString(
-                        "id-ID"
+                        "id-ID",
                       ),
                     subtitle: "Total terdaftar",
                     icon: FaTrophy,
@@ -1139,7 +1182,9 @@ const Homepage = () => {
                         {stat.title}
                       </div>
 
-                      <div className={`h-1.5 rounded-full bg-gradient-to-r ${stat.color}`}></div>
+                      <div
+                        className={`h-1.5 rounded-full bg-gradient-to-r ${stat.color}`}
+                      ></div>
                     </div>
                   );
                 })}
@@ -1158,7 +1203,9 @@ const Homepage = () => {
                         Tren Kinerja{" "}
                         {yearsCount > 0 ? `${yearsCount} Tahun` : "Multitahun"}
                       </h3>
-                      <p className="text-blue-200 text-sm mt-2">Penelitian dan Pengabdian per tahun</p>
+                      <p className="text-blue-200 text-sm mt-2">
+                        Penelitian dan Pengabdian per tahun
+                      </p>
                     </div>
                   </div>
 
@@ -1173,7 +1220,7 @@ const Homepage = () => {
                         >
                           <span className="absolute -left-12 -top-2 text-xs text-blue-200 font-medium">
                             {Math.round(
-                              ((chartMaxValue || 0) * (100 - line)) / 100
+                              ((chartMaxValue || 0) * (100 - line)) / 100,
                             )}
                           </span>
                         </div>
@@ -1184,11 +1231,16 @@ const Homepage = () => {
                     <div className="relative h-full flex items-end justify-around px-4">
                       {statsData.yearly_data.map((yearData, index) => {
                         const maxValue = chartMaxValue || 1;
-                        const researchHeight = (yearData.penelitian_blu / maxValue) * 220;
-                        const serviceHeight = (yearData.pengabdian_blu / maxValue) * 220;
+                        const researchHeight =
+                          (yearData.penelitian_blu / maxValue) * 220;
+                        const serviceHeight =
+                          (yearData.pengabdian_blu / maxValue) * 220;
 
                         return (
-                          <div key={yearData.year} className="flex flex-col items-center flex-1 max-w-[80px]">
+                          <div
+                            key={yearData.year}
+                            className="flex flex-col items-center flex-1 max-w-[80px]"
+                          >
                             {/* Year Label */}
                             <div className="text-xs text-blue-200 font-semibold mb-3">
                               {yearData.year}
@@ -1201,28 +1253,34 @@ const Homepage = () => {
                                   className="w-7 bg-gradient-to-t from-emerald-600 to-emerald-400 rounded-t-lg transition-all duration-1000 ease-out hover:from-emerald-500 hover:to-emerald-300 group relative cursor-pointer shadow-lg"
                                   style={{
                                     height: `${researchHeight}px`,
-                                    transform: 'translateY(20px)',
+                                    transform: "translateY(20px)",
                                     opacity: 0,
                                     minHeight: "4px",
-                                    animation: `fadeInUp 0.8s ease-out ${index * 100}ms forwards`
+                                    animation: `fadeInUp 0.8s ease-out ${index * 100}ms forwards`,
                                   }}
                                 >
                                   <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-emerald-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-10 shadow-lg">
-                                    Penelitian: {yearData.penelitian_blu.toLocaleString("id-ID")}
+                                    Penelitian:{" "}
+                                    {yearData.penelitian_blu.toLocaleString(
+                                      "id-ID",
+                                    )}
                                   </div>
                                 </div>
                                 <div
                                   className="w-7 bg-gradient-to-t from-blue-600 to-blue-400 rounded-t-lg transition-all duration-1000 ease-out hover:from-blue-500 hover:to-blue-300 group relative cursor-pointer shadow-lg"
                                   style={{
                                     height: `${serviceHeight}px`,
-                                    transform: 'translateY(20px)',
+                                    transform: "translateY(20px)",
                                     opacity: 0,
                                     minHeight: "4px",
-                                    animation: `fadeInUp 0.8s ease-out ${index * 100 + 80}ms forwards`
+                                    animation: `fadeInUp 0.8s ease-out ${index * 100 + 80}ms forwards`,
                                   }}
                                 >
                                   <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-10 shadow-lg">
-                                    Pengabdian: {yearData.pengabdian_blu.toLocaleString("id-ID")}
+                                    Pengabdian:{" "}
+                                    {yearData.pengabdian_blu.toLocaleString(
+                                      "id-ID",
+                                    )}
                                   </div>
                                 </div>
                               </div>
@@ -1230,8 +1288,16 @@ const Homepage = () => {
 
                             {/* Values Display */}
                             <div className="mt-2 text-xs text-center leading-5">
-                              <div className="text-emerald-300 font-medium">{yearData.penelitian_blu.toLocaleString("id-ID")}</div>
-                              <div className="text-blue-300 font-medium">{yearData.pengabdian_blu.toLocaleString("id-ID")}</div>
+                              <div className="text-emerald-300 font-medium">
+                                {yearData.penelitian_blu.toLocaleString(
+                                  "id-ID",
+                                )}
+                              </div>
+                              <div className="text-blue-300 font-medium">
+                                {yearData.pengabdian_blu.toLocaleString(
+                                  "id-ID",
+                                )}
+                              </div>
                             </div>
                           </div>
                         );
@@ -1258,23 +1324,36 @@ const Homepage = () => {
                     <h3 className="font-display text-2xl font-bold text-white mb-2">
                       Kinerja Kuartalan
                     </h3>
-                    <p className="text-blue-200 text-sm">Tren penelitian dan pengabdian per kuartal</p>
+                    <p className="text-blue-200 text-sm">
+                      Tren penelitian dan pengabdian per kuartal
+                    </p>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Quarterly Research */}
                     <div>
-                      <h4 className="font-semibold text-emerald-300 mb-4 text-center">Penelitian</h4>
+                      <h4 className="font-semibold text-emerald-300 mb-4 text-center">
+                        Penelitian
+                      </h4>
                       <div className="space-y-4">
                         {statsData.quarterly_data.map((quarter) => {
-                          const maxResearch = Math.max(...statsData.quarterly_data.map(q => q.penelitian_blu));
-                          const widthPercentage = (quarter.penelitian_blu / maxResearch) * 100;
+                          const maxResearch = Math.max(
+                            ...statsData.quarterly_data.map(
+                              (q) => q.penelitian_blu,
+                            ),
+                          );
+                          const widthPercentage =
+                            (quarter.penelitian_blu / maxResearch) * 100;
 
                           return (
                             <div key={quarter.quarter} className="space-y-2">
                               <div className="flex justify-between items-center">
-                                <span className="text-sm text-blue-200 font-medium">{quarter.quarter}</span>
-                                <span className="text-sm text-white font-bold">{quarter.penelitian_blu}</span>
+                                <span className="text-sm text-blue-200 font-medium">
+                                  {quarter.quarter}
+                                </span>
+                                <span className="text-sm text-white font-bold">
+                                  {quarter.penelitian_blu}
+                                </span>
                               </div>
                               <div className="h-6 bg-white/10 rounded-full overflow-hidden">
                                 <div
@@ -1292,17 +1371,28 @@ const Homepage = () => {
 
                     {/* Quarterly Service */}
                     <div>
-                      <h4 className="font-semibold text-blue-300 mb-4 text-center">Pengabdian</h4>
+                      <h4 className="font-semibold text-blue-300 mb-4 text-center">
+                        Pengabdian
+                      </h4>
                       <div className="space-y-4">
                         {statsData.quarterly_data.map((quarter) => {
-                          const maxService = Math.max(...statsData.quarterly_data.map(q => q.pengabdian_blu));
-                          const widthPercentage = (quarter.pengabdian_blu / maxService) * 100;
+                          const maxService = Math.max(
+                            ...statsData.quarterly_data.map(
+                              (q) => q.pengabdian_blu,
+                            ),
+                          );
+                          const widthPercentage =
+                            (quarter.pengabdian_blu / maxService) * 100;
 
                           return (
                             <div key={quarter.quarter} className="space-y-2">
                               <div className="flex justify-between items-center">
-                                <span className="text-sm text-blue-200 font-medium">{quarter.quarter}</span>
-                                <span className="text-sm text-white font-bold">{quarter.pengabdian_blu}</span>
+                                <span className="text-sm text-blue-200 font-medium">
+                                  {quarter.quarter}
+                                </span>
+                                <span className="text-sm text-white font-bold">
+                                  {quarter.pengabdian_blu}
+                                </span>
                               </div>
                               <div className="h-6 bg-white/10 rounded-full overflow-hidden">
                                 <div
@@ -1320,7 +1410,6 @@ const Homepage = () => {
                   </div>
                 </div>
               </div>
-
             </>
           )}
         </div>
