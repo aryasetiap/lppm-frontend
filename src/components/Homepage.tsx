@@ -1325,7 +1325,7 @@ const Homepage = () => {
                 <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
                   <div className="text-center mb-8">
                     <h3 className="font-display text-2xl font-bold text-white mb-2">
-                      Kinerja Kuartalan
+                      Kinerja Kuartalan 2026
                     </h3>
                     <p className="text-blue-200 text-sm">
                       Tren penelitian dan pengabdian per kuartal

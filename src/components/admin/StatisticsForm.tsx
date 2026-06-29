@@ -495,7 +495,7 @@ const StatisticsForm = ({ data, onChange }: StatisticsFormProps) => {
       {/* Quarterly Data */}
       <section className="bg-white/5 border border-white/10 rounded-2xl p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">Data Kuartalan 2026</h3>
+          <h3 className="text-lg font-semibold">Data Kuartalan</h3>
           <button
             onClick={addQuarterlyData}
             className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/20 border border-emerald-400/40 rounded-xl text-emerald-200 hover:bg-emerald-500/30"
