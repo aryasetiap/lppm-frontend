@@ -38,9 +38,23 @@ const SUPPORT_DOC_CATEGORIES = [
   { slug: "data-penelitian-pkm-buku-dan-hki", name: "Data Penelitian, PKM, Buku dan HKI" },
   { slug: "dokumen-pendukung-lainnya", name: "Dokumen Pendukung Lainnya" },
   { slug: "dokumen-spmi-penelitian-dan-pengabdian", name: "Dokumen SPMI Penelitian dan Pengabdian" },
+  { slug: "data-penelitian-dan-pengabdian", name: "Data Penelitian dan Pengabdian" },
 ];
 
 const SK_SECTION_SLUGS = ["sk-penerima-hibah", "sk-tim-reviewer", "sk-panitia"];
+
+const STATIC_SUPPORT_DOCUMENTS: Record<string, DownloadItem[]> = {
+  "data-penelitian-dan-pengabdian": [
+    {
+      id: -1,
+      title: "Data Penelitian dan Pengabdian",
+      excerpt: "Folder Google Drive berisi data penelitian dan pengabdian.",
+      slug: "data-penelitian-dan-pengabdian",
+      url: "https://drive.google.com/drive/folders/19MuZTx5Q6Jl7v3qzyg_GXARbRdT6S5DY?usp=sharing",
+      type: "link",
+    },
+  ],
+};
 
 const MAIN_SUPPORT_DOC_CATEGORIES = SUPPORT_DOC_CATEGORIES.filter(
   (section) => !SK_SECTION_SLUGS.includes(section.slug)
@@ -181,6 +195,19 @@ const PosApDownloadsPage = () => {
       if (category === "dokumen-penunjang") {
         url = `${LARAVEL_API_BASE}/documents?page=${page}&limit=10`;
         const effectiveSection = selectedSection || SUPPORT_DOC_CATEGORIES[0].slug;
+        const staticItems = STATIC_SUPPORT_DOCUMENTS[effectiveSection];
+        if (staticItems) {
+          const filteredItems = debouncedSearch
+            ? staticItems.filter((item) =>
+              `${item.title} ${item.excerpt}`.toLowerCase().includes(debouncedSearch.toLowerCase())
+            )
+            : staticItems;
+
+          setItems(filteredItems);
+          setTotalPages(1);
+          return;
+        }
+
         const validSection = SUPPORT_DOC_CATEGORIES.some((it) => it.slug === effectiveSection);
         if (validSection) {
           url += `&category=${encodeURIComponent(effectiveSection)}`;
@@ -406,18 +433,20 @@ const PosApDownloadsPage = () => {
                 <div>
                   <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
                   <p className="text-blue-100/80 text-sm mb-2 line-clamp-2">{item.excerpt}</p>
-                  <p className="text-xs text-blue-100/60">
-                    {item.date ? `Tanggal: ${new Date(item.date).toLocaleDateString("id-ID", {
-                      day: "numeric", month: "long", year: "numeric"
-                    })}` : `Diperbarui: ${new Date(item.updated_at || "").toLocaleDateString("id-ID", {
-                      day: "numeric", month: "long", year: "numeric"
-                    })}`}
-                    {item.type && (
-                      <span className="ml-3 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white/10 text-xs uppercase">
-                        {item.type}
-                      </span>
-                    )}
-                  </p>
+                  {(item.date || item.updated_at || item.type) && (
+                    <p className="text-xs text-blue-100/60">
+                      {item.date ? `Tanggal: ${new Date(item.date).toLocaleDateString("id-ID", {
+                        day: "numeric", month: "long", year: "numeric"
+                      })}` : item.updated_at ? `Diperbarui: ${new Date(item.updated_at).toLocaleDateString("id-ID", {
+                        day: "numeric", month: "long", year: "numeric"
+                      })}` : null}
+                      {item.type && (
+                        <span className="ml-3 inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white/10 text-xs uppercase">
+                          {item.type}
+                        </span>
+                      )}
+                    </p>
+                  )}
                 </div>
                 <div className="flex flex-wrap gap-3">
                   <a
@@ -427,7 +456,7 @@ const PosApDownloadsPage = () => {
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-blue-600 text-white font-semibold shadow-lg hover:shadow-2xl transition"
                   >
                     <DownloadIcon className="w-4 h-4" />
-                    Download
+                    {item.slug === "data-penelitian-dan-pengabdian" ? "Pintasan" : "Download"}
                   </a>
                   {item.permalink && (
                     <a
