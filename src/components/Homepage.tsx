@@ -260,7 +260,7 @@ const Homepage = () => {
     statsData && statsData.yearly_data.length > 0
       ? Math.max(
         ...statsData.yearly_data.map(
-          (d) => d.penelitian_blu + d.pengabdian_blu
+          (d) => Math.max(d.penelitian_blu, d.pengabdian_blu)
         )
       )
       : 0;
@@ -492,8 +492,8 @@ const Homepage = () => {
                   {/* Stats Preview */}
                   <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-white/10">
                     {[
-                      { value: "825+", label: "Penelitian" },
-                      { value: "342+", label: "Pengabdian" },
+                      { value: "834", label: "Penelitian" },
+                      { value: "474", label: "Pengabdian" },
                       { value: "91", label: "HKI/Paten" },
                     ].map((stat, index) => (
                       <div key={index} className="text-center">
@@ -1158,7 +1158,7 @@ const Homepage = () => {
                         Tren Kinerja{" "}
                         {yearsCount > 0 ? `${yearsCount} Tahun` : "Multitahun"}
                       </h3>
-                      <p className="text-blue-200 text-sm mt-2">Gabungan Penelitian dan Pengabdian per tahun</p>
+                      <p className="text-blue-200 text-sm mt-2">Penelitian dan Pengabdian per tahun</p>
                     </div>
                   </div>
 
@@ -1184,9 +1184,8 @@ const Homepage = () => {
                     <div className="relative h-full flex items-end justify-around px-4">
                       {statsData.yearly_data.map((yearData, index) => {
                         const maxValue = chartMaxValue || 1;
-                        const combinedTotal =
-                          yearData.penelitian_blu + yearData.pengabdian_blu;
-                        const combinedHeight = (combinedTotal / maxValue) * 240; // 240px is max height
+                        const researchHeight = (yearData.penelitian_blu / maxValue) * 220;
+                        const serviceHeight = (yearData.pengabdian_blu / maxValue) * 220;
 
                         return (
                           <div key={yearData.year} className="flex flex-col items-center flex-1 max-w-[80px]">
@@ -1197,25 +1196,42 @@ const Homepage = () => {
 
                             {/* Bars Container */}
                             <div className="relative h-56 w-full flex justify-center items-end">
-                              <div
-                                className="w-10 bg-gradient-to-t from-emerald-600 via-cyan-500 to-blue-400 rounded-t-lg transition-all duration-1000 ease-out hover:from-emerald-500 hover:to-blue-300 group relative cursor-pointer shadow-lg"
-                                style={{
-                                  height: `${combinedHeight}px`,
-                                  transform: 'translateY(20px)',
-                                  opacity: 0,
-                                  minHeight: "4px",
-                                  animation: `fadeInUp 0.8s ease-out ${index * 100}ms forwards`
-                                }}
-                              >
-                                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-10 shadow-lg">
-                                  {combinedTotal}
+                              <div className="flex items-end justify-center gap-2 h-full">
+                                <div
+                                  className="w-7 bg-gradient-to-t from-emerald-600 to-emerald-400 rounded-t-lg transition-all duration-1000 ease-out hover:from-emerald-500 hover:to-emerald-300 group relative cursor-pointer shadow-lg"
+                                  style={{
+                                    height: `${researchHeight}px`,
+                                    transform: 'translateY(20px)',
+                                    opacity: 0,
+                                    minHeight: "4px",
+                                    animation: `fadeInUp 0.8s ease-out ${index * 100}ms forwards`
+                                  }}
+                                >
+                                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-emerald-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-10 shadow-lg">
+                                    Penelitian: {yearData.penelitian_blu.toLocaleString("id-ID")}
+                                  </div>
+                                </div>
+                                <div
+                                  className="w-7 bg-gradient-to-t from-blue-600 to-blue-400 rounded-t-lg transition-all duration-1000 ease-out hover:from-blue-500 hover:to-blue-300 group relative cursor-pointer shadow-lg"
+                                  style={{
+                                    height: `${serviceHeight}px`,
+                                    transform: 'translateY(20px)',
+                                    opacity: 0,
+                                    minHeight: "4px",
+                                    animation: `fadeInUp 0.8s ease-out ${index * 100 + 80}ms forwards`
+                                  }}
+                                >
+                                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-10 shadow-lg">
+                                    Pengabdian: {yearData.pengabdian_blu.toLocaleString("id-ID")}
+                                  </div>
                                 </div>
                               </div>
                             </div>
 
                             {/* Values Display */}
-                            <div className="mt-2 text-xs">
-                              <div className="text-blue-300 font-medium">{combinedTotal}</div>
+                            <div className="mt-2 text-xs text-center leading-5">
+                              <div className="text-emerald-300 font-medium">{yearData.penelitian_blu.toLocaleString("id-ID")}</div>
+                              <div className="text-blue-300 font-medium">{yearData.pengabdian_blu.toLocaleString("id-ID")}</div>
                             </div>
                           </div>
                         );
@@ -1226,8 +1242,12 @@ const Homepage = () => {
                   {/* Legend */}
                   <div className="flex justify-center gap-8 mt-8">
                     <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 bg-gradient-to-t from-emerald-500 to-blue-400 rounded-lg"></div>
-                      <span className="text-white font-medium">Penelitian & Pengabdian</span>
+                      <div className="w-6 h-6 bg-gradient-to-t from-emerald-600 to-emerald-400 rounded-lg"></div>
+                      <span className="text-white font-medium">Penelitian</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 bg-gradient-to-t from-blue-600 to-blue-400 rounded-lg"></div>
+                      <span className="text-white font-medium">Pengabdian</span>
                     </div>
                   </div>
                 </div>
