@@ -345,6 +345,9 @@ const Homepage = () => {
     return colors[category] || "from-gray-500 to-gray-600";
   };
 
+  const formatQuarterLabel = (quarter: string) =>
+    quarter.replace(/^Q(\d+)$/i, "Batch $1");
+
   return (
     <div className="min-h-screen">
       {/* Enhanced Hero Section - Modern UI/UX with Hero Image */}
@@ -1349,7 +1352,7 @@ const Homepage = () => {
                             <div key={quarter.quarter} className="space-y-2">
                               <div className="flex justify-between items-center">
                                 <span className="text-sm text-blue-200 font-medium">
-                                  {quarter.quarter}
+                                  {formatQuarterLabel(quarter.quarter)}
                                 </span>
                                 <span className="text-sm text-white font-bold">
                                   {quarter.penelitian_blu}
@@ -1388,7 +1391,7 @@ const Homepage = () => {
                             <div key={quarter.quarter} className="space-y-2">
                               <div className="flex justify-between items-center">
                                 <span className="text-sm text-blue-200 font-medium">
-                                  {quarter.quarter}
+                                  {formatQuarterLabel(quarter.quarter)}
                                 </span>
                                 <span className="text-sm text-white font-bold">
                                   {quarter.pengabdian_blu}
