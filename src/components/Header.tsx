@@ -199,6 +199,11 @@ const navLinks: NavLink[] = [
         external: true,
         description: "Akses Portal",
       },
+      {
+        name: "Penulisan Buku",
+        href: "/arsip/penulisan-buku",
+        description: "Panduan dan berkas penulisan buku",
+      },
     ],
   },
   {

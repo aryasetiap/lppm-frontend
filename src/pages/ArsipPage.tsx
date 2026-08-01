@@ -42,6 +42,7 @@ const SUPPORT_DOC_CATEGORIES = [
 ];
 
 const SK_SECTION_SLUGS = ["sk-penerima-hibah", "sk-tim-reviewer", "sk-panitia"];
+const BOOK_WRITING_CATEGORY = "penulisan-buku";
 
 const STATIC_SUPPORT_DOCUMENTS: Record<string, DownloadItem[]> = {
   "data-penelitian-dan-pengabdian": [
@@ -113,6 +114,14 @@ const PosApDownloadsPage = () => {
       };
     }
 
+    if (category === BOOK_WRITING_CATEGORY) {
+      return {
+        title: "Penulisan Buku",
+        description: "Kumpulan panduan, template, dan berkas pendukung penulisan buku.",
+        badge: "PENULISAN BUKU",
+      };
+    }
+
     if (activeCategory) {
       return {
         title: `Download ${activeCategory.name}`,
@@ -139,6 +148,11 @@ const PosApDownloadsPage = () => {
     }
 
     if (category === "dokumen") {
+      setCategoriesReady(true);
+      return;
+    }
+
+    if (category === BOOK_WRITING_CATEGORY) {
       setCategoriesReady(true);
       return;
     }
@@ -192,7 +206,12 @@ const PosApDownloadsPage = () => {
       setError(null);
 
       let url = `${LARAVEL_API_BASE}/pos-ap/downloads?category=${category}`;
-      if (category === "dokumen-penunjang") {
+      if (category === BOOK_WRITING_CATEGORY) {
+        url = `${LARAVEL_API_BASE}/penulisan-buku/downloads?page=${page}&limit=10`;
+        if (debouncedSearch) {
+          url += `&search=${encodeURIComponent(debouncedSearch)}`;
+        }
+      } else if (category === "dokumen-penunjang") {
         url = `${LARAVEL_API_BASE}/documents?page=${page}&limit=10`;
         const effectiveSection = selectedSection || SUPPORT_DOC_CATEGORIES[0].slug;
         const staticItems = STATIC_SUPPORT_DOCUMENTS[effectiveSection];
@@ -231,11 +250,13 @@ const PosApDownloadsPage = () => {
       const payload = await response.json();
       setItems(payload.data || []);
 
-      if ((category === "dokumen-penunjang" || category === "dokumen") && payload.meta?.pagination) {
+      if ((category === "dokumen-penunjang" || category === "dokumen" || category === BOOK_WRITING_CATEGORY) && payload.meta?.pagination) {
         setTotalPages(payload.meta.pagination.last_page);
       }
     } catch (err) {
       console.error(err);
+      setItems([]);
+      setTotalPages(1);
       setError("Tidak dapat memuat data. Coba muat ulang.");
     } finally {
       setLoading(false);
@@ -274,7 +295,7 @@ const PosApDownloadsPage = () => {
           </Link>
           <span>/</span>
           <span className="font-semibold">
-            {category === "dokumen-penunjang" ? "Dokumen Penunjang" : category === "dokumen" ? "Arsip Lainnya" : "POS-AP"}
+            {category === "dokumen-penunjang" ? "Dokumen Penunjang" : category === "dokumen" ? "Arsip Lainnya" : category === BOOK_WRITING_CATEGORY ? "Penulisan Buku" : "POS-AP"}
           </span>
           <span>/</span>
           <span className="uppercase tracking-wide">{copy.badge}</span>
@@ -283,7 +304,7 @@ const PosApDownloadsPage = () => {
         <div className="space-y-4">
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-blue-100 text-sm uppercase tracking-widest">
             <FileText className="w-4 h-4" />
-            {category === "dokumen-penunjang" ? "DOKUMEN PENUNJANG" : category === "dokumen" ? "ARSIP LAINNYA" : "POS-AP"}
+            {category === "dokumen-penunjang" ? "DOKUMEN PENUNJANG" : category === "dokumen" ? "ARSIP LAINNYA" : category === BOOK_WRITING_CATEGORY ? "PENULISAN BUKU" : "POS-AP"}
           </span>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold">
             {copy.title}
@@ -296,7 +317,7 @@ const PosApDownloadsPage = () => {
         )}
 
         {/* Hide POS-AP categories in dokumen mode */}
-        {category !== "dokumen-penunjang" && category !== "dokumen" && categories.length > 0 && (
+        {category !== "dokumen-penunjang" && category !== "dokumen" && category !== BOOK_WRITING_CATEGORY && categories.length > 0 && (
           <div className="mt-8 flex flex-wrap gap-3">
             {categories.map((cat) => {
               const isActive = cat.slug === category;
@@ -368,7 +389,7 @@ const PosApDownloadsPage = () => {
         )}
 
         {/* Search Bar for Dokumen */}
-        {(category === "dokumen-penunjang" || category === "dokumen") && (
+        {(category === "dokumen-penunjang" || category === "dokumen" || category === BOOK_WRITING_CATEGORY) && (
           <div className="mt-8 max-w-xl">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -406,7 +427,7 @@ const PosApDownloadsPage = () => {
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 mb-4 animate-pulse">
               <DownloadIcon className="w-8 h-8 text-white" />
             </div>
-            <p className="text-blue-100">Memuat daftar POS-AP...</p>
+            <p className="text-blue-100">Memuat daftar {category === BOOK_WRITING_CATEGORY ? "Penulisan Buku" : "POS-AP"}...</p>
           </div>
         ) : error ? (
           <div className="bg-red-500/10 border border-red-400/40 text-red-100 rounded-3xl p-6 text-center space-y-3">
@@ -473,7 +494,7 @@ const PosApDownloadsPage = () => {
             ))}
 
             {/* Pagination Controls */}
-            {(category === "dokumen-penunjang" || category === "dokumen") && totalPages > 1 && (
+            {(category === "dokumen-penunjang" || category === "dokumen" || category === BOOK_WRITING_CATEGORY) && totalPages > 1 && (
               <div className="flex flex-wrap justify-center items-center gap-4 mt-8 pt-4 border-t border-white/10">
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
