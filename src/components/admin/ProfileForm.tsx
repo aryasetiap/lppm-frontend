@@ -173,7 +173,7 @@ const ProfileForm = ({ data, onChange }: ProfileFormProps) => {
       }
 
       const payload = await response.json();
-      const imagePath = payload?.data?.path;
+      const imagePath = payload?.data?.path ?? payload?.data?.url;
       if (!imagePath) {
         throw new Error("Path gambar tidak ditemukan");
       }

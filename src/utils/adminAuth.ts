@@ -16,6 +16,12 @@ const normalizeToken = (token: string): string => {
   return t;
 };
 
+const laravelApiBase = (): string =>
+  (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") ||
+  (window.location.hostname === "lppm.unila.ac.id" || window.location.hostname.includes("unila.ac.id")
+    ? "https://lppm.unila.ac.id/api"
+    : "http://localhost:8000/api");
+
 export const adminAuth = {
   getToken: () => {
     if (typeof window === "undefined") return null;
@@ -36,6 +42,25 @@ export const adminAuth = {
   logout: () => {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+  },
+  endSession: async () => {
+    const token = adminAuth.getToken();
+    adminAuth.logout();
+
+    if (!token) return;
+
+    try {
+      await fetch(`${laravelApiBase()}/admin/logout`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch {
+      // Token sudah dibuang dari browser. Endpoint server-side akan kedaluwarsa
+      // otomatis bila browser sedang offline saat pengguna keluar.
+    }
   },
 };
 

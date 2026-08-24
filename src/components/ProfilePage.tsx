@@ -59,9 +59,13 @@ const ProfilePage: React.FC = () => {
     if (path.startsWith("http://") || path.startsWith("https://")) {
       return path;
     }
-    // Uploaded images live on backend public path; use API origin.
+    // Legacy uploaded paths are now served through Laravel because the
+    // frontend and backend use different document roots in production.
     if (path.startsWith("/images/uploads/")) {
-      const apiOrigin = API_BASE_URL.replace(/\/api$/, "");
+      return `${API_BASE_URL}/content-images/${path.slice("/images/uploads/".length)}`;
+    }
+    if (path.startsWith("/api/content-images/")) {
+      const apiOrigin = API_BASE_URL.replace(/\/api\/?$/, "");
       return `${apiOrigin}${path}`;
     }
     // If starts with /, prefix with Vite base URL (which is '/' in production)

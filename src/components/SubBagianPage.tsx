@@ -13,6 +13,7 @@ import {
   Lightbulb,
   ChevronLeft,
   ChevronRight,
+  type LucideIcon,
 } from "lucide-react";
 import { API_BASE_URL } from "../config/api";
 
@@ -113,9 +114,13 @@ const SubBagianPage: React.FC = () => {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;
     }
-    // Uploaded images are served by backend app (not Vite dev server).
+    // Legacy uploaded paths are served through Laravel because the frontend
+    // and backend have different document roots in production.
     if (path.startsWith("/images/uploads/")) {
-      const apiOrigin = API_BASE_URL.replace(/\/api$/, "");
+      return `${API_BASE_URL}/content-images/${path.slice("/images/uploads/".length)}`;
+    }
+    if (path.startsWith("/api/content-images/")) {
+      const apiOrigin = API_BASE_URL.replace(/\/api\/?$/, "");
       return `${apiOrigin}${path}`;
     }
     // If path starts with /, it's relative to root, need to add /app prefix if not already there
@@ -185,8 +190,7 @@ const SubBagianPage: React.FC = () => {
   // Function to get category display name
   const getCategoryDisplayName = (cat: string): string => {
     const categoryNames: { [key: string]: string } = {
-      pui: "Pusat Unggulan Ipteks",
-      puslit: "Pusat Penelitian",
+      "pusat-lppm": "Pusat LPPM",
       administrasi: "Administrasi",
     };
     return categoryNames[cat] || cat.toUpperCase();
@@ -194,13 +198,20 @@ const SubBagianPage: React.FC = () => {
 
   // Function to get category icon
   const getCategoryIcon = (cat: string) => {
-    const icons: { [key: string]: React.ComponentType<any> } = {
-      pui: Award,
-      puslit: BookOpen,
+    const icons: Record<string, LucideIcon> = {
+      "pusat-lppm": BookOpen,
       administrasi: Building,
     };
     return icons[cat] || Target;
   };
+
+  const hasProfileDetails = Boolean(
+    subBagianData?.profil?.visi?.trim()
+    || subBagianData?.profil?.misi?.length
+    || subBagianData?.profil?.program_unggulan?.length
+    || subBagianData?.profil?.prestasi?.length
+    || subBagianData?.profil?.keunggulan?.length
+  );
 
   if (loading) {
     return (
@@ -537,6 +548,7 @@ const SubBagianPage: React.FC = () => {
       </section>
 
       {/* Profil Section */}
+      {hasProfileDetails && (
       <section className="relative bg-gradient-to-br from-gray-50 to-slate-100 py-20 overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 opacity-5">
@@ -725,6 +737,7 @@ const SubBagianPage: React.FC = () => {
           </div> */}
         </div>
       </section>
+      )}
 
       {/* Tugas & Fungsi Section */}
       <section className="relative bg-gradient-to-br from-gray-50 to-slate-100 py-20 overflow-hidden">

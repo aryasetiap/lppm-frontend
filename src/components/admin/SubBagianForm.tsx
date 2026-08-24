@@ -58,11 +58,17 @@ interface SubBagianData {
     description: string;
   };
   sub_bagian: {
-    pui?: Record<string, SubBagianItem>;
-    puslit?: Record<string, SubBagianItem>;
+    "pusat-lppm"?: Record<string, SubBagianItem>;
     administrasi?: Record<string, SubBagianItem>;
   };
 }
+
+type SubBagianCategory = "pusat-lppm" | "administrasi";
+
+const categoryLabels: Record<SubBagianCategory, string> = {
+  "pusat-lppm": "Pusat LPPM",
+  administrasi: "Administrasi",
+};
 
 interface SubBagianFormProps {
   data: SubBagianData | null;
@@ -71,7 +77,7 @@ interface SubBagianFormProps {
 
 const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
   const [formData, setFormData] = useState<SubBagianData | null>(data);
-  const [selectedCategory, setSelectedCategory] = useState<"pui" | "puslit" | "administrasi">("pui");
+  const [selectedCategory, setSelectedCategory] = useState<SubBagianCategory>("pusat-lppm");
   const [selectedItemSlug, setSelectedItemSlug] = useState<string | null>(null);
   const [uploadingField, setUploadingField] = useState<string | null>(null);
 
@@ -89,8 +95,7 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
       description: formData.metadata?.description || "",
     },
     sub_bagian: {
-      pui: formData.sub_bagian?.pui || {},
-      puslit: formData.sub_bagian?.puslit || {},
+      "pusat-lppm": formData.sub_bagian?.["pusat-lppm"] || {},
       administrasi: formData.sub_bagian?.administrasi || {},
     },
   };
@@ -237,7 +242,7 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
     const newItem: SubBagianItem = {
       nama: "Nama Sub Bagian Baru",
       singkatan: "Singkatan",
-      kategori: selectedCategory.toUpperCase(),
+      kategori: categoryLabels[selectedCategory],
       pimpinan: {
         ketua: {
           nama: "",
@@ -298,7 +303,7 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
       }
 
       const payload = await response.json();
-      const imagePath = payload?.data?.path;
+      const imagePath = payload?.data?.path ?? payload?.data?.url;
       if (!imagePath) {
         throw new Error("Path gambar tidak ditemukan");
       }
@@ -374,7 +379,7 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
           <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
             <h3 className="text-lg font-semibold mb-4">Kategori</h3>
             <div className="flex flex-col gap-2">
-              {(["pui", "puslit", "administrasi"] as const).map((cat) => (
+              {(["pusat-lppm", "administrasi"] as const).map((cat) => (
                 <button
                   key={cat}
                   onClick={() => {
@@ -386,7 +391,7 @@ const SubBagianForm = ({ data, onChange }: SubBagianFormProps) => {
                     : "bg-white/5 border border-white/10 text-blue-100 hover:bg-white/10"
                     }`}
                 >
-                  <div className="font-semibold">{cat.toUpperCase()}</div>
+                  <div className="font-semibold">{categoryLabels[cat]}</div>
                   <div className="text-xs text-blue-200">
                     {Object.keys(safeData.sub_bagian[cat] || {}).length} item
                   </div>

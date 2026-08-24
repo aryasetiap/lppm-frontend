@@ -1,18 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   FaDatabase,
   FaFileCode,
   FaSave,
   FaSyncAlt,
   FaExclamationTriangle,
-  FaArrowLeft,
-  FaSignOutAlt,
 } from "react-icons/fa";
 import { adminAuth } from "../utils/adminAuth";
 import ProfileForm from "../components/admin/ProfileForm";
 import StatisticsForm from "../components/admin/StatisticsForm";
 import SubBagianForm from "../components/admin/SubBagianForm";
+import CmsAdminShell from "../components/admin/CmsAdminShell";
 
 const LARAVEL_API_BASE =
   (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") ||
@@ -38,7 +37,7 @@ const DATASETS = [
   {
     id: "subbagian",
     title: "Sub Bagian & Unit",
-    description: "Daftar PUI, PUSLIT, administrasi, beserta detailnya.",
+    description: "Daftar Pusat LPPM dan unit administrasi beserta detailnya.",
     apiPath: "/admin/content/sub-bagian",
     fallback: "/data/sub-bagian-lppm.json",
   },
@@ -403,59 +402,25 @@ const AdminDataEditorPage = () => {
     }
   };
 
-  const handleLogout = () => {
-    adminAuth.logout();
-    navigate("/admin/login");
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#091f43] via-blue-900 to-indigo-950 text-white">
-      <header className="border-b border-white/10 bg-white/10 backdrop-blur-2xl sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.4em] text-blue-100">
-                Admin • Konten Database
-              </p>
-              <h1 className="text-2xl font-display font-bold">
-                Editor Data LPPM
-              </h1>
-            </div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <Link
-                to="/admin/dashboard"
-                className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-2xl px-4 py-2 text-sm text-white hover:bg-white/20 transition-colors whitespace-nowrap"
-              >
-                <FaArrowLeft /> Kembali ke Dashboard
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="inline-flex items-center gap-2 bg-red-500/20 border border-red-400/40 rounded-2xl px-4 py-2 text-sm text-red-200 hover:bg-red-500/30 transition-colors whitespace-nowrap font-medium"
-              >
-                <FaSignOutAlt />
-                Keluar
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-6xl mx-auto px-6 py-10 space-y-8">
-        <section className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <CmsAdminShell title="Data Portal" description="Kelola profil LPPM, statistik, serta informasi subbagian dan unit kerja.">
+      <div className="data-portal-theme space-y-6">
+        <section className="grid gap-3 md:grid-cols-3" aria-label="Pilih kelompok data">
           {DATASETS.map((dataset) => (
             <button
               key={dataset.id}
               onClick={() => setSelectedId(dataset.id)}
-              className={`text-left bg-white/5 border rounded-2xl p-4 transition-all ${selectedId === dataset.id
-                ? "border-blue-400/60 bg-white/10 shadow-lg"
-                : "border-white/10 hover:border-white/30"
+              aria-pressed={selectedId === dataset.id}
+              className={`rounded-xl border p-4 text-left transition ${selectedId === dataset.id
+                ? "border-[#105091] bg-blue-50 shadow-sm"
+                : "border-slate-200 bg-white hover:border-blue-300 hover:bg-slate-50"
                 }`}
             >
-              <div className="flex items-center gap-3 mb-2">
-                <FaDatabase className="text-blue-200" />
-                <span className="font-semibold">{dataset.title}</span>
+              <div className="mb-2 flex items-center gap-3">
+                <span className={`flex h-9 w-9 items-center justify-center rounded-lg ${selectedId === dataset.id ? "bg-[#105091] text-white" : "bg-blue-50 text-[#105091]"}`}><FaDatabase /></span>
+                <span className="font-bold text-slate-900">{dataset.title}</span>
               </div>
-              <p className="text-sm text-blue-100">{dataset.description}</p>
+              <p className="text-sm leading-5 text-slate-600">{dataset.description}</p>
             </button>
           ))}
         </section>
@@ -470,22 +435,22 @@ const AdminDataEditorPage = () => {
           />
         )}
 
-        <section className="bg-white/10 border border-white/20 rounded-3xl p-6 space-y-4">
+        <section className="cms-panel space-y-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-display font-semibold flex items-center gap-3">
-                <FaFileCode />
+              <h2 className="flex items-center gap-3 font-display text-xl font-bold text-slate-900">
+                <FaFileCode className="text-[#105091]" />
                 Edit {selectedDataset?.title}
               </h2>
-              <p className="text-sm text-blue-100">
-                Perubahan disimpan ke database melalui backend Laravel.
+              <p className="mt-1 text-sm text-slate-500">
+                Periksa kembali data sebelum menyimpan perubahan.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={fetchDataset}
                 disabled={loading}
-                className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-2xl px-4 py-2 text-sm hover:bg-white/20 transition disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
               >
                 <FaSyncAlt className={loading ? "animate-spin" : ""} />
                 Muat Ulang
@@ -493,7 +458,7 @@ const AdminDataEditorPage = () => {
               <button
                 onClick={handleSave}
                 disabled={saving || loading}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-2xl px-4 py-2 text-sm font-semibold shadow-lg hover:shadow-2xl transition disabled:opacity-60 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-2 rounded-xl bg-[#105091] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#0b3f75] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <FaSave />
                 Simpan Perubahan
@@ -502,23 +467,23 @@ const AdminDataEditorPage = () => {
           </div>
 
           {statusMessage && (
-            <div className="bg-blue-500/10 border border-blue-400/40 text-blue-100 text-sm rounded-2xl px-4 py-3">
+            <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
               {statusMessage}
             </div>
           )}
           {error && (
-            <div className="bg-red-500/10 border border-red-400/40 text-red-100 text-sm rounded-2xl px-4 py-3 flex items-center gap-2">
+            <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
               <FaExclamationTriangle />
               {error}
             </div>
           )}
 
           {loading ? (
-            <div className="text-center py-20">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-white/10 rounded-2xl mb-4">
-                <FaSyncAlt className="w-8 h-8 text-white animate-spin" />
+            <div className="py-20 text-center">
+              <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-xl bg-blue-50">
+                <FaSyncAlt className="h-7 w-7 animate-spin text-[#105091]" />
               </div>
-              <p className="text-blue-100">Memuat data...</p>
+              <p className="text-sm text-slate-500">Memuat data...</p>
             </div>
           ) : selectedId === "profile" && parsedData ? (
             <ProfileForm
@@ -547,11 +512,11 @@ const AdminDataEditorPage = () => {
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div>
-                <label className="text-sm font-semibold text-blue-100 mb-2 block">
+                <label className="mb-2 block text-sm font-semibold text-slate-700">
                   Konten JSON
                 </label>
                 <textarea
-                  className="w-full min-h-[400px] bg-[#0b1f3d] border border-white/10 rounded-2xl p-4 font-mono text-sm text-blue-50 focus:outline-none focus:ring-2 focus:ring-emerald-400/60"
+                  className="min-h-[400px] w-full rounded-xl border border-slate-300 bg-white p-4 font-mono text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-100"
                   value={rawContent}
                   onChange={(e) => {
                     setRawContent(e.target.value);
@@ -563,11 +528,11 @@ const AdminDataEditorPage = () => {
                   }}
                 />
               </div>
-              <div className="bg-black/20 border border-white/10 rounded-2xl p-4 overflow-auto">
-                <label className="text-sm font-semibold text-blue-100 mb-2 block">
+              <div className="overflow-auto rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <label className="mb-2 block text-sm font-semibold text-slate-700">
                   Preview Format
                 </label>
-                <pre className="text-xs text-blue-50 whitespace-pre-wrap">
+                <pre className="whitespace-pre-wrap text-xs text-slate-700">
                   {(() => {
                     try {
                       return JSON.stringify(JSON.parse(rawContent), null, 2);
@@ -580,8 +545,8 @@ const AdminDataEditorPage = () => {
             </div>
           )}
         </section>
-      </main>
-    </div>
+      </div>
+    </CmsAdminShell>
   );
 };
 

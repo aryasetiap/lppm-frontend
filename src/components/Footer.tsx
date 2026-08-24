@@ -4,6 +4,7 @@
  */
 
 import { Link } from "react-router-dom";
+import type { IconType } from "react-icons";
 import {
   FaFacebook,
   FaInstagram,
@@ -19,6 +20,7 @@ import {
   FaGlobe,
   FaArrowRight,
 } from "react-icons/fa";
+import { pusatLppmLinks } from "../data/pusatLppm";
 
 /**
  * Data link navigasi footer yang diperkaya dengan deskripsi.
@@ -50,18 +52,6 @@ const footerSections = {
       },
     ],
   },
-  pui: {
-    title: "PUI",
-    icon: FaGraduationCap,
-    links: [
-      {
-        name: "Pusat Unggulan Ipteks Anggrek, Kopi, Lada, Kako dan Pengembangan Komoditas Strategis dan Agroindustri Lampung",
-        href: "/pui/pusat-unggulan-ipteks-anggrek-kopi-lada-kako-dan-pengembangan-komoditas-strategis-dan-agroindustri-lampung",
-        description: "Pertanian & agroindustri",
-      },
-    ],
-  },
-
   administrasi: {
     title: "Administrasi",
     icon: FaBuilding,
@@ -158,70 +148,12 @@ const socialMedia = [
 ];
 
 /**
- * Data khusus untuk bagian Puslit yang dipisahkan agar bisa full width
+ * Data khusus Pusat LPPM yang dipisahkan agar bisa full width.
  */
-const puslitSection = {
-  title: "Pusat Penelitian",
+const pusatLppmSection = {
+  title: "Pusat LPPM",
   icon: FaGraduationCap,
-  links: [
-    {
-      name: "Pusat Penelitian KKN",
-      href: "/puslit/pusat-penelitian-kuliah-kerja-nyata-kkn",
-      description: "Program KKN",
-    },
-    {
-      name: "Pusat Penelitian HKI dan PATEN",
-      href: "/puslit/pusat-penelitian-hak-kekayaan-intelektual-hki-dan-paten",
-      description: "Proteksi kekayaan intelektual",
-    },
-    {
-      name: "Pusat Penelitian Lingkungan Hidup dan Penanggulangan Bencana",
-      href: "/puslit/pusat-penelitian-bencana-lingkungan-hidup-dan-sumber-daya-alam",
-      description: "Penelitian lingkungan dan sumber daya",
-    },
-    {
-      name: "Pusat Penelitian Studi Kebijakan Publik, Pembangunan dan Sosial Budaya",
-      href: "/puslit/pusat-penelitian-studi-kebijakan-publik-pembangunan-dan-sosial-budaya",
-      description: "Studi kebijakan dan sosial",
-    },
-    {
-      name: "Pusat Penelitian Publikasi dan Kerjasama",
-      href: "/puslit/pusat-penelitian-publikasi-dan-kerja-sama",
-      description: "Publikasi ilmiah dan kerjasama",
-    },
-    {
-      name: "Pusat Penelitian Inkubator Bisnis, Hilirisasi Inovasi, Ketahanan Pangan dan Sertifikasi Halal",
-      href: "/puslit/pusat-penelitian-inkubator-bisnis-hilirisasi-inovasi-ketahanan-pangan-dan-sertifikasi-halal",
-      description: "Inkubasi dan inovasi bisnis",
-      subItems: [
-        {
-          name: "Unila Halal Center",
-          href: "/puslit/unila-halal-center",
-          description: "Lembaga Pemeriksa Halal Unila",
-        },
-      ],
-    },
-    {
-      name: "Pusat Penelitian Manajemen Sistem Informasi, Komunikasi, Digitalisasi dan Kolaborasi Riset",
-      href: "/puslit/pusat-penelitian-manajeman-sistem-informasi-komunikasi-digitalisasi-dan-kaloborasi-riset",
-      description: "Sistem informasi dan kolaborasi",
-    },
-    {
-      name: "Pusat Penelitian SDGs, Pengembangan Wilayah, Kemaritiman, dan Perdesaan",
-      href: "/puslit/pusat-penelitian-sd-gs-pengembangan-wilayah-kemaritiman-dan-perdesaan",
-      description: "SDGs dan pengembangan wilayah",
-    },
-    {
-      name: "Pusat Penelitian Kemandirian Energi, Kelistrikan dan Material Maju",
-      href: "/puslit/pusat-penelitian-kemandirian-energi-kelistrikan-dan-material-maju",
-      description: "Energi dan material maju",
-    },
-    {
-      name: "Pusat Penelitian Ekonomi Kreatif, Pariwisata, dan Perpajakan Berkelanjutan",
-      href: "/puslit/pusat-penelitian-ekonomi-kreatif-pariwisata-dan-perpajakan-berkelanjutan",
-      description: "Ekonomi kreatif dan pariwisata",
-    },
-  ],
+  links: pusatLppmLinks,
 };
 
 /**
@@ -380,18 +312,18 @@ const Footer = () => {
             ))}
           </div>
 
-          {/* Dedicated Puslit Section */}
+          {/* Dedicated Pusat LPPM Section */}
           <div className="border-t border-white/10 pt-12">
             <div className="space-y-6">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-white/20 to-white/10 rounded-xl flex items-center justify-center">
                   <FaGraduationCap className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="font-display text-xl font-bold text-white">{puslitSection.title}</h3>
+                <h3 className="font-display text-xl font-bold text-white">{pusatLppmSection.title}</h3>
               </div>
 
               <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-4">
-                {puslitSection.links.map((link) => (
+                {pusatLppmSection.links.map((link) => (
                   <li key={link.name}>
                     <Link
                       to={link.href}
@@ -461,7 +393,7 @@ interface FooterLink {
 
 interface FooterSectionType {
   title: string;
-  icon: any;
+  icon: IconType;
   links: FooterLink[];
   colSpan?: number;
 }

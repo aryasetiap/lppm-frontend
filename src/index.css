@@ -33,6 +33,307 @@ body {
   min-height: 100vh;
 }
 
+/* Dedicated CMS workspace: neutral surfaces keep dense administrative work
+   readable while navy remains the navigational brand color. */
+.cms-admin-theme .cms-panel {
+  background: #ffffff;
+  border-color: #dbe3ee;
+  color: #1e293b;
+}
+
+.cms-admin-theme .cms-panel .border-slate-200,
+.cms-admin-theme .cms-panel .border-slate-300,
+.cms-admin-theme .cms-panel .divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #e2e8f0;
+}
+
+.cms-admin-theme .cms-panel .text-slate-900,
+.cms-admin-theme .cms-panel .text-slate-800 {
+  color: #0f172a;
+}
+
+.cms-admin-theme .cms-panel .text-slate-700,
+.cms-admin-theme .cms-panel .text-slate-600,
+.cms-admin-theme .cms-panel .text-slate-500,
+.cms-admin-theme .cms-panel .text-slate-400 {
+  color: #475569;
+}
+
+.cms-admin-theme .cms-panel .hover\:bg-slate-50:hover {
+  background: #f8fafc;
+}
+
+.cms-admin-theme .cms-panel input,
+.cms-admin-theme .cms-panel select {
+  background: #ffffff;
+  color: #1e293b;
+  border-color: #cbd5e1;
+}
+
+.cms-admin-theme .cms-panel input::placeholder {
+  color: #94a3b8;
+}
+
+/* Native form controls need a stronger selector than text-slate utilities
+   because they sit on top of the translucent administrative panels. */
+.cms-admin-theme .cms-panel .cms-admin-control {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: #bfdbfe;
+  color-scheme: light;
+}
+
+.cms-admin-theme .cms-panel .cms-admin-control option {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+/* The native date-time placeholder is browser-rendered, so it needs its own
+   light surface instead of inheriting the low-contrast glass-panel colors. */
+.cms-admin-theme .cms-panel .cms-publication-schedule {
+  margin-top: 1.25rem;
+  border-color: rgba(191, 219, 254, 0.32);
+  border-radius: 0.85rem;
+  background: #eff6ff;
+  padding: 0.9rem;
+  color: #334155;
+}
+
+.cms-admin-theme .cms-panel .cms-publication-schedule label {
+  color: #0f2744;
+}
+
+.cms-admin-theme .cms-panel .cms-publication-schedule-input {
+  border-color: #94a3b8;
+  background: #ffffff;
+  color: #0f172a;
+  color-scheme: light;
+}
+
+.cms-admin-theme .cms-panel .cms-publication-schedule-input::-webkit-datetime-edit,
+.cms-admin-theme .cms-panel .cms-publication-schedule-input::-webkit-datetime-edit-text,
+.cms-admin-theme .cms-panel .cms-publication-schedule-input::-webkit-datetime-edit-month-field,
+.cms-admin-theme .cms-panel .cms-publication-schedule-input::-webkit-datetime-edit-day-field,
+.cms-admin-theme .cms-panel .cms-publication-schedule-input::-webkit-datetime-edit-year-field,
+.cms-admin-theme .cms-panel .cms-publication-schedule-input::-webkit-datetime-edit-hour-field,
+.cms-admin-theme .cms-panel .cms-publication-schedule-input::-webkit-datetime-edit-minute-field {
+  color: #0f172a;
+}
+
+.cms-admin-theme .cms-panel .cms-publication-schedule-button:disabled {
+  border-color: #94a3b8;
+  background: #cbd5e1;
+  color: #334155;
+}
+
+/* Editor content needs its own contrast rules because it combines a dark
+   administrative shell with a document-like writing surface. */
+.cms-admin-theme .cms-editor .editor-field {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+.cms-admin-theme .cms-editor .editor-field:focus {
+  border-color: #7dd3fc;
+  box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.22);
+}
+
+.cms-admin-theme .cms-editor .editor-toolbar {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #334155;
+}
+
+.cms-admin-theme .cms-editor .editor-toolbar button:focus-visible,
+.cms-admin-theme .cms-editor .editor-chip:focus-visible {
+  outline: 2px solid #fcd34d;
+  outline-offset: 2px;
+}
+
+.cms-admin-theme .cms-editor .cms-editor-content {
+  background: #ffffff;
+  border-color: rgba(191, 219, 254, 0.68);
+  color: #1e293b;
+  box-shadow: inset 0 1px 0 rgba(15, 23, 42, 0.04);
+}
+
+.cms-admin-theme .cms-editor .cms-editor-content:focus {
+  border-color: #7dd3fc;
+  box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.22);
+}
+
+.cms-admin-theme .cms-editor .cms-editor-content:empty::before {
+  content: attr(data-placeholder);
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.cms-admin-theme .cms-editor .cms-editor-content h2,
+.cms-admin-theme .cms-editor .cms-editor-content h3 {
+  color: #0f2f59;
+  font-weight: 700;
+  margin: 1.25rem 0 0.65rem;
+}
+
+.cms-admin-theme .cms-editor .cms-editor-content ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+
+.cms-admin-theme .cms-editor .cms-editor-content a {
+  color: #105091;
+  text-decoration: underline;
+}
+
+.cms-admin-theme .cms-editor .editor-image-controls {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.cms-admin-theme .cms-editor .cms-editor-content figure {
+  display: block;
+  margin: 1.5rem 0;
+}
+
+.cms-admin-theme .cms-editor .cms-editor-content figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+}
+
+.cms-admin-theme .cms-editor .cms-editor-content .lppm-image-size-small { max-width: 320px; }
+.cms-admin-theme .cms-editor .cms-editor-content .lppm-image-size-medium { max-width: 520px; }
+.cms-admin-theme .cms-editor .cms-editor-content .lppm-image-size-large { max-width: 760px; }
+.cms-admin-theme .cms-editor .cms-editor-content .lppm-image-size-full { max-width: 100%; }
+.cms-admin-theme .cms-editor .cms-editor-content .lppm-image-align-left { float: left; margin: 0.5rem 1.5rem 1rem 0; }
+.cms-admin-theme .cms-editor .cms-editor-content .lppm-image-align-center { margin-left: auto; margin-right: auto; }
+.cms-admin-theme .cms-editor .cms-editor-content .lppm-image-align-right { float: right; margin: 0.5rem 0 1rem 1.5rem; }
+
+.cms-admin-theme .cms-editor .editor-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 9999px;
+  padding: 0.45rem 0.7rem;
+  color: #334155;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.cms-admin-theme .cms-editor .editor-chip:hover {
+  background: #eff6ff;
+  border-color: #93c5fd;
+  color: #0c4178;
+}
+
+.cms-admin-theme .cms-editor .editor-chip-selected {
+  background: #dbeafe;
+  border-color: #60a5fa;
+  color: #0c4178;
+}
+
+.cms-admin-theme .cms-panel .cms-taxonomy-badge {
+  border-radius: 9999px;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.cms-admin-theme .cms-panel .cms-category-badge {
+  background: #dbeafe;
+  color: #0c4178;
+}
+
+.cms-admin-theme .cms-panel .cms-tag-badge {
+  background: #fef3c7;
+  color: #78350f;
+}
+
+/* Data Portal keeps its existing form components and data handlers. These
+   scoped overrides adapt the older dark-form utilities to the CMS workspace. */
+.data-portal-theme .bg-white\/5,
+.data-portal-theme .bg-white\/10 {
+  background: #ffffff !important;
+}
+
+.data-portal-theme .bg-black\/20,
+.data-portal-theme .bg-\[\#0b1f3d\] {
+  background: #f8fafc !important;
+}
+
+.data-portal-theme .border-white\/5,
+.data-portal-theme .border-white\/10,
+.data-portal-theme .border-white\/20 {
+  border-color: #e2e8f0 !important;
+}
+
+.data-portal-theme .text-blue-50,
+.data-portal-theme .text-blue-100 {
+  color: #475569 !important;
+}
+
+.data-portal-theme .text-blue-200,
+.data-portal-theme .text-blue-300 {
+  color: #105091 !important;
+}
+
+.data-portal-theme div.text-white,
+.data-portal-theme h3.text-white,
+.data-portal-theme h4.text-white,
+.data-portal-theme input.text-white,
+.data-portal-theme textarea.text-white,
+.data-portal-theme select.text-white {
+  color: #0f172a !important;
+}
+
+.data-portal-theme .bg-blue-500\/20 {
+  background: #dbeafe !important;
+}
+
+.data-portal-theme .border-blue-400\/40 {
+  border-color: #93c5fd !important;
+}
+
+.data-portal-theme .bg-emerald-500\/20 {
+  background: #ecfdf5 !important;
+}
+
+.data-portal-theme .border-emerald-400\/40 {
+  border-color: #a7f3d0 !important;
+}
+
+.data-portal-theme .text-emerald-200,
+.data-portal-theme .text-emerald-300 {
+  color: #047857 !important;
+}
+
+.data-portal-theme .bg-red-500\/20 {
+  background: #fef2f2 !important;
+}
+
+.data-portal-theme .border-red-400\/40 {
+  border-color: #fecaca !important;
+}
+
+.data-portal-theme .text-red-100,
+.data-portal-theme .text-red-200,
+.data-portal-theme .text-red-300,
+.data-portal-theme .text-red-400 {
+  color: #b91c1c !important;
+}
+
+.data-portal-theme input,
+.data-portal-theme textarea,
+.data-portal-theme select {
+  color-scheme: light;
+}
+
 /* Custom utilities */
 @layer utilities {
   .font-display {
@@ -197,6 +498,35 @@ body {
 .news-content strong {
   font-weight: 700;
   color: #111827;
+}
+
+/* Classes written by the CMS image controls. They intentionally use classes
+   rather than inline styles so the server sanitizer can preserve them safely. */
+.news-content figure {
+  display: block;
+  margin: 1.5rem 0;
+}
+
+.news-content figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.news-content figure.lppm-image-size-small { max-width: 320px; }
+.news-content figure.lppm-image-size-medium { max-width: 520px; }
+.news-content figure.lppm-image-size-large { max-width: 760px; }
+.news-content figure.lppm-image-size-full { max-width: 100%; }
+.news-content figure.lppm-image-align-left { float: left; margin: 0.5rem 1.5rem 1rem 0; }
+.news-content figure.lppm-image-align-center { margin-left: auto; margin-right: auto; }
+.news-content figure.lppm-image-align-right { float: right; margin: 0.5rem 0 1rem 1.5rem; }
+
+@media (max-width: 640px) {
+  .news-content figure.lppm-image-align-left,
+  .news-content figure.lppm-image-align-right {
+    float: none;
+    margin: 1rem auto;
+  }
 }
 
 .news-content blockquote {

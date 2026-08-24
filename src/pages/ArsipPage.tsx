@@ -18,8 +18,11 @@ interface DownloadItem {
   download_url?: string;
   url?: string;
   permalink?: string;
+  availability?: "available" | "unavailable";
   type?: string;
   mime?: string;
+  category?: { slug: string; name: string };
+  source_label?: string;
 }
 
 interface PosApCategory {
@@ -454,6 +457,7 @@ const PosApDownloadsPage = () => {
                 <div>
                   <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
                   <p className="text-blue-100/80 text-sm mb-2 line-clamp-2">{item.excerpt}</p>
+                  {(item.category?.name || item.source_label) && <div className="mb-2 flex flex-wrap gap-2 text-xs"><span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-blue-50">{item.category?.name ?? "Arsip Lainnya"}</span>{item.source_label && <span className="rounded-full border border-emerald-200/30 bg-emerald-400/10 px-2.5 py-1 text-emerald-100">{item.source_label}</span>}</div>}
                   {(item.date || item.updated_at || item.type) && (
                     <p className="text-xs text-blue-100/60">
                       {item.date ? `Tanggal: ${new Date(item.date).toLocaleDateString("id-ID", {
@@ -470,15 +474,21 @@ const PosApDownloadsPage = () => {
                   )}
                 </div>
                 <div className="flex flex-wrap gap-3">
-                  <a
-                    href={item.download_url || item.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-blue-600 text-white font-semibold shadow-lg hover:shadow-2xl transition"
-                  >
-                    <DownloadIcon className="w-4 h-4" />
-                    {item.slug === "data-penelitian-dan-pengabdian" ? "Pintasan" : "Download"}
-                  </a>
+                  {(item.download_url || item.url) ? (
+                    <a
+                      href={item.download_url || item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-blue-600 text-white font-semibold shadow-lg hover:shadow-2xl transition"
+                    >
+                      <DownloadIcon className="w-4 h-4" />
+                      {item.slug === "data-penelitian-dan-pengabdian" ? "Pintasan" : "Download"}
+                    </a>
+                  ) : (
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl border border-amber-300/40 bg-amber-400/10 text-sm font-semibold text-amber-100">
+                      {item.availability === "available" ? "Akses terbatas" : "Dokumen tidak tersedia"}
+                    </span>
+                  )}
                   {item.permalink && (
                     <a
                       href={item.permalink}

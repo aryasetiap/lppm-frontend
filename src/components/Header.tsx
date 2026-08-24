@@ -14,20 +14,21 @@ import {
   X,
   Home,
   Users,
-  Award,
   BookOpen,
   Globe,
   Settings,
   Layers,
+  type LucideIcon,
 } from "lucide-react";
 import { adminAuth } from "../utils/adminAuth";
+import { pusatLppmLinks } from "../data/pusatLppm";
 
 type NavLink =
-  | { name: string; href: string; type: "link"; icon?: any }
+  | { name: string; href: string; type: "link"; icon?: LucideIcon }
   | {
     name: string;
     type: "dropdown";
-    icon?: any;
+    icon?: LucideIcon;
     items: {
       name: string;
       href: string;
@@ -77,80 +78,10 @@ const navLinks: NavLink[] = [
     ],
   },
   {
-    name: "PUI",
-    type: "dropdown",
-    icon: Award,
-    items: [
-      {
-        name: "Pusat Unggulan Ipteks Anggrek, Kopi, Lada, Kako dan Pengembangan Komoditas Strategis dan Agroindustri Lampung",
-        href: "/pui/pusat-unggulan-ipteks-anggrek-kopi-lada-kako-dan-pengembangan-komoditas-strategis-dan-agroindustri-lampung",
-        description: "Pusat unggulan ipteks pertanian",
-      },
-    ],
-  },
-  {
-    name: "PUSLIT",
+    name: "Pusat LPPM",
     type: "dropdown",
     icon: Layers,
-    items: [
-      {
-        name: "Pusat Penelitian KKN",
-        href: "/puslit/pusat-penelitian-kuliah-kerja-nyata-kkn",
-        description: "Program KKN",
-      },
-      {
-        name: "Pusat Penelitian HKI dan PATEN",
-        href: "/puslit/pusat-penelitian-hak-kekayaan-intelektual-hki-dan-paten",
-        description: "Proteksi kekayaan intelektual",
-      },
-      {
-        name: "Pusat Penelitian Lingkungan Hidup dan Penanggulangan Bencana",
-        href: "/puslit/pusat-penelitian-bencana-lingkungan-hidup-dan-sumber-daya-alam",
-        description: "Penelitian lingkungan dan sumber daya",
-      },
-      {
-        name: "Pusat Penelitian Studi Kebijakan Publik, Pembangunan dan Sosial Budaya",
-        href: "/puslit/pusat-penelitian-studi-kebijakan-publik-pembangunan-dan-sosial-budaya",
-        description: "Studi kebijakan dan sosial",
-      },
-      {
-        name: "Pusat Penelitian Publikasi dan Kerjasama",
-        href: "/puslit/pusat-penelitian-publikasi-dan-kerja-sama",
-        description: "Publikasi ilmiah dan kerjasama",
-      },
-      {
-        name: "Pusat Penelitian Inkubator Bisnis, Hilirisasi Inovasi, Ketahanan Pangan dan Sertifikasi Halal",
-        href: "/puslit/pusat-penelitian-inkubator-bisnis-hilirisasi-inovasi-ketahanan-pangan-dan-sertifikasi-halal",
-        description: "Inkubasi dan inovasi bisnis",
-        subItems: [
-          {
-            name: "Unila Halal Center",
-            href: "/puslit/unila-halal-center",
-            description: "Lembaga Pemeriksa Halal Unila",
-          },
-        ],
-      },
-      {
-        name: "Pusat Penelitian Manajemen Sistem Informasi, Komunikasi, Digitalisasi dan Kolaborasi Riset",
-        href: "/puslit/pusat-penelitian-manajeman-sistem-informasi-komunikasi-digitalisasi-dan-kaloborasi-riset",
-        description: "Sistem informasi dan kolaborasi",
-      },
-      {
-        name: "Pusat Penelitian SDGs, Pengembangan Wilayah, Kemaritiman, dan Perdesaan",
-        href: "/puslit/pusat-penelitian-sd-gs-pengembangan-wilayah-kemaritiman-dan-perdesaan",
-        description: "SDGs dan pengembangan wilayah",
-      },
-      {
-        name: "Pusat Penelitian Kemandirian Energi, Kelistrikan dan Material Maju",
-        href: "/puslit/pusat-penelitian-kemandirian-energi-kelistrikan-dan-material-maju",
-        description: "Energi dan material maju",
-      },
-      {
-        name: "Pusat Penelitian Ekonomi Kreatif, Pariwisata, dan Perpajakan Berkelanjutan",
-        href: "/puslit/pusat-penelitian-ekonomi-kreatif-pariwisata-dan-perpajakan-berkelanjutan",
-        description: "Ekonomi kreatif dan pariwisata",
-      },
-    ],
+    items: pusatLppmLinks,
   },
   {
     name: "Administrasi",
@@ -238,11 +169,11 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
-  const isAdminLoggedIn = Boolean(adminAuth.getToken());
+  const isAdminLoggedIn = adminAuth.hasValidToken();
   const adminDisplayName = adminAuth.getUser() ?? "Administrator";
 
   const handleAdminLogout = () => {
-    adminAuth.logout();
+    void adminAuth.endSession();
     navigate("/admin/login");
   };
 
@@ -344,7 +275,7 @@ const Header = () => {
 
                       {/* Enhanced Mega Dropdown */}
                       <div
-                        className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-3 ${link.name === "PUSLIT"
+                        className={`absolute top-full left-1/2 transform -translate-x-1/2 mt-3 ${link.name === "Pusat LPPM"
                           ? "w-[768px] max-w-[90vw]"
                           : "w-96"
                           } bg-white rounded-2xl shadow-2xl border border-gray-100/50 backdrop-blur-xl transition-all duration-300 ${activeDropdown === link.name
@@ -355,8 +286,8 @@ const Header = () => {
                         onMouseLeave={() => setActiveDropdown(null)}
                       >
                         <div className="p-4">
-                          {link.name === "PUSLIT" ? (
-                            /* Special 2-column layout for PUSLIT */
+                          {link.name === "Pusat LPPM" ? (
+                            /* Special 2-column layout for Pusat LPPM */
                             <div className="grid grid-cols-2 gap-2">
                               {link.items.map((item) => (
                                 <div
@@ -584,12 +515,21 @@ const Header = () => {
             </nav>
 
             {/* Admin Actions */}
-            {isAdminRoute && isAdminLoggedIn && (
+            {isAdminLoggedIn && (
               <div className="hidden lg:flex items-center gap-3">
                 <div className="text-right">
                   <p className="text-xs text-gray-500">Admin</p>
                   <p className="font-semibold text-gray-800">{adminDisplayName}</p>
                 </div>
+                {!isAdminRoute && (
+                  <Link
+                    to="/admin/dashboard"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-[#105091] to-blue-600 hover:from-[#0b3f75] hover:to-blue-700 transition-colors shadow-sm"
+                  >
+                    <Home className="w-4 h-4" />
+                    Kembali ke Admin
+                  </Link>
+                )}
                 <button
                   onClick={handleAdminLogout}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-red-600 border border-red-200 bg-red-50 hover:bg-red-100 transition-colors"
@@ -625,21 +565,32 @@ const Header = () => {
           }`}
       >
         <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-2">
-          {isAdminRoute && isAdminLoggedIn && (
+          {isAdminLoggedIn && (
             <div className="flex items-center justify-between px-4 py-3 rounded-2xl bg-gray-50 border border-gray-200 mb-4">
               <div>
                 <p className="text-xs text-gray-500">Admin</p>
                 <p className="font-semibold text-gray-800">{adminDisplayName}</p>
               </div>
-              <button
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  handleAdminLogout();
-                }}
-                className="px-4 py-2 rounded-xl text-sm font-semibold text-red-600 border border-red-200 bg-white hover:bg-red-50 transition-colors"
-              >
-                Keluar
-              </button>
+              <div className="flex items-center gap-2">
+                {!isAdminRoute && (
+                  <Link
+                    to="/admin/dashboard"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="px-3 py-2 rounded-xl text-sm font-semibold text-white bg-[#105091] hover:bg-[#0b3f75] transition-colors"
+                  >
+                    Admin
+                  </Link>
+                )}
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    handleAdminLogout();
+                  }}
+                  className="px-3 py-2 rounded-xl text-sm font-semibold text-red-600 border border-red-200 bg-white hover:bg-red-50 transition-colors"
+                >
+                  Keluar
+                </button>
+              </div>
             </div>
           )}
           {navLinks.map((link) =>
