@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent, type SyntheticEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   FaArrowLeft,
@@ -49,6 +49,27 @@ interface FeaturedMedia {
   url: string | null;
   altText: string;
 }
+
+const versionedMediaUrl = (url: string | null, version: string | number): string | null => {
+  if (!url) return null;
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}v=${encodeURIComponent(String(version))}`;
+};
+
+const retryImage = (event: SyntheticEvent<HTMLImageElement>): void => {
+  const image = event.currentTarget;
+  const attempt = Number(image.dataset.retryAttempt ?? "0");
+  const source = image.dataset.sourceUrl;
+  if (!source || attempt >= 4) return;
+
+  const nextAttempt = attempt + 1;
+  image.dataset.retryAttempt = String(nextAttempt);
+  window.setTimeout(() => {
+    if (!image.isConnected) return;
+    const separator = source.includes("?") ? "&" : "?";
+    image.src = `${source}${separator}retry=${Date.now()}-${nextAttempt}`;
+  }, Math.min(750 * nextAttempt, 3000));
+};
 
 interface DetailResponse {
   data: ContentDetail;
@@ -178,7 +199,10 @@ const AdminCmsEditorPage = ({ type }: { type: ContentType }) => {
             ? {
               id: result.data.featured_media_id,
               title: "Gambar unggulan saat ini",
-              url: result.data.thumbnail,
+              url: versionedMediaUrl(
+                result.data.thumbnail,
+                `${result.data.featured_media_id}-${result.data.modified_at}`,
+              ),
               altText: "",
             }
             : null,
@@ -257,7 +281,7 @@ const AdminCmsEditorPage = ({ type }: { type: ContentType }) => {
     update("featuredMedia", {
       id: asset.id,
       title: asset.title || "Tanpa judul",
-      url: asset.file.url,
+      url: versionedMediaUrl(asset.file.url, `${asset.id}-${Date.now()}`),
       altText: asset.alt_text,
     });
     setFeaturedMediaChanged(true);
@@ -278,7 +302,7 @@ const AdminCmsEditorPage = ({ type }: { type: ContentType }) => {
 
     const figure = document.createElement("figure");
     const image = document.createElement("img");
-    image.src = asset.file.url;
+    image.src = versionedMediaUrl(asset.file.url, asset.id) ?? asset.file.url;
     image.alt = asset.alt_text || asset.title || "Gambar berita";
     image.title = asset.title || "";
     figure.className = "lppm-image-size-large lppm-image-align-center";
@@ -491,7 +515,7 @@ const AdminCmsEditorPage = ({ type }: { type: ContentType }) => {
             <div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-[#105091]"><FaImage /></div><div><h2 className="font-display font-bold text-slate-900">Gambar unggulan</h2><p className="text-xs text-slate-500">Tampil pada kartu berita</p></div></div>
             {editor.featuredMedia ? (
               <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                {editor.featuredMedia.url ? <img src={editor.featuredMedia.url} alt={editor.featuredMedia.altText || editor.featuredMedia.title} className="aspect-[16/10] w-full object-cover" /> : <div className="flex aspect-[16/10] items-center justify-center text-sm font-semibold text-amber-700">Pratinjau file tidak tersedia</div>}
+                {editor.featuredMedia.url ? <img src={editor.featuredMedia.url} data-source-url={editor.featuredMedia.url} data-retry-attempt="0" onError={retryImage} alt={editor.featuredMedia.altText || editor.featuredMedia.title} className="aspect-[16/10] w-full object-cover" /> : <div className="flex aspect-[16/10] items-center justify-center text-sm font-semibold text-amber-700">Pratinjau file tidak tersedia</div>}
                 <div className="p-3"><p className="line-clamp-2 text-xs font-bold text-slate-800">{editor.featuredMedia.title}</p><div className="mt-3 flex gap-2"><button type="button" onClick={() => openMediaPicker("featured")} className="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-[#105091] transition hover:bg-blue-50">Ganti</button><button type="button" onClick={clearFeaturedMedia} className="inline-flex items-center justify-center rounded-lg border border-red-200 px-3 py-2 text-xs text-red-600 transition hover:bg-red-50" aria-label="Hapus gambar unggulan"><FaTimes /></button></div></div>
               </div>
             ) : (

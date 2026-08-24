@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent, type SyntheticEvent } from "react";
 import { FaCheck, FaChevronLeft, FaChevronRight, FaImage, FaSearch, FaTimes, FaUpload } from "react-icons/fa";
 import { AdminApiError, adminForm, adminGet } from "../../utils/adminApi";
 
@@ -13,6 +13,26 @@ export interface MediaAsset {
     exists: boolean | null;
   };
 }
+
+const previewUrl = (url: string, mediaId: number): string => {
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}v=media-${mediaId}`;
+};
+
+const retryPreviewImage = (event: SyntheticEvent<HTMLImageElement>): void => {
+  const image = event.currentTarget;
+  const attempt = Number(image.dataset.retryAttempt ?? "0");
+  const source = image.dataset.sourceUrl;
+  if (!source || attempt >= 4) return;
+
+  const nextAttempt = attempt + 1;
+  image.dataset.retryAttempt = String(nextAttempt);
+  window.setTimeout(() => {
+    if (!image.isConnected) return;
+    const separator = source.includes("?") ? "&" : "?";
+    image.src = `${source}${separator}retry=${Date.now()}-${nextAttempt}`;
+  }, Math.min(750 * nextAttempt, 3000));
+};
 
 interface MediaResponse {
   meta: {
@@ -151,7 +171,7 @@ const MediaPickerModal = ({ open, purpose, selectedMediaId, onClose, onSelect, o
                     const available = asset.file.exists === true && Boolean(asset.file.url);
                     const selected = selectedMediaId === asset.id;
                     return <button key={asset.id} type="button" disabled={!available} onClick={() => { onSelect(asset); onClose(); }} className={`group relative overflow-hidden rounded-2xl border bg-white text-left shadow-sm transition ${selected ? "border-[#105091] ring-4 ring-blue-200" : "border-slate-200 hover:-translate-y-0.5 hover:border-blue-400 hover:shadow-md"} ${available ? "" : "cursor-not-allowed opacity-50"}`}>
-                      <div className="aspect-square bg-slate-200">{asset.file.url ? <img src={asset.file.url} alt={asset.alt_text || asset.title} className="h-full w-full object-cover" loading="lazy" /> : <div className="flex h-full items-center justify-center text-slate-400"><FaImage /></div>}</div>
+                      <div className="aspect-square bg-slate-200">{asset.file.url ? <img src={previewUrl(asset.file.url, asset.id)} data-source-url={previewUrl(asset.file.url, asset.id)} data-retry-attempt="0" onError={retryPreviewImage} alt={asset.alt_text || asset.title} className="h-full w-full object-cover" loading="lazy" /> : <div className="flex h-full w-full items-center justify-center text-slate-400"><FaImage /></div>}</div>
                       <div className="min-h-14 p-2.5"><p className="line-clamp-2 text-xs font-bold leading-4 text-slate-700">{asset.title || "Tanpa judul"}</p>{!available && <p className="mt-1 text-[10px] font-semibold text-red-600">File tidak tersedia</p>}</div>
                       {selected && <span className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-[#105091] text-xs text-white shadow"><FaCheck /></span>}
                     </button>;

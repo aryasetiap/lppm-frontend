@@ -57,7 +57,7 @@ const adminRequest = async <T>(
 
 /** Read-only API helper for the new CMS interface. */
 export const adminGet = async <T>(path: string, signal?: AbortSignal): Promise<T> =>
-  adminRequest<T>(path, { signal });
+  adminRequest<T>(path, { signal, cache: "no-store" });
 
 /** JSON mutation helper. Authorization remains enforced by Laravel. */
 export const adminJson = async <T>(
