@@ -7,6 +7,11 @@ import { adminAuth } from "../utils/adminAuth";
 
 type ContentType = "post" | "page";
 
+const versionedThumbnail = (url: string, item: { id: number; modified_at: string }): string => {
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}v=${encodeURIComponent(`${item.id}-${item.modified_at}`)}`;
+};
+
 interface Pagination {
   total: number;
   per_page: number;
@@ -309,7 +314,7 @@ const AdminCmsListPage = ({ type }: { type: ContentType }) => {
               <article key={item.id} className="flex gap-3 px-4 py-3 transition-colors hover:bg-slate-50 sm:px-5">
                 <div className="h-12 w-16 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
                   {item.thumbnail ? (
-                    <img src={item.thumbnail} alt="" className="h-full w-full object-cover" />
+                    <img src={versionedThumbnail(item.thumbnail, item)} alt="" className="h-full w-full object-cover" />
                   ) : (
                     <div className="flex h-full items-center justify-center text-[10px] font-semibold text-slate-500">Tanpa foto</div>
                   )}

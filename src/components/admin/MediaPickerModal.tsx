@@ -69,6 +69,11 @@ const MediaPickerModal = ({ open, purpose, selectedMediaId, onClose, onSelect, o
 
   useEffect(() => {
     if (!open) return;
+    setUploadError(null);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();

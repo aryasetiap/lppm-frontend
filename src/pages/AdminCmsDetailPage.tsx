@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeft, FaCalendarAlt, FaExternalLinkAlt, FaFolderOpen, FaHistory, FaPaperPlane, FaPen, FaTag, FaTrash, FaUndo, FaUser } from "react-icons/fa";
 import CmsAdminShell from "../components/admin/CmsAdminShell";
@@ -83,10 +83,44 @@ const formatDateTime = (value: string): string => {
   }).format(date);
 };
 
-const previewDocument = (html: string): string => `<!doctype html>
+const versionedMediaUrl = (url: string | null, version: string | number): string | null => {
+  if (!url) return null;
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}v=${encodeURIComponent(String(version))}`;
+};
+
+const versionPreviewImages = (html: string, version: string): string => {
+  if (!html || typeof DOMParser === "undefined") return html;
+
+  const document = new DOMParser().parseFromString(html, "text/html");
+  document.querySelectorAll<HTMLImageElement>("img[src]").forEach((image) => {
+    const source = image.getAttribute("src");
+    if (!source || /^(data:|blob:)/i.test(source)) return;
+    image.setAttribute("src", versionedMediaUrl(source, version) ?? source);
+  });
+
+  return document.body.innerHTML;
+};
+
+const retryImage = (event: SyntheticEvent<HTMLImageElement>): void => {
+  const image = event.currentTarget;
+  const attempt = Number(image.dataset.retryAttempt ?? "0");
+  const source = image.dataset.sourceUrl;
+  if (!source || attempt >= 4) return;
+
+  const nextAttempt = attempt + 1;
+  image.dataset.retryAttempt = String(nextAttempt);
+  window.setTimeout(() => {
+    if (!image.isConnected) return;
+    const separator = source.includes("?") ? "&" : "?";
+    image.src = `${source}${separator}retry=${Date.now()}-${nextAttempt}`;
+  }, Math.min(750 * nextAttempt, 3000));
+};
+
+const previewDocument = (html: string, version: string): string => `<!doctype html>
 <html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <style>body{font-family:Inter,Arial,sans-serif;color:#1e293b;line-height:1.75;margin:0;padding:24px;word-wrap:break-word}img{max-width:100%;height:auto}figure{display:block;margin:1.5rem 0}figure img{display:block;width:100%;height:auto;border-radius:12px}.lppm-image-size-small{max-width:320px}.lppm-image-size-medium{max-width:520px}.lppm-image-size-large{max-width:760px}.lppm-image-size-full{max-width:100%}.lppm-image-align-left{float:left;margin:.5rem 1.5rem 1rem 0}.lppm-image-align-center{margin-left:auto;margin-right:auto}.lppm-image-align-right{float:right;margin:.5rem 0 1rem 1.5rem}table{max-width:100%;border-collapse:collapse}td,th{border:1px solid #cbd5e1;padding:8px}a{color:#105091}pre{overflow:auto;background:#f1f5f9;padding:12px}@media(max-width:640px){.lppm-image-align-left,.lppm-image-align-right{float:none;margin:1rem auto}}</style>
-</head><body>${html}</body></html>`;
+</head><body>${versionPreviewImages(html, version)}</body></html>`;
 
 const AdminCmsDetailPage = () => {
   const navigate = useNavigate();
@@ -279,7 +313,14 @@ const AdminCmsDetailPage = () => {
     }
   };
 
-  const contentPreview = useMemo(() => previewDocument(item?.content ?? ""), [item?.content]);
+  const previewVersion = item ? `${item.id}-${item.modified_at}` : "empty";
+  const contentPreview = useMemo(
+    () => previewDocument(item?.content ?? "", previewVersion),
+    [item?.content, previewVersion],
+  );
+  const thumbnailUrl = item
+    ? versionedMediaUrl(item.thumbnail, previewVersion)
+    : null;
   const listPath = item?.type === "page" ? "/admin/pages" : "/admin/posts";
   const typeLabel = item?.type === "page" ? "Halaman" : "Berita";
   const canEdit = item?.status === "draft" || (item?.type === "post" && item.status === "publish");
@@ -307,8 +348,9 @@ const AdminCmsDetailPage = () => {
                 <span className="text-xs text-slate-500">Mode aman</span>
               </div>
               <iframe
+                key={previewVersion}
                 title={`Pratinjau ${item.title || "konten"}`}
-                sandbox=""
+                sandbox="allow-same-origin"
                 srcDoc={contentPreview}
                 className="min-h-[560px] w-full rounded-xl border border-slate-200 bg-white"
               />
@@ -446,10 +488,10 @@ const AdminCmsDetailPage = () => {
               </section>
             )}
 
-            {item.thumbnail && (
+            {thumbnailUrl && (
               <section className="cms-panel overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                <img src={item.thumbnail} alt="Gambar unggulan" className="h-auto w-full object-cover" />
-                <a href={item.thumbnail} target="_blank" rel="noreferrer" className="inline-flex w-full items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-[#105091] hover:bg-blue-50">
+                <img src={thumbnailUrl} data-source-url={thumbnailUrl} data-retry-attempt="0" onError={retryImage} alt="Gambar unggulan" className="h-auto w-full object-cover" />
+                <a href={thumbnailUrl} target="_blank" rel="noreferrer" className="inline-flex w-full items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-[#105091] hover:bg-blue-50">
                   Buka gambar <FaExternalLinkAlt className="text-xs" />
                 </a>
               </section>

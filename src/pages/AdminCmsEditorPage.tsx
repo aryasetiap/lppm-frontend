@@ -547,7 +547,7 @@ const AdminCmsEditorPage = ({ type }: { type: ContentType }) => {
 
           <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
             <div className="flex items-center gap-2 border-b border-slate-200 px-4 py-3 text-slate-800"><FaEye className="text-[#105091]" /><h2 className="font-display text-sm font-bold">Pratinjau aman</h2></div>
-            <iframe title="Pratinjau draft" sandbox="" srcDoc={preview} className="min-h-[240px] w-full bg-white" />
+            <iframe title="Pratinjau draft" sandbox="allow-same-origin" srcDoc={preview} className="min-h-[240px] w-full bg-white" />
           </section>
         </aside>
       </form>
