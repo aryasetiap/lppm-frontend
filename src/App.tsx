@@ -19,6 +19,7 @@ import AdminDocumentListPage from "./pages/AdminDocumentListPage";
 import AdminDocumentDetailPage from "./pages/AdminDocumentDetailPage";
 import AdminDocumentEditorPage from "./pages/AdminDocumentEditorPage";
 import ArsipPage from "./pages/ArsipPage";
+import PpidPage from "./pages/PpidPage";
 import { adminAuth } from "./utils/adminAuth";
 
 
@@ -195,6 +196,7 @@ function App() {
             />
             <Route path="/arsip" element={<ArsipPage />} />
             <Route path="/arsip/:category" element={<ArsipPage />} />
+            <Route path="/ppid" element={<PpidPage />} />
             <Route path="/:category/:slug" element={<SubBagianPage />} />
             <Route path="*" element={<Homepage />} />
           </Routes>

@@ -101,6 +101,11 @@ const navLinks: NavLink[] = [
     icon: BookOpen,
     items: [
       {
+        name: "PPID",
+        href: "/ppid",
+        description: "Layanan informasi publik LPPM",
+      },
+      {
         name: "Penelitian Universitas Lampung",
         href: "https://silemlit21.unila.ac.id/",
         external: true,
