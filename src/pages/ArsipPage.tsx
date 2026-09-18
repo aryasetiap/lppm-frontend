@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Download as DownloadIcon, FileText, RefreshCw, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import NotFoundPage from "../components/NotFoundPage";
 
 const LARAVEL_API_BASE =
   (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") ||
@@ -87,6 +88,17 @@ const PosApDownloadsPage = () => {
     [categories, category]
   );
 
+  const categoryNotFound = Boolean(
+    categoriesReady
+    && !categoriesError
+    && category
+    && category !== "pos-ap"
+    && category !== "dokumen"
+    && category !== "dokumen-penunjang"
+    && category !== BOOK_WRITING_CATEGORY
+    && !categories.some((cat) => cat.slug === category)
+  );
+
   const isSuratKeputusanGroupActive = useMemo(
     () => selectedSection === "surat-keputusan" || SK_SECTION_SLUGS.includes(selectedSection),
     [selectedSection]
@@ -171,7 +183,7 @@ const PosApDownloadsPage = () => {
     }
 
     if (category !== "pos-ap" && !list.some((cat) => cat.slug === category)) {
-      navigate(`/arsip/${list[0].slug}`, { replace: true });
+      setCategoriesReady(true);
       return;
     }
 
@@ -280,10 +292,14 @@ const PosApDownloadsPage = () => {
   }, [search]);
 
   useEffect(() => {
-    if (!categoriesReady) return;
+    if (!categoriesReady || categoryNotFound) return;
     fetchDownloads();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, categoriesReady, page, debouncedSearch, selectedSection]);
+  }, [category, categoriesReady, categoryNotFound, page, debouncedSearch, selectedSection]);
+
+  if (categoryNotFound) {
+    return <NotFoundPage description="Kategori arsip yang Anda cari tidak tersedia." />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#091f43] via-blue-900 to-slate-950 text-white">

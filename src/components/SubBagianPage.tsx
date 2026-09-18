@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   Users,
   Target,
   Briefcase,
   Building,
   Award,
-  ArrowLeft,
   BookOpen,
   Star,
   Shield,
@@ -16,6 +15,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { API_BASE_URL } from "../config/api";
+import NotFoundPage from "./NotFoundPage";
 
 interface PimpinanData {
   ketua: {
@@ -69,9 +69,12 @@ interface SubBagianResponse {
   };
 }
 
-const SubBagianPage: React.FC = () => {
-  const { category, slug } = useParams<{ category: string; slug: string }>();
-  const navigate = useNavigate();
+interface SubBagianPageProps {
+  category: "pusat-lppm" | "administrasi";
+}
+
+const SubBagianPage: React.FC<SubBagianPageProps> = ({ category }) => {
+  const { slug } = useParams<{ slug: string }>();
   const [subBagianData, setSubBagianData] = useState<SubBagianData | null>(
     null
   );
@@ -138,7 +141,25 @@ const SubBagianPage: React.FC = () => {
   };
 
   useEffect(() => {
+    const findSubBagian = (data: SubBagianResponse): SubBagianData | null => {
+      return data.sub_bagian?.[category || ""]?.[slug || ""] ?? null;
+    };
+
+    const loadStaticFallback = async (): Promise<SubBagianData | null> => {
+      const fallbackResponse = await fetch(`${import.meta.env.BASE_URL}data/sub-bagian-lppm.json`);
+      if (!fallbackResponse.ok) {
+        throw new Error("Fallback data tidak tersedia");
+      }
+
+      const fallbackData: SubBagianResponse = await fallbackResponse.json();
+      return findSubBagian(fallbackData);
+    };
+
     const loadSubBagianData = async () => {
+      setLoading(true);
+      setError(null);
+      setSubBagianData(null);
+
       try {
         const response = await fetch(`${API_BASE_URL}/content/sub-bagian`);
         if (!response.ok) {
@@ -146,30 +167,29 @@ const SubBagianPage: React.FC = () => {
         }
         const payload = await response.json();
         const data: SubBagianResponse = payload.data;
+        const apiData = findSubBagian(data);
 
-        // Find the sub bagian data based on category and slug
-        const categoryData = data.sub_bagian[category || ""];
-        if (categoryData && categoryData[slug || ""]) {
-          setSubBagianData(categoryData[slug || ""]);
-        } else {
-          setError("Sub bagian tidak ditemukan");
+        if (apiData) {
+          setSubBagianData(apiData);
+          return;
         }
+
+        // Dataset produksi dapat masih memakai struktur lama. Coba dataset
+        // statis V2 sebelum menyimpulkan bahwa slug memang tidak tersedia.
+        const fallbackData = await loadStaticFallback();
+        if (fallbackData) {
+          setSubBagianData(fallbackData);
+          return;
+        }
+
+        setError("Sub bagian tidak ditemukan");
       } catch (err) {
         console.error("Error loading sub bagian API:", err);
         // Fallback ke file statis agar halaman tetap bisa diakses saat API bermasalah.
         try {
-          const fallbackResponse = await fetch(`${import.meta.env.BASE_URL}data/sub-bagian-lppm.json`);
-          if (!fallbackResponse.ok) {
-            throw new Error("Fallback data tidak tersedia");
-          }
-          const fallbackData: SubBagianResponse = await fallbackResponse.json();
-          const categoryData = fallbackData.sub_bagian[category || ""];
-          if (categoryData && categoryData[slug || ""]) {
-            setSubBagianData(categoryData[slug || ""]);
-            setError(null);
-          } else {
-            setError("Sub bagian tidak ditemukan");
-          }
+          const fallbackData = await loadStaticFallback();
+          setSubBagianData(fallbackData);
+          setError(fallbackData ? null : "Sub bagian tidak ditemukan");
         } catch (fallbackErr) {
           console.error("Error loading sub bagian fallback:", fallbackErr);
           setError("Gagal memuat data sub bagian");
@@ -179,7 +199,7 @@ const SubBagianPage: React.FC = () => {
       }
     };
 
-    if (category && slug) {
+    if (slug) {
       loadSubBagianData();
     } else {
       setError("Parameter tidak lengkap");
@@ -227,6 +247,10 @@ const SubBagianPage: React.FC = () => {
     );
   }
 
+  if (error === "Sub bagian tidak ditemukan" || error === "Parameter tidak lengkap") {
+    return <NotFoundPage description="Sub bagian yang Anda cari tidak tersedia." />;
+  }
+
   if (error || !subBagianData) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center">
@@ -235,16 +259,9 @@ const SubBagianPage: React.FC = () => {
             <Shield className="w-10 h-10 text-red-600" />
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Data Tidak Ditemukan
+            Data Gagal Dimuat
           </h2>
           <p className="text-gray-600 mb-8">{error}</p>
-          <button
-            onClick={() => navigate("/")}
-            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[#105091] to-blue-600 text-white font-semibold rounded-xl hover:shadow-lg transform transition-all duration-300 hover:scale-105"
-          >
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            Kembali ke Beranda
-          </button>
         </div>
       </div>
     );

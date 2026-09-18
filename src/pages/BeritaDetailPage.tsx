@@ -13,6 +13,7 @@ import {
   FaLinkedin,
   FaWhatsapp,
 } from "react-icons/fa";
+import NotFoundPage from "../components/NotFoundPage";
 
 // Types corresponding to the new API response
 interface RelatedPost {
@@ -48,17 +49,21 @@ const BeritaDetailPage = () => {
   const [newsData, setNewsData] = useState<NewsDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     const fetchNewsDetail = async () => {
       if (!slug) {
-        setError("Slug berita tidak ditemukan");
+        setNotFound(true);
         setIsLoading(false);
         return;
       }
 
       try {
         setIsLoading(true);
+        setError(null);
+        setNotFound(false);
+        setNewsData(null);
         // Use the new slug-based endpoint
         const apiBase = (import.meta.env.VITE_LARAVEL_API_URL as string | undefined)?.replace(/\/$/, "") ||
           (window.location.hostname === "lppm.unila.ac.id" || window.location.hostname.includes("unila.ac.id")
@@ -67,15 +72,20 @@ const BeritaDetailPage = () => {
 
         const response = await fetch(`${apiBase}/posts/slug/${slug}`);
 
+        if (response.status === 404) {
+          setNotFound(true);
+          return;
+        }
+
         if (!response.ok) {
-          throw new Error("Berita tidak ditemukan");
+          throw new Error("Gagal memuat berita");
         }
 
         const json = await response.json();
         setNewsData(json.data);
       } catch (err) {
         console.error("Error fetching news detail:", err);
-        setError("Gagal memuat detail berita. Berita mungkin tidak ditemukan atau telah dihapus.");
+        setError("Gagal memuat detail berita. Silakan coba lagi beberapa saat.");
       } finally {
         setIsLoading(false);
         // Scroll to top when slug changes
@@ -114,7 +124,7 @@ const BeritaDetailPage = () => {
       if (navigator.share) {
         try {
           await navigator.share({ title: newsData.title, text: text, url: url });
-        } catch (err) { console.log("Share cancelled"); }
+        } catch { console.log("Share cancelled"); }
       } else {
         navigator.clipboard.writeText(url);
         alert("Link berita disalin ke clipboard!");
@@ -196,6 +206,10 @@ const BeritaDetailPage = () => {
         </div>
       </div>
     );
+  }
+
+  if (notFound) {
+    return <NotFoundPage description="Berita yang Anda cari tidak tersedia atau sudah dihapus." />;
   }
 
   // Error State

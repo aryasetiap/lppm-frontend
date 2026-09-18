@@ -6,6 +6,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Homepage from "./components/Homepage";
 import ProfilePage from "./components/ProfilePage";
 import SubBagianPage from "./components/SubBagianPage";
+import NotFoundPage from "./components/NotFoundPage";
 import BeritaPage from "./pages/BeritaPage";
 import BeritaDetailPage from "./pages/BeritaDetailPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
@@ -195,8 +196,15 @@ function App() {
             />
             <Route path="/arsip" element={<ArsipPage />} />
             <Route path="/arsip/:category" element={<ArsipPage />} />
-            <Route path="/:category/:slug" element={<SubBagianPage />} />
-            <Route path="*" element={<Homepage />} />
+            <Route
+              path="/pusat-lppm/:slug"
+              element={<SubBagianPage category="pusat-lppm" />}
+            />
+            <Route
+              path="/administrasi/:slug"
+              element={<SubBagianPage category="administrasi" />}
+            />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
       </ApplicationFrame>
     </Router>
